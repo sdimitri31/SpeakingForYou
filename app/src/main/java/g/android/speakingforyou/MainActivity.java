@@ -17,6 +17,9 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TableLayout;
+import android.widget.TableLayout.LayoutParams;
+import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -28,10 +31,12 @@ public class MainActivity extends AppCompatActivity {
     private TextToSpeech    textToSpeech;
     private VoiceSettings   mVoiceSettings;
     private TableLayout     mTableLayout_SettingsToggle;
+    private TableLayout     mTableLayout_SavedSentences;
     private ImageView       mImageView_SettingsArrowUp;
     private ImageView       mImageView_SettingsArrowDown;
     private Button          mButton_StartSpeaking;
     private Button          mButton_StopSpeaking;
+    private Button          mButton_SaveSentence;
     private EditText        mEditText_Sentence;
     private Spinner         mSpinner_LanguageAvailable;
     private SeekBar         mSeekBar_Pitch;
@@ -43,16 +48,21 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mTableLayout_SettingsToggle =   findViewById(R.id.tableLayout_Settings);
+        mTableLayout_SavedSentences =   findViewById(R.id.tableLayout_SavedSentences);
         mImageView_SettingsArrowUp =    findViewById(R.id.imageView_SettingsArrowUp);
         mImageView_SettingsArrowDown =  findViewById(R.id.imageView_SettingsArrowDown);
         mButton_StartSpeaking =         findViewById(R.id.button_StartSpeaking);
         mButton_StopSpeaking =          findViewById(R.id.button_StopSpeaking);
+        mButton_SaveSentence =          findViewById(R.id.button_SaveSentence);
         mSpinner_LanguageAvailable =    findViewById(R.id.spinner_LanguageAvailable);
         mSeekBar_Pitch =                findViewById(R.id.seekBar_Pitch);
         mSeekBar_SpeechRate =           findViewById(R.id.seekBar_SpeechRate);
         mEditText_Sentence =            findViewById(R.id.editText_Sentence);
 
         mVoiceSettings = new VoiceSettings(getPreferences(MODE_PRIVATE));
+
+
+        fillScrollViewSavecSentences();
 
         textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
@@ -119,13 +129,9 @@ public class MainActivity extends AppCompatActivity {
         mButton_StartSpeaking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                String data = mEditText_Sentence.getText().toString();
-                Log.i("TTS", "button clicked: " + data);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    ttsGreater21(data);
-                } else {
-                    ttsUnder20(data);
-                }
+                String sentence = mEditText_Sentence.getText().toString();
+                speak(sentence);
+                Log.i("TTS", "Play clicked: " + sentence);
             }
         });
 
@@ -135,6 +141,25 @@ public class MainActivity extends AppCompatActivity {
                 textToSpeech.stop();
             }
         });
+
+        mButton_SaveSentence.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String sentence = mEditText_Sentence.getText().toString();
+
+                SavedSentences sentenceToSave = new SavedSentences(sentence, mVoiceSettings.getLanguage(), mVoiceSettings.getPitch(), mVoiceSettings.getSpeechRate());
+
+                SavedSentencesDAO SSDAO = new SavedSentencesDAO(getApplicationContext());
+                SSDAO.add(sentenceToSave);
+
+
+                fillScrollViewSavecSentences();
+
+
+            }
+        });
+
     }
 
     public void onClickSettingsToggle(final View v){
@@ -183,6 +208,31 @@ public class MainActivity extends AppCompatActivity {
         mVoiceSettings.setSpeechRate(speechRateValue);
     }
 
+    private void fillScrollViewSavecSentences()
+    {
+        SavedSentencesDAO SSDAO = new SavedSentencesDAO(getApplicationContext());
+        mTableLayout_SavedSentences.removeAllViews();
+
+        List<SavedSentences> listSavedSentences;
+        listSavedSentences = SSDAO.getAll();
+
+        for (final SavedSentences savedSentence : listSavedSentences) {
+            TableRow row = new TableRow(this);
+            row.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+                    LayoutParams.WRAP_CONTENT));
+            TextView txtview = new TextView(this);
+            txtview.setText(savedSentence.getSentence());
+            row.addView(txtview);
+            row.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    speak(savedSentence.getSentence());
+                }
+            });
+            mTableLayout_SavedSentences.addView(row);
+        }
+    }
+
     private void initSpinnerLanguages(){
         final List<Locale> localeList = new ArrayList<>();
         final List<String> listLanguageName = new ArrayList<>();
@@ -209,7 +259,10 @@ public class MainActivity extends AppCompatActivity {
         String selectedLanguage = mVoiceSettings.getLanguage();
         if (selectedLanguage != null) {
             Log.i("TTS", "Last selected language : " + selectedLanguage);
-            mSpinner_LanguageAvailable.setSelection(dataAdapter.getPosition(selectedLanguage));
+            Locale loc = Locale.forLanguageTag(selectedLanguage);
+
+            Log.i("TTS", "Last selected language : " + loc.getDisplayName());
+            mSpinner_LanguageAvailable.setSelection(dataAdapter.getPosition(loc.getDisplayName()));
         }
 
         //Spinner onSelectedItemEvent
@@ -220,15 +273,25 @@ public class MainActivity extends AppCompatActivity {
                 textToSpeech.setLanguage(localeList.get(position));
 
                 //Save the last language for next boot
-                mVoiceSettings.setLanguage(parent.getItemAtPosition(position).toString());
+                //mVoiceSettings.setLanguage(parent.getItemAtPosition(position).toString());
+                mVoiceSettings.setLanguage(localeList.get(position).toLanguageTag());
 
-                Log.i("TTS", "Country code name : " + localeList.get(position));
+                Log.i("TTS", "Display name : " + localeList.get(position).getDisplayName());
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+    }
+
+    private void speak(String sentence)
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ttsGreater21(sentence);
+        } else {
+            ttsUnder20(sentence);
+        }
     }
 
     @SuppressWarnings("deprecation")

@@ -9,6 +9,19 @@
     tools:context=".MainActivity">
 
 
+    <ScrollView
+        android:id="@+id/scrollView_SavedSentences"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:paddingBottom="10dp">
+
+        <TableLayout
+            android:id="@+id/tableLayout_SavedSentences"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </ScrollView>
+
     <LinearLayout
         android:id="@+id/layout_SettingsToggle"
         android:layout_width="match_parent"
@@ -154,6 +167,14 @@
                 android:elevation="0dp"
                 android:paddingHorizontal="30dp"
                 android:text="Stop" />
+
+            <Button
+                android:id="@+id/button_SaveSentence"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="10dp"
+                android:elevation="0dp"
+                android:text="Ajouter" />
         </LinearLayout>
     </LinearLayout>
 
