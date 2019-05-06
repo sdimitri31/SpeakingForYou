@@ -3,7 +3,7 @@ package g.android.speakingforyou;
 import android.util.Log;
 import android.content.SharedPreferences;
 
-public class VoiceSettings {
+class VoiceSettings {
 
     private String mLastLanguageUsed;
     private int mLastPitchUsed;
@@ -42,7 +42,7 @@ public class VoiceSettings {
         }
     }
 
-    public void setPitch(int pitch)
+    void setPitch(int pitch)
     {
         mLastPitchUsed = pitch;
 
@@ -54,12 +54,12 @@ public class VoiceSettings {
         Log.i("TTS", "New pitch :" + mLastPitchUsed);
     }
 
-    public int getPitch()
+    int getPitch()
     {
         return mLastPitchUsed;
     }
 
-    public void setSpeechRate(int speechRate)
+    void setSpeechRate(int speechRate)
     {
         mLastSpeechRateUsed = speechRate;
 
@@ -72,12 +72,12 @@ public class VoiceSettings {
 
     }
 
-    public int getSpeechRate()
+    int getSpeechRate()
     {
         return mLastSpeechRateUsed;
     }
 
-    public void setLanguage(String language)
+    void setLanguage(String language)
     {
         mLastLanguageUsed = language;
 
@@ -90,7 +90,7 @@ public class VoiceSettings {
 
     }
 
-    public String getLanguage()
+    String getLanguage()
     {
         return mLastLanguageUsed;
     }
