@@ -1,7 +1,6 @@
 package g.android.speakingforyou;
 
 import android.annotation.TargetApi;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +26,7 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     private TextToSpeech    textToSpeech;
+    private VoiceSettings   mVoiceSettings;
     private TableLayout     mTableLayout_SettingsToggle;
     private ImageView       mImageView_SettingsArrowUp;
     private ImageView       mImageView_SettingsArrowDown;
@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
         mSeekBar_Pitch =                findViewById(R.id.seekBar_Pitch);
         mSeekBar_SpeechRate =           findViewById(R.id.seekBar_SpeechRate);
         mEditText_Sentence =            findViewById(R.id.editText_Sentence);
+
+        mVoiceSettings = new VoiceSettings(getPreferences(MODE_PRIVATE));
 
         textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
@@ -77,19 +79,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mSeekBar_Pitch.setMax(300);
-        //Initialize the last used speech rate
-        int pitch = getPreferences(MODE_PRIVATE).getInt("pitch", -1);
-        if (pitch != -1) {
-            mSeekBar_Pitch.setProgress(pitch);
-            Log.i("TTS", "Last pitch : " + pitch);
-            setPitch(pitch);
-        }
-        else {
-            mSeekBar_Pitch.setProgress(100);
-            setPitch(100);
-        }
-
+        //Initialize the speech rate
+        setPitch(mVoiceSettings.getPitch());
         mSeekBar_Pitch.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -106,19 +97,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mSeekBar_SpeechRate.setMax(300);
         //Initialize the last used speech rate
-        int speechRate = getPreferences(MODE_PRIVATE).getInt("speechRate", -1);
-        if (speechRate != -1) {
-            mSeekBar_SpeechRate.setProgress(speechRate);
-            Log.i("TTS", "Last speech rate : " + speechRate);
-            setSpeechRate(speechRate);
-        }
-        else {
-            mSeekBar_SpeechRate.setProgress(100);
-            setSpeechRate(100);
-        }
-
+        setSpeechRate(mVoiceSettings.getSpeechRate());
         mSeekBar_SpeechRate.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -139,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
         mButton_StartSpeaking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-
                 String data = mEditText_Sentence.getText().toString();
                 Log.i("TTS", "button clicked: " + data);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -148,7 +127,6 @@ public class MainActivity extends AppCompatActivity {
                     ttsUnder20(data);
                 }
             }
-
         });
 
         mButton_StopSpeaking.setOnClickListener(new View.OnClickListener() {
@@ -157,8 +135,6 @@ public class MainActivity extends AppCompatActivity {
                 textToSpeech.stop();
             }
         });
-
-
     }
 
     public void onClickSettingsToggle(final View v){
@@ -193,34 +169,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setPitch(int pitchValue)
-    {
+    private void setPitch(int pitchValue){
         float pitch = (float) pitchValue / 100;
         textToSpeech.setPitch(pitch);
-
-        //Save the Pitch for next boot
-        SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
-        editor.putInt("pitch", pitchValue);
-        editor.apply();
-
-        Log.i("TTS", "Pitch Value :" + pitchValue);
+        mSeekBar_Pitch.setProgress(pitchValue);
+        mVoiceSettings.setPitch(pitchValue);
     }
 
-    private void setSpeechRate(int speechRateValue)
-    {
+    private void setSpeechRate(int speechRateValue){
         float speechRate = (float) speechRateValue / 100;
         textToSpeech.setSpeechRate(speechRate);
-
-        //Save the Speech Rate for next boot
-        SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
-        editor.putInt("speechRate", speechRateValue);
-        editor.apply();
-
-        Log.i("TTS", "Speech Rate : " + speechRateValue);
+        mSeekBar_SpeechRate.setProgress(speechRateValue);
+        mVoiceSettings.setSpeechRate(speechRateValue);
     }
 
-    private void initSpinnerLanguages()
-    {
+    private void initSpinnerLanguages(){
         final List<Locale> localeList = new ArrayList<>();
         final List<String> listLanguageName = new ArrayList<>();
 
@@ -237,14 +200,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //Put all languages in the spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getApplicationContext(),
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getApplicationContext(),
                 android.R.layout.simple_spinner_item, listLanguageName);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinner_LanguageAvailable.setAdapter(dataAdapter);
 
         //Initialize the last used language
-        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
-        String selectedLanguage = prefs.getString("selectedLanguage", null);
+        String selectedLanguage = mVoiceSettings.getLanguage();
         if (selectedLanguage != null) {
             Log.i("TTS", "Last selected language : " + selectedLanguage);
             mSpinner_LanguageAvailable.setSelection(dataAdapter.getPosition(selectedLanguage));
@@ -258,16 +220,13 @@ public class MainActivity extends AppCompatActivity {
                 textToSpeech.setLanguage(localeList.get(position));
 
                 //Save the last language for next boot
-                SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
-                editor.putString("selectedLanguage", parent.getItemAtPosition(position).toString());
-                editor.apply();
+                mVoiceSettings.setLanguage(parent.getItemAtPosition(position).toString());
 
-                Log.i("TTS", "Selected language : " + localeList.get(position).toString() + " Display name : " + parent.getItemAtPosition(position));
+                Log.i("TTS", "Country code name : " + localeList.get(position));
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // TODO Auto-generated method stub
             }
         });
     }

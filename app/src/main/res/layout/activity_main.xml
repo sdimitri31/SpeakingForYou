@@ -88,7 +88,8 @@
                 android:id="@+id/seekBar_Pitch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2" />
+                android:layout_weight="2"
+                android:max="300" />
         </TableRow>
 
         <TableRow
@@ -107,7 +108,8 @@
                 android:id="@+id/seekBar_SpeechRate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2" />
+                android:layout_weight="2"
+                android:max="300" />
         </TableRow>
 
     </TableLayout>
