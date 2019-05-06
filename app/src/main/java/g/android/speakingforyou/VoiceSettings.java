@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 
 public class VoiceSettings {
 
-    private String mlastLanguageUsed;
+    private String mLastLanguageUsed;
     private int mLastPitchUsed;
     private int mLastSpeechRateUsed;
     private SharedPreferences mSharedPreferences;
@@ -18,7 +18,7 @@ public class VoiceSettings {
         String selectedLanguage = mSharedPreferences.getString("selectedLanguage", null);
         if (selectedLanguage != null) {
             setLanguage(selectedLanguage);
-            Log.i("TTS", "Last language : " + mlastLanguageUsed);
+            Log.i("TTS", "Last language : " + mLastLanguageUsed);
         }
 
         //Initialize the last used pitch
@@ -79,20 +79,20 @@ public class VoiceSettings {
 
     public void setLanguage(String language)
     {
-        mlastLanguageUsed = language;
+        mLastLanguageUsed = language;
 
         //Save the last language for next boot
         SharedPreferences.Editor editor = mSharedPreferences.edit();
-        editor.putString("selectedLanguage", mlastLanguageUsed);
+        editor.putString("selectedLanguage", mLastLanguageUsed);
         editor.apply();
 
-        Log.i("TTS", "New language : " + mlastLanguageUsed );
+        Log.i("TTS", "New language : " + mLastLanguageUsed );
 
     }
 
     public String getLanguage()
     {
-        return mlastLanguageUsed;
+        return mLastLanguageUsed;
     }
 
 }
