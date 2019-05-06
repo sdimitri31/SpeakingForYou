@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
         mTableLayout_SettingsToggle =   findViewById(R.id.tableLayout_Settings);
         mImageView_SettingsArrowUp =    findViewById(R.id.imageView_SettingsArrowUp);
-        mImageView_SettingsArrowDown =    findViewById(R.id.imageView_SettingsArrowDown);
+        mImageView_SettingsArrowDown =  findViewById(R.id.imageView_SettingsArrowDown);
         mButton_StartSpeaking =         findViewById(R.id.button_StartSpeaking);
         mButton_StopSpeaking =          findViewById(R.id.button_StopSpeaking);
         mSpinner_LanguageAvailable =    findViewById(R.id.spinner_LanguageAvailable);
