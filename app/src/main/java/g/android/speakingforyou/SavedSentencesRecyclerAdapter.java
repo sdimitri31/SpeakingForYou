@@ -1,6 +1,7 @@
 package g.android.speakingforyou;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,12 +19,14 @@ public class SavedSentencesRecyclerAdapter extends RecyclerView.Adapter<SavedSen
     private final ClickListener listener;
     private final List<SavedSentences> mSavedSentencesList;
     private final Context mContext;
+    private final Boolean mIsEditSavedSentences;
 
-    public SavedSentencesRecyclerAdapter(List<SavedSentences> savedSentences, Context context, ClickListener listener)
+    public SavedSentencesRecyclerAdapter(List<SavedSentences> savedSentences, Context context, Boolean isEditSavedSentences, ClickListener listener)
     {
         this.listener = listener;
         mSavedSentencesList = savedSentences;
         mContext = context;
+        mIsEditSavedSentences = isEditSavedSentences;
     }
 
     @Override
@@ -35,7 +38,8 @@ public class SavedSentencesRecyclerAdapter extends RecyclerView.Adapter<SavedSen
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.saved_sentence_cell, parent, false);
-        return new MyViewHolder(view, listener);
+
+        return new MyViewHolder(view, listener, mIsEditSavedSentences);
     }
 
     @Override
@@ -63,7 +67,7 @@ public class SavedSentencesRecyclerAdapter extends RecyclerView.Adapter<SavedSen
         Context mContext;
         SavedSentences savedSentence;
 
-        public MyViewHolder(final View itemView, ClickListener listener) {
+        public MyViewHolder(final View itemView, ClickListener listener, Boolean isEditSavedSentences) {
             super(itemView);
 
             listenerRef = new WeakReference<>(listener);
@@ -75,8 +79,13 @@ public class SavedSentencesRecyclerAdapter extends RecyclerView.Adapter<SavedSen
             delete.setOnClickListener(this);
             sentence.setOnClickListener(this);
             itemView.setOnClickListener(this);
+
+
             Log.i("TTS","itemView ID : " + itemView.getId());
 
+            if(isEditSavedSentences){
+                delete.setVisibility(View.VISIBLE);
+            }
 
             /*
             itemView.setOnClickListener(new View.OnClickListener() {

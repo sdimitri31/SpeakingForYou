@@ -1,6 +1,7 @@
 package g.android.speakingforyou;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -33,11 +34,21 @@ public class SavedSentencesFragment extends Fragment implements View.OnClickList
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //Inflate the layout of MainFragment
-        View rootView =inflater.inflate(R.layout.fragment_saved_sentences, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_saved_sentences, container, false);
 
         RecyclerView mRecyclerView_SavedSentences = (RecyclerView) rootView.findViewById(R.id.recyclerView_SavedSentences);
-        //Button button = rootView.findViewById(R.id.button);
-        //button.setOnClickListener(this);
+        Button button_EditSavedSentences = rootView.findViewById(R.id.button_EditSavedSentences);
+        button_EditSavedSentences.setOnClickListener(this);
+
+        Context context = container.getContext();
+
+        SharedPreferences preferences = context.getSharedPreferences("SharedPrefs", 0);
+        Boolean isEditSavedSentences = preferences.getBoolean("isEditSavedSentence", false);
+        Log.i("TTS","isEditSavedSentences : " + isEditSavedSentences);
+
+        if(isEditSavedSentences){
+            button_EditSavedSentences.setText("Terminé");
+        }
 
         //Clear all views and populate with fresh values
         mRecyclerView_SavedSentences.setLayoutManager( new LinearLayoutManager(getActivity()));
@@ -47,7 +58,7 @@ public class SavedSentencesFragment extends Fragment implements View.OnClickList
         final RecyclerView.Adapter mAdapter;
 
 
-        mAdapter = new SavedSentencesRecyclerAdapter(listSavedSentences, getActivity(), new ClickListener() {
+        mAdapter = new SavedSentencesRecyclerAdapter(listSavedSentences, getActivity(), isEditSavedSentences, new ClickListener() {
             @Override
             public void onPositionClicked(int position) {
             }

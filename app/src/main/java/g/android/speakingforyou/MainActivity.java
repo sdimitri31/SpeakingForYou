@@ -1,6 +1,7 @@
 package g.android.speakingforyou;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -21,10 +22,12 @@ import android.widget.TableLayout;
 
 public class MainActivity extends AppCompatActivity implements SavedSentencesFragment.OnButtonClickedListener{
 
+    public static final String PREF_NAME = "SharedPrefs";
+
     private Speaker         mSpeaker;
 
-    private FrameLayout mFrameLayout_Fragment;
-    SavedSentencesFragment mSavedSentencesFragment;
+    SavedSentencesFragment  mSavedSentencesFragment;
+    private Boolean         mIsEditSavedSentences;
 
     //VoiceSettings
     private VoiceSettings   mVoiceSettings;
@@ -47,14 +50,18 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mFrameLayout_Fragment = findViewById(R.id.frameLayoutFragment);
+        //Start Activity without saved sentences editable
+        SharedPreferences sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("isEditSavedSentence", false);
+        editor.apply();
 
+        //Put the recycler with the saved sentences in the frameLayout
         FragmentManager fragmentManager = this.getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         mSavedSentencesFragment = new SavedSentencesFragment();
         fragmentTransaction.replace(R.id.frameLayoutFragment, mSavedSentencesFragment);
         fragmentTransaction.commit();
-
 
         //VoiceSettings
         mTableLayout_SettingsToggle =   findViewById(R.id.tableLayout_Settings);
@@ -70,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
         mButton_StopSpeaking =          findViewById(R.id.button_StopSpeaking);
         mButton_SaveSentence =          findViewById(R.id.button_SaveSentence);
 
-        mVoiceSettings = new VoiceSettings(getPreferences(MODE_PRIVATE));
+        mVoiceSettings = new VoiceSettings(getSharedPreferences(PREF_NAME, MODE_PRIVATE));
 
         //Initialize the TTS Engine and the Spinner
         mSpeaker = new Speaker(this, mSpinner_LanguageAvailable, mVoiceSettings);
@@ -209,6 +216,22 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
 
             Log.i("TTS","clickedSentence !  : " + clickedSentence.getSentence());
             mSpeaker.ttsSpeak(clickedSentence.getSentence());
+        }
+        else if(view.getId() == R.id.button_EditSavedSentences)
+        {
+            SharedPreferences sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+
+            //Reverse the value of the boolean to toggle the recycler
+            mIsEditSavedSentences = sharedPreferences.getBoolean("isEditSavedSentence", false);
+            mIsEditSavedSentences = !mIsEditSavedSentences;
+
+            //Save the new value
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("isEditSavedSentence", mIsEditSavedSentences);
+            editor.apply();
+
+            //Restart the fragment properly
+            reloadSavedSentencesFragment();
         }
     }
     @Override
