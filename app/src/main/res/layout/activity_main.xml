@@ -8,19 +8,13 @@
     android:padding="20dp"
     tools:context=".MainActivity">
 
-
-    <ScrollView
-        android:id="@+id/scrollView_SavedSentences"
+    <FrameLayout
+        android:id="@+id/frameLayoutFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:paddingBottom="10dp">
+        android:layout_weight="1">
 
-        <TableLayout
-            android:id="@+id/tableLayout_SavedSentences"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </ScrollView>
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/layout_SettingsToggle"
