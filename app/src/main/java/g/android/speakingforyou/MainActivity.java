@@ -1,9 +1,6 @@
 package g.android.speakingforyou;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +11,6 @@ import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -135,16 +131,21 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
             }
         });
 
+        final SavedSentencesDAO savedSentencesDAO = new SavedSentencesDAO(this);
         mButton_SaveSentence.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
             String sentence = mEditText_Sentence.getText().toString();
 
-            SavedSentences sentenceToSave = new SavedSentences(sentence, mVoiceSettings.getLanguage(), mVoiceSettings.getPitch(), mVoiceSettings.getSpeechRate());
+            SavedSentences sentenceToSave = new SavedSentences(sentence,
+                    mVoiceSettings.getLanguage(),
+                    mVoiceSettings.getPitch(),
+                    mVoiceSettings.getSpeechRate(),
+                    savedSentencesDAO.getNextPosition()
+            );
 
-            SavedSentencesDAO SSDAO = new SavedSentencesDAO(getApplicationContext());
-            SSDAO.add(sentenceToSave);
+            savedSentencesDAO.add(sentenceToSave);
 
             reloadSavedSentencesFragment();
             }
@@ -233,6 +234,7 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
             //Restart the fragment properly
             reloadSavedSentencesFragment();
         }
+
     }
     @Override
     public void onDestroy() {

@@ -1,7 +1,6 @@
 package g.android.speakingforyou;
 
 import android.view.View;
-import android.widget.AdapterView;
 
 public interface ClickListener {
 

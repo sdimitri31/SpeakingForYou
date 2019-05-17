@@ -12,13 +12,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String LANGUAGE = "language";
     public static final String PITCH = "pitch";
     public static final String SPEECHRATE = "speechrate";
+    public static final String POSITION = "position";
 
     public static final String TABLE_CREATE = "CREATE TABLE " + TABLE_NAME + " (" +
             KEY + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             SENTENCE + " TEXT, " +
             LANGUAGE + " TEXT, " +
             PITCH + " INTEGER, " +
-            SPEECHRATE + " INTEGER);";
+            SPEECHRATE + " INTEGER, " +
+            POSITION + " INTERGER)";
 
     public DatabaseHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);

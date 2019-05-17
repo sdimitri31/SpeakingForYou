@@ -2,30 +2,41 @@ package g.android.speakingforyou;
 
 class SavedSentences {
 
-    // Notez que l'identifiant est un long
     private long id;
     private String mSentence;
     private String mLanguage;
     private int mPitch;
     private int mSpeechRate;
+    private int mPosition;
 
-    SavedSentences(long id, String sentence, String language, int pitch, int speechRate) {
+    SavedSentences(long id, String sentence, String language, int pitch, int speechRate, int position) {
         super();
         this.id = id;
         this.mSentence = sentence;
         this.mLanguage = language;
         this.mPitch = pitch;
         this.mSpeechRate = speechRate;
+        this.mPosition = position;
     }
 
-    SavedSentences(String sentence, String language, int pitch, int speechRate) {
+    SavedSentences(String sentence, String language, int pitch, int speechRate, int position) {
         super();
         this.mSentence = sentence;
         this.mLanguage = language;
         this.mPitch = pitch;
         this.mSpeechRate = speechRate;
+        this.mPosition = position;
     }
 
+    SavedSentences(SavedSentences savedSentences) {
+        super();
+        this.id = savedSentences.getId();
+        this.mSentence = savedSentences.getSentence();
+        this.mLanguage = savedSentences.getLanguage();
+        this.mPitch = savedSentences.getPitch();
+        this.mSpeechRate = savedSentences.getSpeechRate();
+        this.mPosition = savedSentences.getPosition();
+    }
 
     long getId() {
         return id;
@@ -65,5 +76,13 @@ class SavedSentences {
 
     void setSpeechRate(int speechRate) {
         this.mSpeechRate = speechRate;
+    }
+
+    int getPosition() {
+        return mPosition;
+    }
+
+    void setPosition(int position) {
+        this.mPosition = position;
     }
 }
