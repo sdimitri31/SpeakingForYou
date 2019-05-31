@@ -1,20 +1,26 @@
 package g.android.speakingforyou;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TableLayout;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements SavedSentencesFragment.OnButtonClickedListener{
 
@@ -33,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
     private Spinner         mSpinner_LanguageAvailable;
     private SeekBar         mSeekBar_Pitch;
     private SeekBar         mSeekBar_SpeechRate;
+    private CheckBox        mCheckBox_TalkMode;
 
     //Manual writing field
     private EditText        mEditText_Sentence;
@@ -41,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
     private Button          mButton_SaveSentence;
 
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
         mSpinner_LanguageAvailable =    findViewById(R.id.spinner_LanguageAvailable);
         mSeekBar_Pitch =                findViewById(R.id.seekBar_Pitch);
         mSeekBar_SpeechRate =           findViewById(R.id.seekBar_SpeechRate);
+        mCheckBox_TalkMode =            findViewById(R.id.checkBox_TalkMode);
 
         //Manual writing field
         mEditText_Sentence =            findViewById(R.id.editText_Sentence);
@@ -74,6 +83,11 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
         mButton_SaveSentence =          findViewById(R.id.button_SaveSentence);
 
         mVoiceSettings = new VoiceSettings(getSharedPreferences(PREF_NAME, MODE_PRIVATE));
+
+
+        //##############################################################
+        //                      Settings INITIALIZATION
+        //##############################################################
 
         //Initialize the TTS Engine and the Spinner
         mSpeaker = new Speaker(this, mSpinner_LanguageAvailable, mVoiceSettings);
@@ -112,6 +126,55 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
 
+            }
+        });
+
+        //Initialize TalkMode
+        setTalkMode(mVoiceSettings.getTalkMode());
+        mCheckBox_TalkMode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setTalkMode(mCheckBox_TalkMode.isChecked());
+            }
+        });
+
+        //###############################################################
+
+        mEditText_Sentence.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    Log.v("TTS","Enter Key Pressed!");
+                    if(mVoiceSettings.getTalkMode()){
+                        String sentence = mEditText_Sentence.getText().toString();
+                        mEditText_Sentence.setText("");
+                        mSpeaker.ttsSpeak(sentence);
+                    }
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+        });
+
+        mEditText_Sentence.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int DRAWABLE_LEFT = 0;
+                final int DRAWABLE_TOP = 1;
+                final int DRAWABLE_RIGHT = 2;
+                final int DRAWABLE_BOTTOM = 3;
+
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+                    if(event.getRawX() >= (mEditText_Sentence.getRight() - mEditText_Sentence.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+
+                        mEditText_Sentence.setText("");
+
+                        return true;
+                    }
+                }
+                return false;
             }
         });
 
@@ -195,6 +258,11 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
         mSpeaker.setSpeechRate(speechRateValue);
         mSeekBar_SpeechRate.setProgress(speechRateValue);
         mVoiceSettings.setSpeechRate(speechRateValue);
+    }
+
+    private void setTalkMode(boolean isTalkMode){
+        mCheckBox_TalkMode.setChecked(isTalkMode);
+        mVoiceSettings.setTalkMode(isTalkMode);
     }
 
     private void reloadSavedSentencesFragment(){

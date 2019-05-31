@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="20dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
     tools:context=".MainActivity">
-
 
 
     <FrameLayout
@@ -40,7 +40,7 @@
         <ImageView
             android:id="@+id/imageView_SettingsArrowUp"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:padding="8dp"
             app:srcCompat="@android:drawable/arrow_up_float" />
@@ -60,6 +60,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#EDBEBEBE">
+
 
         <TableRow
             android:layout_width="match_parent"
@@ -110,7 +111,7 @@
             <TextView
                 android:id="@+id/textView_Settings_SpeechRate"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:text="Vitesse : " />
 
             <SeekBar
@@ -121,6 +122,24 @@
                 android:max="300" />
         </TableRow>
 
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textView_Settings_EnterKey"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="start|center_vertical"
+                android:text="Mode conversation :" />
+
+            <CheckBox
+                android:id="@+id/checkBox_TalkMode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </TableRow>
+
     </TableLayout>
 
     <LinearLayout
@@ -128,18 +147,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingTop="20dp">
+        android:paddingTop="10dp">
 
         <EditText
             android:id="@+id/editText_Sentence"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:drawable/edit_text"
+            android:drawableRight="@android:drawable/ic_menu_close_clear_cancel"
             android:hint="Enter the text here"
+            android:imeOptions="actionDone"
             android:paddingLeft="10dp"
             android:paddingTop="10dp"
             android:paddingRight="10dp"
-            android:paddingBottom="10dp" />
+            android:paddingBottom="10dp"
+            android:singleLine="true" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -151,7 +173,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="10dp"
-                android:elevation="0dp"
                 android:paddingHorizontal="30dp"
                 android:text="Lecture" />
 
@@ -160,7 +181,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="10dp"
-                android:elevation="0dp"
                 android:paddingHorizontal="30dp"
                 android:text="Stop" />
 
@@ -169,7 +189,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="10dp"
-                android:elevation="0dp"
                 android:text="Ajouter" />
         </LinearLayout>
     </LinearLayout>

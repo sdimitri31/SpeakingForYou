@@ -8,6 +8,7 @@ class VoiceSettings {
     private String mLastLanguageUsed;
     private int mLastPitchUsed;
     private int mLastSpeechRateUsed;
+    private boolean mTalkMode;
     private SharedPreferences mSharedPreferences;
 
     VoiceSettings(SharedPreferences sharedPreferences)
@@ -40,6 +41,11 @@ class VoiceSettings {
         else {
             setSpeechRate(100);
         }
+
+        //Initialize the TalkMode
+        boolean isTalkMode = mSharedPreferences.getBoolean("isTalkMode", false);
+        setTalkMode(isTalkMode);
+
     }
 
     void setPitch(int pitch)
@@ -95,4 +101,20 @@ class VoiceSettings {
         return mLastLanguageUsed;
     }
 
+    void setTalkMode(boolean talkMode)
+    {
+        mTalkMode = talkMode;
+
+        //Save the last language for next boot
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putBoolean("isTalkMode", mTalkMode);
+        editor.apply();
+
+        Log.i("TTS", "New Talk Mode : " + mTalkMode );
+
+    }
+
+    boolean getTalkMode(){
+        return mTalkMode;
+    }
 }
