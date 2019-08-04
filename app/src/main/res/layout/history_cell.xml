@@ -8,7 +8,7 @@
     android:orientation="horizontal">
 
     <TextView
-        android:id="@+id/sentence_saved_cell"
+        android:id="@+id/sentence_history_cell"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -16,12 +16,5 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         tools:text="Sentence" />
 
-    <TextView
-        android:id="@+id/sentenceId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="9"
-        android:text="0"
-        android:visibility="gone" />
 
 </LinearLayout>

@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:paddingLeft="8dp"
     android:paddingRight="8dp"
-    tools:context=".MainActivity">
+    tools:context=".Controller.MainActivity">
 
 
     <FrameLayout
@@ -149,19 +149,39 @@
         android:orientation="vertical"
         android:paddingTop="10dp">
 
-        <EditText
-            android:id="@+id/editText_Sentence"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:drawable/edit_text"
-            android:drawableRight="@android:drawable/ic_menu_close_clear_cancel"
-            android:hint="Enter the text here"
-            android:imeOptions="actionDone"
-            android:paddingLeft="10dp"
-            android:paddingTop="10dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="10dp"
-            android:singleLine="true" />
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/editText_Sentence"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/edit_text"
+                android:drawableRight="@android:drawable/ic_menu_close_clear_cancel"
+                android:hint="Enter the text here"
+                android:imeOptions="actionDone"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="10dp"
+                android:singleLine="true" />
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@android:drawable/btn_dialog" />
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@android:drawable/btn_star_big_off" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

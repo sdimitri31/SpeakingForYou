@@ -1,9 +1,11 @@
-package g.android.speakingforyou;
+package g.android.speakingforyou.Model;
 
 import android.util.Log;
 import android.content.SharedPreferences;
 
-class VoiceSettings {
+import java.util.Locale;
+
+public class VoiceSettings {
 
     private String mLastLanguageUsed;
     private int mLastPitchUsed;
@@ -11,22 +13,26 @@ class VoiceSettings {
     private boolean mTalkMode;
     private SharedPreferences mSharedPreferences;
 
-    VoiceSettings(SharedPreferences sharedPreferences)
+    public VoiceSettings(SharedPreferences sharedPreferences)
     {
         mSharedPreferences = sharedPreferences;
 
         //Initialize the last used language
         String selectedLanguage = mSharedPreferences.getString("selectedLanguage", null);
         if (selectedLanguage != null) {
-            setLanguage(selectedLanguage);
+            mLastLanguageUsed = selectedLanguage;
             Log.i("TTS", "Last language : " + mLastLanguageUsed);
+        }
+        else
+        {
+            setLanguage(Locale.getDefault().toLanguageTag());
         }
 
         //Initialize the last used pitch
         int pitch = mSharedPreferences.getInt("pitch", -1);
-        Log.i("TTS", "Last pitch : " + pitch);
         if (pitch != -1) {
-            setPitch(pitch);
+            mLastPitchUsed = pitch;
+            Log.i("TTS", "Last pitch : " + pitch);
         }
         else {
             setPitch(100);
@@ -34,9 +40,9 @@ class VoiceSettings {
 
         //Initialize the last used speech rate
         int speechRate = mSharedPreferences.getInt("speechRate", -1);
-        Log.i("TTS", "Last speech rate : " + speechRate);
         if (speechRate != -1) {
-            setSpeechRate(speechRate);
+            mLastSpeechRateUsed = speechRate;
+            Log.i("TTS", "Last speech rate : " + speechRate);
         }
         else {
             setSpeechRate(100);
@@ -48,8 +54,7 @@ class VoiceSettings {
 
     }
 
-    void setPitch(int pitch)
-    {
+    public void setPitch(int pitch){
         mLastPitchUsed = pitch;
 
         //Save the Pitch for next boot
@@ -60,13 +65,9 @@ class VoiceSettings {
         Log.i("TTS", "New pitch :" + mLastPitchUsed);
     }
 
-    int getPitch()
-    {
-        return mLastPitchUsed;
-    }
+    public int getPitch(){ return mLastPitchUsed; }
 
-    void setSpeechRate(int speechRate)
-    {
+    public void setSpeechRate(int speechRate){
         mLastSpeechRateUsed = speechRate;
 
         //Save the Speech Rate for next boot
@@ -78,13 +79,9 @@ class VoiceSettings {
 
     }
 
-    int getSpeechRate()
-    {
-        return mLastSpeechRateUsed;
-    }
+    public int getSpeechRate(){ return mLastSpeechRateUsed;}
 
-    void setLanguage(String language)
-    {
+    public void setLanguage(String language){
         mLastLanguageUsed = language;
 
         //Save the last language for next boot
@@ -96,13 +93,9 @@ class VoiceSettings {
 
     }
 
-    String getLanguage()
-    {
-        return mLastLanguageUsed;
-    }
+    public String getLanguage() { return mLastLanguageUsed; }
 
-    void setTalkMode(boolean talkMode)
-    {
+    public void setTalkMode(boolean talkMode){
         mTalkMode = talkMode;
 
         //Save the last language for next boot
@@ -114,7 +107,5 @@ class VoiceSettings {
 
     }
 
-    boolean getTalkMode(){
-        return mTalkMode;
-    }
+    public boolean getTalkMode(){ return mTalkMode; }
 }

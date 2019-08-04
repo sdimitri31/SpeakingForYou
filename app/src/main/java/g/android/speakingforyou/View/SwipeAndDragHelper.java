@@ -1,4 +1,4 @@
-package g.android.speakingforyou;
+package g.android.speakingforyou.View;
 
 import android.graphics.Canvas;
 import android.support.v7.widget.RecyclerView;
@@ -39,7 +39,7 @@ public class SwipeAndDragHelper extends ItemTouchHelper.Callback {
 
     @Override
     public boolean isLongPressDragEnabled() {
-        return false;
+        return true;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package g.android.speakingforyou;
+package g.android.speakingforyou.Controller;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -11,6 +11,13 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
+import g.android.speakingforyou.View.ClickListener;
+import g.android.speakingforyou.Model.SavedSentences;
+import g.android.speakingforyou.R;
+import g.android.speakingforyou.Model.SavedSentencesDAO;
+import g.android.speakingforyou.View.SavedSentencesViewHolder;
+import g.android.speakingforyou.View.SwipeAndDragHelper;
+
 
 public class SavedSentencesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements
         SwipeAndDragHelper.ActionCompletionContract {
@@ -18,13 +25,11 @@ public class SavedSentencesAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private List<SavedSentences> mSavedSentencesList;
 
     private ClickListener listener;
-    private Boolean mIsEditSavedSentences;
     private Context appContext;
 
 
-    public SavedSentencesAdapter(Context context, ClickListener listener, Boolean isEditSavedSentences){
+    public SavedSentencesAdapter(Context context, ClickListener listener){
         this.listener = listener;
-        this.mIsEditSavedSentences = isEditSavedSentences;
         this.appContext = context;
     }
 
@@ -35,24 +40,14 @@ public class SavedSentencesAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.saved_sentence_cell, parent, false);
 
-        return new SavedSentencesViewHolder(view, listener, mIsEditSavedSentences);
+        return new SavedSentencesViewHolder(view, listener);
     }
 
     @Override
     @SuppressLint("ClickableViewAccessibility")
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
 
-        ((SavedSentencesViewHolder) holder).sentence.setText(mSavedSentencesList.get(position).getSentence());
-
-        ((SavedSentencesViewHolder) holder).reorderView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                    touchHelper.startDrag(holder);
-                }
-                return false;
-            }
-        });
+        ((SavedSentencesViewHolder) holder).setTextSentence(mSavedSentencesList.get(position).getSentence());
     }
 
     @Override
@@ -76,7 +71,7 @@ public class SavedSentencesAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-        //On drop update database
+        //On Swipe or move item
         SavedSentencesDAO sentencesDAO = new SavedSentencesDAO(appContext);
         sentencesDAO.refreshDatabase(mSavedSentencesList);
     }

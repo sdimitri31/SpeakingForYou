@@ -1,9 +1,10 @@
-package g.android.speakingforyou;
+package g.android.speakingforyou.Model;
 
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -15,6 +16,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+
+import g.android.speakingforyou.Model.SavedSentences;
+import g.android.speakingforyou.Model.VoiceSettings;
 
 public class Speaker {
     private TextToSpeech    textToSpeech;
@@ -72,6 +76,45 @@ public class Speaker {
 
     }
 
+    public Speaker(final Context context, VoiceSettings voiceSettings)
+    {
+        mContext = context;
+        mVoiceSettings = voiceSettings;
+        localeList = new ArrayList<>();
+        listLanguageName = new ArrayList<>();
+
+        textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status == TextToSpeech.SUCCESS) {
+                    //Default TTS Initialization
+
+                    //Language
+                    int ttsLang = textToSpeech.setLanguage(Locale.forLanguageTag(mVoiceSettings.getLanguage()));
+                    if (ttsLang == TextToSpeech.LANG_MISSING_DATA
+                            || ttsLang == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        Log.e("TTS", "The Language is not supported!");
+                    } else {
+                        Log.i("TTS", "Language Supported.");
+                    }
+
+                    //SpeechRate
+                    setSpeechRate(mVoiceSettings.getSpeechRate());
+
+                    //Pitch
+                    setPitch(mVoiceSettings.getPitch());
+
+                    Log.i("TTS", "Initialization success.");
+
+                }
+                else {
+                    Toast.makeText(context, "TTS Initialization failed!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+    }
+    /*
     public Speaker(final Context context, final SavedSentences savedSentences)
     {
         textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
@@ -99,7 +142,7 @@ public class Speaker {
             }
         });
     }
-
+*/
     public void initSpinnerLanguages(){
 
         //Put all languages in the spinner
@@ -137,6 +180,8 @@ public class Speaker {
         });
 
     }
+
+    public TextToSpeech getTextToSpeech(){ return textToSpeech; }
 
     public void setLanguage(Locale language){
         textToSpeech.setLanguage(language);

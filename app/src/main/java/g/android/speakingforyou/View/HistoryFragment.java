@@ -1,7 +1,6 @@
-package g.android.speakingforyou;
+package g.android.speakingforyou.View;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
@@ -12,15 +11,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import java.util.List;
 
-public class SavedSentencesFragment extends Fragment implements View.OnClickListener{
+import g.android.speakingforyou.Controller.HistoryAdapter;
+import g.android.speakingforyou.Model.HistoryDAO;
+import g.android.speakingforyou.R;
 
+public class HistoryFragment extends Fragment implements View.OnClickListener {
 
     //2 - Declare callback
-    private OnButtonClickedListener mCallback;
+    private HistoryFragment.OnButtonClickedListener mCallback;
 
     // 1 - Declare our interface that will be implemented by any container activity
     public interface OnButtonClickedListener {
@@ -31,29 +32,13 @@ public class SavedSentencesFragment extends Fragment implements View.OnClickList
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         //Inflate the layout of MainFragment
-        View rootView = inflater.inflate(R.layout.fragment_saved_sentences, container, false);
-
-        //Setup the Edit mode
-        Button button_EditSavedSentences = rootView.findViewById(R.id.button_EditSavedSentences);
-        button_EditSavedSentences.setOnClickListener(this);
-
-        //Get the value of the editMode
-        Context context = container.getContext();
-        SharedPreferences preferences = context.getSharedPreferences("SharedPrefs", 0);
-        Boolean isEditSavedSentences = preferences.getBoolean("isEditSavedSentence", false);
-
-        //Update the text accordingly
-        if(isEditSavedSentences){
-            button_EditSavedSentences.setText("Terminé");
-        }
-
-        Log.i("TTS","isEditSavedSentences : " + isEditSavedSentences);
+        View rootView = inflater.inflate(R.layout.fragment_history, container, false);
 
         //Setup the recycler for the saved sentences
-        RecyclerView savedSentencesRecyclerView = rootView.findViewById(R.id.recyclerView_SavedSentences);
+        RecyclerView historyRecyclerView = rootView.findViewById(R.id.RecyclerView_History);
 
-        final SavedSentencesDAO savedSentencesDAO = new SavedSentencesDAO(getActivity());
-        final List<SavedSentences> listSavedSentences = savedSentencesDAO.getAll();
+        final HistoryDAO historyDAO = new HistoryDAO(getActivity());
+        final List<String> listHistory = historyDAO.getAll();
 
         ClickListener listener = new ClickListener() {
             @Override
@@ -69,17 +54,9 @@ public class SavedSentencesFragment extends Fragment implements View.OnClickList
             @Override
             public void onItemClick(View view, int position, long id) {
                 Log.i("TTS", "onItemClick ID : " + view.getId() + " Position : " + position);
-                if(view.getId() == R.id.delete) {
-                    Log.i("TTS", "Deleting : " + listSavedSentences.get(position).getSentence() );
-                    savedSentencesDAO.delete(listSavedSentences.get(position).getId());
-
-                    getActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.frameLayoutFragment, new SavedSentencesFragment())
-                            .commit();
-                }
-                else if(view.getId() == R.id.sentence) {
+                if(view.getId() == R.id.sentence_history_cell) {
                     //Talk
-                    view.setTag(listSavedSentences.get(position));
+                    view.setTag(listHistory.get(position));
                     mCallback.onButtonClicked(view);
                 }
             }
@@ -88,15 +65,16 @@ public class SavedSentencesFragment extends Fragment implements View.OnClickList
 
         RecyclerView.ItemDecoration divider = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
 
-        savedSentencesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        SavedSentencesAdapter adapter = new SavedSentencesAdapter(getActivity(), listener, isEditSavedSentences);
+        historyRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        HistoryAdapter adapter = new HistoryAdapter(getActivity(), listener);
         SwipeAndDragHelper swipeAndDragHelper = new SwipeAndDragHelper(adapter);
         ItemTouchHelper touchHelper = new ItemTouchHelper(swipeAndDragHelper);
         adapter.setTouchHelper(touchHelper);
-        savedSentencesRecyclerView.addItemDecoration(divider);
-        savedSentencesRecyclerView.setAdapter(adapter);
-        touchHelper.attachToRecyclerView(savedSentencesRecyclerView);
-        adapter.setSavedSentencesList(listSavedSentences);
+        historyRecyclerView.addItemDecoration(divider);
+        historyRecyclerView.setBackground(getResources().getDrawable(R.drawable.border_radius_bottom));
+        historyRecyclerView.setAdapter(adapter);
+        touchHelper.attachToRecyclerView(historyRecyclerView);
+        adapter.setHistoryList(listHistory);
 
         return rootView;
     }
@@ -129,7 +107,7 @@ public class SavedSentencesFragment extends Fragment implements View.OnClickList
     private void createCallbackToParentActivity(){
         try {
             //Parent activity will automatically subscribe to callback
-            mCallback = (OnButtonClickedListener) getActivity();
+            mCallback = (HistoryFragment.OnButtonClickedListener) getActivity();
         } catch (ClassCastException e) {
             throw new ClassCastException(e.toString()+ " must implement OnButtonClickedListener");
         }

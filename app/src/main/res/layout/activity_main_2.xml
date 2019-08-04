@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ConstrainLayout_Main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TableLayout
+        android:id="@+id/TableLayout_MenuTop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TableRow
+            android:id="@+id/TableRow_MenuTop"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/imageView_MenuTop_SavedSentences"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#CDCDCD"
+                app:srcCompat="@android:drawable/btn_star_big_on" />
+
+            <ImageView
+                android:id="@+id/imageView_MenuTop_History"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#868686"
+                app:srcCompat="@android:drawable/ic_menu_recent_history" />
+
+            <ImageView
+                android:id="@+id/imageView_MenuTop_QuickSettings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#CFCDCD"
+                app:srcCompat="@android:drawable/ic_menu_manage" />
+        </TableRow>
+
+    </TableLayout>
+
+    <FrameLayout
+        android:id="@+id/FrameLayout_Fragments"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout_Text"
+        app:layout_constraintEnd_toEndOf="@id/TableLayout_MenuTop"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/TableLayout_MenuTop"
+        app:layout_constraintTop_toBottomOf="@+id/TableLayout_MenuTop">
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout_Text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/border"
+        android:orientation="horizontal"
+        android:paddingStart="15dp"
+        android:paddingEnd="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/imageButton_PlayStopToggle"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <EditText
+            android:id="@+id/editText_Sentence"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:background="#00FFFFFF"
+            android:hint="Enter the text here"
+            android:imeOptions="actionDone"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:singleLine="true" />
+
+        <ImageButton
+            android:id="@+id/imageButton_DeleteText"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+            app:srcCompat="@android:drawable/ic_delete" />
+
+        <ImageButton
+            android:id="@+id/imageButton_AddSentence"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical"
+            app:srcCompat="@android:drawable/btn_star_big_on" />
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/imageButton_PlayStopToggle"
+        android:layout_width="50dp"
+        android:layout_height="0dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:adjustViewBounds="false"
+        android:background="@drawable/border"
+        android:cropToPadding="false"
+        android:paddingStart="13dp"
+        android:paddingEnd="10dp"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/linearLayout_Text"
+        app:srcCompat="@drawable/play" />
+
+</android.support.constraint.ConstraintLayout>

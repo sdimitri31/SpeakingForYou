@@ -1,4 +1,4 @@
-package g.android.speakingforyou;
+package g.android.speakingforyou.Model;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,13 +8,12 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import g.android.speakingforyou.Model.SavedSentences;
+
 public class SavedSentencesDAO extends DAOBase {
     public static final String TABLE_NAME = "savedSentences";
     public static final String KEY = "id";
     public static final String SENTENCE = "sentence";
-    public static final String LANGUAGE = "language";
-    public static final String PITCH = "pitch";
-    public static final String SPEECHRATE = "speechrate";
     public static final String POSITION = "position";
 
     public SavedSentencesDAO(Context context) {
@@ -28,15 +27,11 @@ public class SavedSentencesDAO extends DAOBase {
     public void add(SavedSentences savedSentences) {
         ContentValues value = new ContentValues();
         value.put(SavedSentencesDAO.SENTENCE, savedSentences.getSentence());
-        value.put(SavedSentencesDAO.LANGUAGE, savedSentences.getLanguage());
-        value.put(SavedSentencesDAO.PITCH, savedSentences.getPitch());
-        value.put(SavedSentencesDAO.SPEECHRATE, savedSentences.getSpeechRate());
         value.put(SavedSentencesDAO.POSITION, savedSentences.getPosition());
         open();
         mDb.insert(SavedSentencesDAO.TABLE_NAME, null, value);
         close();
-        Log.i("TTS", "New savedSentence : " + savedSentences.getSentence() + " Language : " + savedSentences.getLanguage() + " Pitch : " +
-                savedSentences.getPitch() + " SpeechRate : " + savedSentences.getSpeechRate() + "  Position : " + savedSentences.getPosition() );
+        Log.i("TTS", "New savedSentence : " + savedSentences.getSentence() + "  Position : " + savedSentences.getPosition() );
     }
 
     /**
@@ -46,6 +41,8 @@ public class SavedSentencesDAO extends DAOBase {
         open();
         mDb.delete(TABLE_NAME, KEY + " = ?", new String[] {String.valueOf(id)});
         close();
+
+        Log.i("TTS", "DELETED ID : " + id );
     }
 
     /**
@@ -54,9 +51,6 @@ public class SavedSentencesDAO extends DAOBase {
     public void update(SavedSentences savedSentences) {
         ContentValues value = new ContentValues();
         value.put(SavedSentencesDAO.SENTENCE, savedSentences.getSentence());
-        value.put(SavedSentencesDAO.LANGUAGE, savedSentences.getLanguage());
-        value.put(SavedSentencesDAO.PITCH, savedSentences.getPitch());
-        value.put(SavedSentencesDAO.SPEECHRATE, savedSentences.getSpeechRate());
         value.put(SavedSentencesDAO.POSITION, savedSentences.getPosition());
         open();
         mDb.update(TABLE_NAME, value, KEY  + " = ?", new String[] {String.valueOf(savedSentences.getId())});
@@ -72,14 +66,11 @@ public class SavedSentencesDAO extends DAOBase {
         c.moveToFirst();
         long key = c.getLong(0);
         String sentence = c.getString(1);
-        String language = c.getString(2);
-        int pitch = c.getInt(3);
-        int speechRate = c.getInt(4);
-        int position = c.getInt(5);
+        int position = c.getInt(2);
         c.close();
         close();
 
-        SavedSentences savedSentence = new SavedSentences (key, sentence, language, pitch, speechRate, position);
+        SavedSentences savedSentence = new SavedSentences (key, sentence, position);
 
         return savedSentence;
     }
@@ -91,11 +82,8 @@ public class SavedSentencesDAO extends DAOBase {
         while (c.moveToNext()) {
             long key = c.getLong(0);
             String sentence = c.getString(1);
-            String language = c.getString(2);
-            int pitch = c.getInt(3);
-            int speechRate = c.getInt(4);
-            int position = c.getInt(5);
-            savedSentences.add(new SavedSentences(key, sentence, language, pitch, speechRate, position));
+            int position = c.getInt(2);
+            savedSentences.add(new SavedSentences(key, sentence, position));
         }
         c.close();
         close();
@@ -110,11 +98,8 @@ public class SavedSentencesDAO extends DAOBase {
         while (c.moveToNext()) {
             long key = c.getLong(0);
             String sentence = c.getString(1);
-            String language = c.getString(2);
-            int pitch = c.getInt(3);
-            int speechRate = c.getInt(4);
-            int position = c.getInt(5);
-            savedSentences.add(new SavedSentences(key, sentence, language, pitch, speechRate, position));
+            int position = c.getInt(2);
+            savedSentences.add(new SavedSentences(key, sentence, position));
         }
         c.close();
         close();
@@ -130,5 +115,8 @@ public class SavedSentencesDAO extends DAOBase {
         for (SavedSentences savedSentence: savedSentencesList) {
             add(savedSentence);
         }
+
+
+        Log.i("TTS", "refreshDatabase ");
     }
 }
