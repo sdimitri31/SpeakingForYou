@@ -56,7 +56,7 @@ public class HistoryDAO extends DAOBase {
     public List<String> getAll() {
         List<String> history =  new ArrayList<>();
         open();
-        Cursor c = mDb.rawQuery("select * from " + TABLE_NAME , null);
+        Cursor c = mDb.rawQuery("select * from " + TABLE_NAME + " ORDER BY " + KEY + " DESC", null);
         while (c.moveToNext()) {
             long key = c.getLong(0);
             String sentence = c.getString(1);
@@ -69,19 +69,15 @@ public class HistoryDAO extends DAOBase {
         return history;
     }
 
-    public int getNextPosition(){
-        List<String> history =  new ArrayList<>();
+    public String getLastHistory(){
         open();
-        Cursor c = mDb.rawQuery("select * from " + TABLE_NAME , null);
-        while (c.moveToNext()) {
-            long key = c.getLong(0);
-            String sentence = c.getString(1);
-            history.add(sentence);
-        }
+        Cursor c = mDb.rawQuery("select * from " + TABLE_NAME+ " ORDER BY " + KEY + " DESC" , null);
+        c.moveToFirst();
+        String sentence = c.getString(1);
         c.close();
         close();
 
-        return history.size();
+        return sentence;
 
     }
 

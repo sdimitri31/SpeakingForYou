@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="alertDialog_Cancel">Annuler</string>
+    <string name="editText_Sentence_Hint">Entrez le texte ici</string>
+    <string name="textView_QuickSettings_Volume">Volume</string>
+    <string name="textView_QuickSettings_Language">Langue</string>
+    <string name="textView_QuickSettings_Speed">Vitesse</string>
+    <string name="textView_QuickSettings_Pitch">Intonnation</string>
+    <string name="textView_QuickSettings_TalkMode">Mode Conversation</string>
+    <string name="textView_QuickSettings_TalkMode_Description">Efface le texte quand la touche \"Entrée\" est appuyée</string>
+    <string name="textView_QuickSettings__MoreSettings">Plus de paramètres</string>
+    <string name="app_name">Parle pour vous</string>
+</resources>

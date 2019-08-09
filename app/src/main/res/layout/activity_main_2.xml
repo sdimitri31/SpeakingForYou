@@ -1,60 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ConstrainLayout_Main"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TableLayout
-        android:id="@+id/TableLayout_MenuTop"
+    <LinearLayout
+        android:id="@+id/linearLayout_MenuTop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TableRow
-            android:id="@+id/TableRow_MenuTop"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center">
+        <ImageView
+            android:id="@+id/imageView_MenuTop_SavedSentences"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#CDCDCD"
+            app:srcCompat="@android:drawable/btn_star_big_on" />
 
-            <ImageView
-                android:id="@+id/imageView_MenuTop_SavedSentences"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="#CDCDCD"
-                app:srcCompat="@android:drawable/btn_star_big_on" />
+        <ImageView
+            android:id="@+id/imageView_MenuTop_History"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#868686"
+            app:srcCompat="@android:drawable/ic_menu_recent_history" />
 
-            <ImageView
-                android:id="@+id/imageView_MenuTop_History"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="#868686"
-                app:srcCompat="@android:drawable/ic_menu_recent_history" />
-
-            <ImageView
-                android:id="@+id/imageView_MenuTop_QuickSettings"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="#CFCDCD"
-                app:srcCompat="@android:drawable/ic_menu_manage" />
-        </TableRow>
-
-    </TableLayout>
+        <ImageView
+            android:id="@+id/imageView_MenuTop_QuickSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#CFCDCD"
+            app:srcCompat="@android:drawable/ic_menu_manage" />
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/FrameLayout_Fragments"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
+        android:isScrollContainer="true"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout_Text"
-        app:layout_constraintEnd_toEndOf="@id/TableLayout_MenuTop"
+        app:layout_constraintEnd_toEndOf="@id/linearLayout_MenuTop"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@id/TableLayout_MenuTop"
-        app:layout_constraintTop_toBottomOf="@+id/TableLayout_MenuTop">
+        app:layout_constraintStart_toStartOf="@id/linearLayout_MenuTop"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout_MenuTop">
 
     </FrameLayout>
 
@@ -75,15 +69,17 @@
 
         <EditText
             android:id="@+id/editText_Sentence"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:background="#00FFFFFF"
-            android:hint="Enter the text here"
+            android:hint="@string/editText_Sentence_Hint"
             android:imeOptions="actionDone"
-            android:paddingLeft="10dp"
+            android:inputType="text"
+            android:paddingStart="0dp"
             android:paddingTop="10dp"
+            android:paddingEnd="0dp"
             android:paddingBottom="10dp"
             android:singleLine="true" />
 

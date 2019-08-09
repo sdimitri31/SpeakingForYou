@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
-import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -17,71 +16,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import g.android.speakingforyou.Model.SavedSentences;
-import g.android.speakingforyou.Model.VoiceSettings;
-
 public class Speaker {
     private TextToSpeech    textToSpeech;
-    private Context         mContext;
-    private Spinner         mSpinner_LanguageAvailable;
     private VoiceSettings   mVoiceSettings;
 
-    private List<Locale>    localeList;
-    private List<String>    listLanguageName;
-
-    public Speaker(final Context context, Spinner language, VoiceSettings voiceSettings)
-    {
-        mContext = context;
-        mSpinner_LanguageAvailable = language;
-        mVoiceSettings = voiceSettings;
-        localeList = new ArrayList<>();
-        listLanguageName = new ArrayList<>();
-
-        textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if (status == TextToSpeech.SUCCESS) {
-                    //Default TTS Initialization
-                    int ttsLang = textToSpeech.setLanguage(Locale.getDefault());
-                    if (ttsLang == TextToSpeech.LANG_MISSING_DATA
-                            || ttsLang == TextToSpeech.LANG_NOT_SUPPORTED) {
-                        Log.e("TTS", "The Language is not supported!");
-                    } else {
-                        Log.i("TTS", "Language Supported.");
-                    }
-
-                    //Get all available TTS languages
-                    Locale[] locales = Locale.getAvailableLocales();
-
-                    for (Locale locale : locales) {
-                        int res = textToSpeech.isLanguageAvailable(locale);
-                        if (res == TextToSpeech.LANG_COUNTRY_AVAILABLE) {
-                            localeList.add(locale);
-                            listLanguageName.add(locale.getDisplayName());
-                            Log.i("TTS", "Locale : " + locale + " DisplayName : " + locale.getDisplayName());
-                        }
-                    }
-
-                    //Initialize the spinner and related events
-                    initSpinnerLanguages();
-
-                    Log.i("TTS", "Initialization success.");
-
-                }
-                else {
-                    Toast.makeText(context, "TTS Initialization failed!", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-    }
+    private List<String>    listLanguageName;   //Store the displayName to show to the user
+    private List<String>    listLanguageTag;    //Store the LocaleTag to set up the TTS module
 
     public Speaker(final Context context, VoiceSettings voiceSettings)
     {
-        mContext = context;
         mVoiceSettings = voiceSettings;
-        localeList = new ArrayList<>();
         listLanguageName = new ArrayList<>();
+        listLanguageTag = new ArrayList<>();
 
         textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
             @Override
@@ -104,78 +50,24 @@ public class Speaker {
                     //Pitch
                     setPitch(mVoiceSettings.getPitch());
 
-                    Log.i("TTS", "Initialization success.");
+                    //Get all available TTS languages
+                    Locale[] locales = Locale.getAvailableLocales();
 
-                }
-                else {
-                    Toast.makeText(context, "TTS Initialization failed!", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-    }
-    /*
-    public Speaker(final Context context, final SavedSentences savedSentences)
-    {
-        textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if (status == TextToSpeech.SUCCESS) {
-                    //Default TTS Initialization
-                    int ttsLang = textToSpeech.setLanguage(Locale.forLanguageTag(savedSentences.getLanguage()));
-                    if (ttsLang == TextToSpeech.LANG_MISSING_DATA
-                            || ttsLang == TextToSpeech.LANG_NOT_SUPPORTED) {
-                        Log.e("TTS", "The Language is not supported!");
-                    } else {
-                        Log.i("TTS", "Language Supported.");
+                    for (Locale locale : locales) {
+                        int res = textToSpeech.isLanguageAvailable(locale);
+                        if (res == TextToSpeech.LANG_COUNTRY_AVAILABLE) {
+                            listLanguageTag.add(locale.toLanguageTag());
+                            listLanguageName.add(locale.getDisplayName());
+                            Log.i("TTS", "Language Tag : " + locale.toLanguageTag() + " DisplayName : " + locale.getDisplayName());
+                        }
                     }
 
-                    setPitch(savedSentences.getPitch());
-                    setSpeechRate(savedSentences.getSpeechRate());
-                    ttsSpeak(savedSentences.getSentence());
-
                     Log.i("TTS", "Initialization success.");
+
                 }
                 else {
                     Toast.makeText(context, "TTS Initialization failed!", Toast.LENGTH_SHORT).show();
                 }
-            }
-        });
-    }
-*/
-    public void initSpinnerLanguages(){
-
-        //Put all languages in the spinner
-        ArrayAdapter<String> arrayAdapterLanguages = new ArrayAdapter<>(mContext,
-                android.R.layout.simple_spinner_item, listLanguageName);
-        arrayAdapterLanguages.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSpinner_LanguageAvailable.setAdapter(arrayAdapterLanguages);
-
-        //Initialize the last used language
-        String selectedLanguage = mVoiceSettings.getLanguage();
-        if (selectedLanguage != null) {
-            Log.i("TTS", "Last selected language : " + selectedLanguage);
-            Locale loc = Locale.forLanguageTag(selectedLanguage);
-
-            Log.i("TTS", "Last selected language displayed name: " + loc.getDisplayName());
-            mSpinner_LanguageAvailable.setSelection(arrayAdapterLanguages.getPosition(loc.getDisplayName()));
-        }
-
-        //Spinner onSelectedItemEvent
-        mSpinner_LanguageAvailable.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view,
-                                       int position, long id) {
-                setLanguage(getLocaleList().get(position));
-
-                //Save the last language for next boot
-                mVoiceSettings.setLanguage(getLocaleList().get(position).toLanguageTag());
-
-                Log.i("TTS", "Display name : " + getLocaleList().get(position).getDisplayName());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
 
@@ -183,8 +75,8 @@ public class Speaker {
 
     public TextToSpeech getTextToSpeech(){ return textToSpeech; }
 
-    public void setLanguage(Locale language){
-        textToSpeech.setLanguage(language);
+    public void setLanguage(String language){
+        textToSpeech.setLanguage(Locale.forLanguageTag(language));
     }
 
     public void setPitch(int pitchValue){
@@ -197,11 +89,9 @@ public class Speaker {
         textToSpeech.setSpeechRate(speechRate);
     }
 
-    public List<Locale> getLocaleList() {
-        return localeList;
-    }
-
     public List<String> getListLanguageName(){return listLanguageName;}
+
+    public List<String> getListLanguageTag(){return listLanguageTag;}
 
     public void ttsSpeak(String sentence){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

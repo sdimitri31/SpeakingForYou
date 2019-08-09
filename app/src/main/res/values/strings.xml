@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">Speaking For You</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="editText_Sentence_Hint">Write the sentence here</string>
+    <string name="textView_QuickSettings_Volume">Volume</string>
+    <string name="textView_QuickSettings_Language">Language</string>
+    <string name="textView_QuickSettings_Speed">Speed</string>
+    <string name="textView_QuickSettings_Pitch">Pitch</string>
+    <string name="textView_QuickSettings_TalkMode">Talk mode</string>
+    <string name="textView_QuickSettings_TalkMode_Description">Delete the text when \"Enter\" is pressed</string>
+    <string name="textView_QuickSettings__MoreSettings">More settings</string>
+    <string name="alertDialog_Cancel">Cancel</string>
 </resources>
