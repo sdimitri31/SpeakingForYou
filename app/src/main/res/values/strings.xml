@@ -10,4 +10,14 @@
     <string name="textView_QuickSettings_TalkMode_Description">Delete the text when \"Enter\" is pressed</string>
     <string name="textView_QuickSettings__MoreSettings">More settings</string>
     <string name="alertDialog_Cancel">Cancel</string>
+    <string name="textView_Settings_Theme">Theme</string>
+    <string name="button_Settings_Test">Test</string>
+    <string name="button_Settings_Reset">Reset</string>
+    <string name="button_Settings_ClearHistory">Clear history</string>
+    <string name="button_Settings_ClearSavecSentences">Clear saved sentences</string>
+    <string name="settings">Settings</string>
+    <string name="settings_TestSentence">This is a test sentence</string>
+    <string name="alertDialog_DeleteHistoryQuestion">Do you really want to clear the history ? ( This action can\'t be undone )</string>
+    <string name="alertDialog_OK">OK</string>
+    <string name="alertDialog_DeleteSavecSentencesQuestion">Do you really want to clear the saved sentences ? ( This action can\'t be undone )</string>
 </resources>

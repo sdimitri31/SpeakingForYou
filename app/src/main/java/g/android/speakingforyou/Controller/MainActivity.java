@@ -2,6 +2,7 @@ package g.android.speakingforyou.Controller;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.speech.tts.UtteranceProgressListener;
 import android.support.v7.app.AlertDialog;
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
-        setContentView(R.layout.activity_main_2);
+        setContentView(R.layout.activity_main);
 
 
 
@@ -257,17 +258,24 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
     }
 
     private void speak(String sentence, boolean addToHistory){
-        mSpeaker.ttsSpeak(sentence);
-        setIsSpeaking(true);
+        if (sentence.trim().length() > 0) {
+            mSpeaker.ttsSpeak(sentence);
+            setIsSpeaking(true);
 
-        if(addToHistory){
-            //If the last sentence in the history is the same as the current sentence don't add
-            final HistoryDAO historyDAO = new HistoryDAO(this);
-            if (!historyDAO.getLastHistory().equals(sentence)) {
-                historyDAO.add(sentence);
-                if(mActiveFragment.equals(MENUTOP_HISTORY))
-                    loadFragment(MENUTOP_HISTORY);
+            if (addToHistory) {
+                //If the last sentence in the history is the same as the current sentence don't add
+                final HistoryDAO historyDAO = new HistoryDAO(this);
+                if (!historyDAO.getLastHistory().equals(sentence)) {
+                    historyDAO.add(sentence);
+                    if (mActiveFragment.equals(MENUTOP_HISTORY))
+                        loadFragment(MENUTOP_HISTORY);
+                }
             }
+        }
+        else
+        {
+            Log.v("TTS","Empty sentence");
+
         }
     }
 
@@ -382,22 +390,22 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mMenuTop_Settings.setBackgroundColor(getResources().getColor(R.color.colorMenuTopInactive));
-                mMenuTop_History.setBackgroundColor(getResources().getColor(R.color.colorMenuTopInactive));
-                mMenuTop_SavedSentences.setBackgroundColor(getResources().getColor(R.color.colorMenuTopInactive));
+                mMenuTop_Settings.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
+                mMenuTop_History.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
+                mMenuTop_SavedSentences.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
 
                 switch (activeMenuTop)
                 {
                     case MENUTOP_SAVEDSENTENCES:
-                        mMenuTop_SavedSentences.setBackgroundColor(getResources().getColor(R.color.colorMenuTopActive));
+                        mMenuTop_SavedSentences.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                         break;
 
                     case MENUTOP_HISTORY:
-                        mMenuTop_History.setBackgroundColor(getResources().getColor(R.color.colorMenuTopActive));
+                        mMenuTop_History.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                         break;
 
                     case MENUTOP_SETTINGS:
-                        mMenuTop_Settings.setBackgroundColor(getResources().getColor(R.color.colorMenuTopActive));
+                        mMenuTop_Settings.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                         break;
                 }
             }
@@ -434,8 +442,39 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
                 languageSelector();
                 break;
 
+            case R.id.button_QuickSettings_MoreSettings:
+                //Intent intent = new Intent(this, SettingsActivity.class);
+                //startActivity(intent);
+
+                Intent i = new Intent(this, SettingsActivity.class);
+                startActivityForResult(i, 1);
+
+
+
+                break;
+
         }
 
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 1) {
+
+            if (resultCode == RESULT_OK) {
+
+                Log.i("TTS","RESULT_OK !");
+                //String returnValue = data.getStringExtra("some_key");
+                finish();
+                startActivity(getIntent());
+                //your code
+
+            }
+            if (resultCode == RESULT_CANCELED) {
+                // Write your code if there's no result
+                Log.i("TTS","RESULT_CANCELED !");
+            }
+        }
     }
 
     @Override

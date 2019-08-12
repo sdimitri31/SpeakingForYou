@@ -63,15 +63,15 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
         };
 
 
-        RecyclerView.ItemDecoration divider = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
+        //RecyclerView.ItemDecoration divider = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
 
         historyRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         HistoryAdapter adapter = new HistoryAdapter(getActivity(), listener);
         SwipeAndDragHelper swipeAndDragHelper = new SwipeAndDragHelper(adapter);
         ItemTouchHelper touchHelper = new ItemTouchHelper(swipeAndDragHelper);
         adapter.setTouchHelper(touchHelper);
-        historyRecyclerView.addItemDecoration(divider);
-        historyRecyclerView.setBackground(getResources().getDrawable(R.drawable.border_radius_bottom));
+        //historyRecyclerView.addItemDecoration(divider);
+        //historyRecyclerView.setBackground(getResources().getDrawable(R.drawable.border_radius_bottom));
         historyRecyclerView.setAdapter(adapter);
         touchHelper.attachToRecyclerView(historyRecyclerView);
         adapter.setHistoryList(listHistory);

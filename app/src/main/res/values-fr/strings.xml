@@ -10,4 +10,14 @@
     <string name="textView_QuickSettings_TalkMode_Description">Efface le texte quand la touche \"Entrée\" est appuyée</string>
     <string name="textView_QuickSettings__MoreSettings">Plus de paramètres</string>
     <string name="app_name">Parle pour vous</string>
+    <string name="button_Settings_ClearHistory">Effacer l\'historique</string>
+    <string name="button_Settings_ClearSavecSentences">Effacer les favoris</string>
+    <string name="button_Settings_Reset">Réinitialiser</string>
+    <string name="button_Settings_Test">Tester</string>
+    <string name="settings">Paramètres</string>
+    <string name="textView_Settings_Theme">Thème</string>
+    <string name="settings_TestSentence">Ceci est une phrase de test</string>
+    <string name="alertDialog_DeleteHistoryQuestion">Voulez-vous vraiment supprimer l\'historique ? ( Cette action est irréversible )</string>
+    <string name="alertDialog_OK">OK</string>
+    <string name="alertDialog_DeleteSavecSentencesQuestion">Voulez-vous vraiment supprimer les favoris ? ( Cette action est irréversible )</string>
 </resources>

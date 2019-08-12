@@ -45,6 +45,12 @@ public class SavedSentencesDAO extends DAOBase {
         Log.i("TTS", "DELETED ID : " + id );
     }
 
+    public void deleteAll() {
+        open();
+        mDb.execSQL("delete from "+ TABLE_NAME);
+        close();
+    }
+
     /**
      * @param savedSentences the savedSentence to edit
      */

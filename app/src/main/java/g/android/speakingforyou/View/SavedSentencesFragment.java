@@ -65,15 +65,15 @@ public class SavedSentencesFragment extends Fragment implements View.OnClickList
         };
 
 
-        RecyclerView.ItemDecoration divider = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
+        //RecyclerView.ItemDecoration divider = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
 
         savedSentencesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         SavedSentencesAdapter adapter = new SavedSentencesAdapter(getActivity(), listener);
         SwipeAndDragHelper swipeAndDragHelper = new SwipeAndDragHelper(adapter);
         ItemTouchHelper touchHelper = new ItemTouchHelper(swipeAndDragHelper);
         adapter.setTouchHelper(touchHelper);
-        savedSentencesRecyclerView.addItemDecoration(divider);
-        savedSentencesRecyclerView.setBackground(getResources().getDrawable(R.drawable.border_radius_bottom));
+        //savedSentencesRecyclerView.addItemDecoration(divider);
+        //savedSentencesRecyclerView.setBackground(getResources().getDrawable(R.drawable.border_radius_bottom));
         savedSentencesRecyclerView.setAdapter(adapter);
         touchHelper.attachToRecyclerView(savedSentencesRecyclerView);
         adapter.setSavedSentencesList(listSavedSentences);

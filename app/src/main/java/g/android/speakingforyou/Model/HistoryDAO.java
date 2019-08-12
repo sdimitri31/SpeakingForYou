@@ -39,6 +39,13 @@ public class HistoryDAO extends DAOBase {
         close();
     }
 
+
+    public void deleteAll() {
+        open();
+        mDb.execSQL("delete from "+ TABLE_NAME);
+        close();
+    }
+
     /**
      * @param id the id of the history to get
      */
@@ -70,10 +77,13 @@ public class HistoryDAO extends DAOBase {
     }
 
     public String getLastHistory(){
+        String sentence = "";
         open();
         Cursor c = mDb.rawQuery("select * from " + TABLE_NAME+ " ORDER BY " + KEY + " DESC" , null);
-        c.moveToFirst();
-        String sentence = c.getString(1);
+        if(c.getCount() > 0){
+            c.moveToFirst();
+            sentence = c.getString(1);
+        }
         c.close();
         close();
 
