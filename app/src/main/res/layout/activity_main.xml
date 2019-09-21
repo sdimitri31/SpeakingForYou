@@ -1,124 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/ConstrainLayout_Main"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constrainLayout_Main"
+    style="?pageBackground"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorPrimary">
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/linearLayout_MenuTop"
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tab_layout"
+        style="?backgroundPrimary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/imageView_MenuTop_SavedSentences"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/colorPrimary"
-            app:srcCompat="@android:drawable/btn_star" />
-
-        <ImageView
-            android:id="@+id/imageView_MenuTop_History"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/colorPrimary"
-            app:srcCompat="@android:drawable/ic_menu_recent_history" />
-
-        <ImageView
-            android:id="@+id/imageView_MenuTop_QuickSettings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/colorPrimary"
-            app:srcCompat="@android:drawable/ic_menu_manage" />
-    </LinearLayout>
-
-    <FrameLayout
-        android:id="@+id/FrameLayout_Fragments"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="4dp"
-        android:isScrollContainer="true"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout_Text"
-        app:layout_constraintEnd_toEndOf="@id/linearLayout_MenuTop"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@id/linearLayout_MenuTop"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout_MenuTop">
-
-    </FrameLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout_Text"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/border"
-        android:orientation="horizontal"
-        android:paddingStart="15dp"
-        android:paddingEnd="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/imageButton_PlayStopToggle"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <EditText
-            android:id="@+id/editText_Sentence"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:background="#00FFFFFF"
-            android:hint="@string/editText_Sentence_Hint"
-            android:imeOptions="actionDone"
-            android:inputType="text"
-            android:paddingStart="0dp"
-            android:paddingTop="10dp"
-            android:paddingEnd="0dp"
-            android:paddingBottom="10dp"
-            android:singleLine="true" />
-
-        <ImageButton
-            android:id="@+id/imageButton_DeleteText"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="2dp"
-            android:layout_marginEnd="2dp"
-            android:background="@color/colorPrimaryLight"
-            app:srcCompat="@android:drawable/ic_delete" />
-
-        <ImageButton
-            android:id="@+id/imageButton_AddSentence"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_vertical"
-            android:background="@color/colorPrimaryLight"
-            app:srcCompat="@android:drawable/btn_star_big_on" />
-    </LinearLayout>
-
-    <ImageButton
-        android:id="@+id/imageButton_PlayStopToggle"
-        android:layout_width="50dp"
-        android:layout_height="0dp"
-        android:layout_gravity="center_vertical"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:adjustViewBounds="false"
-        android:background="@drawable/ripple_effect"
-        android:cropToPadding="false"
-        android:paddingStart="13dp"
-        android:paddingEnd="10dp"
-        android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/linearLayout_Text"
-        app:srcCompat="@drawable/play" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager_Fragments"
+        style="?viewPagerBackground"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/linearLayout_EditText_Play"
+        app:layout_constraintTop_toBottomOf="@id/tab_layout" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout_EditText_Play"
+        style="?viewPagerBackground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/viewPager_Fragments">
+
+        <LinearLayout
+            android:id="@+id/linearLayout_Text"
+            style="?surfaceBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:paddingStart="15dp"
+            android:paddingEnd="10dp">
+
+            <EditText
+                android:id="@+id/editText_Sentence"
+                style="?editText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="2"
+                android:hint="@string/editText_Sentence_Hint"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:paddingStart="0dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="0dp"
+                android:paddingBottom="10dp"
+                android:singleLine="true" />
+
+            <ImageButton
+                android:id="@+id/imageButton_DeleteText"
+                style="?editTextImageButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="2dp"
+                app:srcCompat="@android:drawable/ic_delete" />
+
+            <ImageButton
+                android:id="@+id/imageButton_AddSentence"
+                style="?editTextImageButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                app:srcCompat="@android:drawable/btn_star_big_on" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/imageButton_PlayStopToggle"
+            style="?button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="8dp"
+            android:layout_weight="5"
+            android:adjustViewBounds="false"
+            android:cropToPadding="false"
+            android:padding="8dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/play" />
+
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

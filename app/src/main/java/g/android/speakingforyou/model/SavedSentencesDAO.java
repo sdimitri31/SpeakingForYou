@@ -1,4 +1,4 @@
-package g.android.speakingforyou.Model;
+package g.android.speakingforyou.model;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,13 +8,13 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import g.android.speakingforyou.Model.SavedSentences;
-
 public class SavedSentencesDAO extends DAOBase {
-    public static final String TABLE_NAME = "savedSentences";
-    public static final String KEY = "id";
-    public static final String SENTENCE = "sentence";
-    public static final String POSITION = "position";
+
+    private static final String LOG_TAG = "SFY : SavedSentencesDAO";
+    private static final String TABLE_NAME = "savedSentences";
+    private static final String KEY = "id";
+    private static final String SENTENCE = "sentence";
+    private static final String POSITION = "position";
 
     public SavedSentencesDAO(Context context) {
         super(context);
@@ -31,7 +31,7 @@ public class SavedSentencesDAO extends DAOBase {
         open();
         mDb.insert(SavedSentencesDAO.TABLE_NAME, null, value);
         close();
-        Log.i("TTS", "New savedSentence : " + savedSentences.getSentence() + "  Position : " + savedSentences.getPosition() );
+        Log.i(LOG_TAG, "New savedSentence : " + savedSentences.getSentence() + "  Position : " + savedSentences.getPosition() );
     }
 
     /**
@@ -42,7 +42,7 @@ public class SavedSentencesDAO extends DAOBase {
         mDb.delete(TABLE_NAME, KEY + " = ?", new String[] {String.valueOf(id)});
         close();
 
-        Log.i("TTS", "DELETED ID : " + id );
+        Log.i(LOG_TAG, "DELETED ID : " + id );
     }
 
     public void deleteAll() {
@@ -123,6 +123,6 @@ public class SavedSentencesDAO extends DAOBase {
         }
 
 
-        Log.i("TTS", "refreshDatabase ");
+        Log.i(LOG_TAG, "refreshDatabase ");
     }
 }

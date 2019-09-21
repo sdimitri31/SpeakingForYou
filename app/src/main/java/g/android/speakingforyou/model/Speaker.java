@@ -1,14 +1,10 @@
-package g.android.speakingforyou.Model;
+package g.android.speakingforyou.model;
 
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -17,6 +13,8 @@ import java.util.List;
 import java.util.Locale;
 
 public class Speaker {
+    private static final String LOG_TAG = "SFY : Speaker";
+
     private TextToSpeech    textToSpeech;
     private VoiceSettings   mVoiceSettings;
 
@@ -39,9 +37,9 @@ public class Speaker {
                     int ttsLang = textToSpeech.setLanguage(Locale.forLanguageTag(mVoiceSettings.getLanguage()));
                     if (ttsLang == TextToSpeech.LANG_MISSING_DATA
                             || ttsLang == TextToSpeech.LANG_NOT_SUPPORTED) {
-                        Log.e("TTS", "The Language is not supported!");
+                        Log.e(LOG_TAG, "The Language is not supported!");
                     } else {
-                        Log.i("TTS", "Language Supported.");
+                        Log.i(LOG_TAG, "Language Supported.");
                     }
 
                     //SpeechRate
@@ -58,11 +56,11 @@ public class Speaker {
                         if (res == TextToSpeech.LANG_COUNTRY_AVAILABLE) {
                             listLanguageTag.add(locale.toLanguageTag());
                             listLanguageName.add(locale.getDisplayName());
-                            Log.i("TTS", "Language Tag : " + locale.toLanguageTag() + " DisplayName : " + locale.getDisplayName());
+                            Log.i(LOG_TAG, "Language Tag : " + locale.toLanguageTag() + " DisplayName : " + locale.getDisplayName());
                         }
                     }
 
-                    Log.i("TTS", "Initialization success.");
+                    Log.i(LOG_TAG, "Initialization success.");
 
                 }
                 else {
@@ -116,7 +114,7 @@ public class Speaker {
         String utteranceId=this.hashCode() + "";
         int speechStatus2 = textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId);
         if (speechStatus2 == TextToSpeech.ERROR) {
-            Log.e("TTS", "Error in converting Text to Speech!");
+            Log.e(LOG_TAG, "Error in converting Text to Speech!");
         }
     }
 

@@ -1,11 +1,200 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
     </style>
 
-</resources>
+    <!-- =============================================================== -->
+    <!-- Light style -->
+    <!-- =============================================================== -->
+
+    <style name="page_background_wh">
+        <item name="android:background">@color/light_colorPrimaryDark</item>
+    </style>
+
+    <style name="viewpager_background_wh">
+        <item name="android:background">@color/light_colorBackground</item>
+    </style>
+
+    <style name="surface_background_wh">
+        <item name="android:background">@color/light_colorSurface</item>
+    </style>
+
+    <style name="background_primary_wh">
+        <item name="android:background">@color/light_colorPrimary</item>
+    </style>
+
+    <style name="background_primary_light_wh">
+        <item name="android:background">@color/light_colorPrimaryLight</item>
+    </style>
+
+    <style name="layout_popup_more_wh">
+        <item name="android:background">@drawable/border_radius_accent</item>
+    </style>
+
+    <style name="layout_edit_text_wh">
+        <item name="android:background">@drawable/border</item>
+    </style>
+
+    <style name="edit_text_wh">
+        <item name="android:background">@color/transparent</item>
+        <item name="android:textColor">@color/light_colorPrimaryText</item>
+        <item name="android:textColorHint">@color/light_colorSecondaryText</item>
+    </style>
+
+    <style name="image_button_edit_text_wh">
+        <item name="android:background">@color/transparent</item>
+    </style>
+
+    <style name="button_wh">
+        <item name="android:background">@drawable/ripple_effect</item>
+        <item name="android:textColor">@color/light_colorPrimaryText</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+    </style>
+
+    <style name="layout_cell_wh">
+        <item name="android:background">@drawable/border</item>
+        <item name="android:elevation">@dimen/layout_elevation</item>
+        <item name="android:translationZ">@dimen/layout_elevation</item>
+        <item name="android:translationX">@dimen/layout_elevation</item>
+    </style>
+
+    <style name="layout_cell_ripple_wh">
+        <item name="android:background">@drawable/ripple_effect</item>
+        <item name="android:elevation">@dimen/layout_elevation</item>
+        <item name="android:translationZ">@dimen/layout_elevation</item>
+        <item name="android:translationX">@dimen/layout_elevation</item>
+    </style>
+
+    <style name="text_normal_wh">
+        <item name="android:textColor">@color/light_colorPrimaryText</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+    </style>
+
+    <style name="text_setting_title_wh">
+        <item name="android:textColor">@color/light_colorPrimaryText</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+    </style>
+
+    <style name="text_setting_sub_wh">
+        <item name="android:textColor">@color/light_colorSecondaryText</item>
+    </style>
+
+    <style name="alert_dialog_wh">
+        <item name="android:background">@drawable/border</item>
+        <item name="android:textColorPrimary">@color/light_colorPrimaryText</item>
+        <item name="textColorAlertDialogListItem">@color/light_colorPrimaryText</item>
+        <item name="android:colorAccent">@color/light_colorAccent</item>
+    </style>
+
+    <style name="action_bar_title_wh">
+        <item name="android:textColor">@color/light_colorPrimaryText</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="action_bar_wh" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@color/light_colorPrimary</item>
+        <item name="background">@color/light_colorPrimary</item>
+        <item name="android:titleTextStyle">@style/action_bar_title_wh</item>
+        <item name="titleTextStyle">@style/action_bar_title_wh</item>
+    </style>
+
+    <!-- =============================================================== -->
+    <!-- Dark style -->
+    <!-- =============================================================== -->
+
+    <style name="page_background_dark">
+        <item name="android:background">@color/dark_colorPrimaryDark</item>
+    </style>
+
+    <style name="viewpager_background_dark">
+        <item name="android:background">@color/dark_colorBackground</item>
+    </style>
+
+    <style name="surface_background_dark">
+        <item name="android:background">@color/dark_colorSurface</item>
+    </style>
+
+    <style name="background_primary_dark">
+        <item name="android:background">@color/dark_colorPrimary</item>
+    </style>
+
+    <style name="background_primary_light_dark">
+        <item name="android:background">@color/dark_colorPrimaryLight</item>
+    </style>
+
+    <style name="layout_popup_more_dark">
+        <item name="android:background">@drawable/border_radius_accent</item>
+     </style>
+
+     <style name="layout_edit_text_dark">
+         <item name="android:background">@drawable/border</item>
+     </style>
+
+     <style name="edit_text_dark">
+         <item name="android:background">@color/transparent</item>
+         <item name="android:textColor">@color/dark_colorPrimaryText</item>
+         <item name="android:textColorHint">@color/dark_colorSecondaryText</item>
+     </style>
+
+     <style name="image_button_edit_text_dark">
+         <item name="android:background">@color/transparent</item>
+     </style>
+
+     <style name="button_dark">
+         <item name="android:background">@drawable/ripple_effect</item>
+         <item name="android:textColor">@color/dark_colorPrimaryText</item>
+         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+     </style>
+
+     <style name="layout_cell_dark">
+         <item name="android:background">@drawable/border</item>
+         <item name="android:elevation">@dimen/layout_elevation</item>
+         <item name="android:translationZ">@dimen/layout_elevation</item>
+         <item name="android:translationX">@dimen/layout_elevation</item>
+     </style>
+
+     <style name="layout_cell_ripple_dark">
+         <item name="android:background">@drawable/ripple_effect</item>
+         <item name="android:elevation">@dimen/layout_elevation</item>
+         <item name="android:translationZ">@dimen/layout_elevation</item>
+         <item name="android:translationX">@dimen/layout_elevation</item>
+     </style>
+
+     <style name="text_normal_dark">
+         <item name="android:textColor">@color/dark_colorPrimaryText</item>
+         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+     </style>
+
+     <style name="text_setting_title_dark">
+         <item name="android:textColor">@color/dark_colorPrimaryText</item>
+         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+     </style>
+
+     <style name="text_setting_sub_dark">
+         <item name="android:textColor">@color/dark_colorSecondaryText</item>
+     </style>
+
+    <style name="alert_dialog_dark">
+        <item name="android:background">@drawable/border</item>
+        <item name="android:textColorPrimary">@color/dark_colorPrimaryText</item>
+        <item name="textColorAlertDialogListItem">@color/dark_colorPrimaryText</item>
+        <item name="android:colorAccent">@color/dark_colorAccent</item>
+    </style>
+
+    <style name="action_bar_title_dark">
+        <item name="android:textColor">@color/dark_colorPrimaryText</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+     <style name="action_bar_dark" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+         <item name="android:background">@color/dark_colorPrimary</item>
+         <item name="background">@color/dark_colorPrimary</item>
+         <item name="android:titleTextStyle">@style/action_bar_title_dark</item>
+         <item name="titleTextStyle">@style/action_bar_title_dark</item>
+     </style>
+
+
+ </resources>

@@ -1,13 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#212121</color>
-    <color name="colorPrimaryLight">#484848</color>
-    <color name="colorPrimaryDark">#000000</color>
-    <color name="colorPrimaryText">#FFFFFF</color>
-    <color name="colorSecondaryText">#C8C8C8</color>
-    <color name="colorAccent">#D81B60</color>
-    <color name="colorMenuTopActive">#868686</color>
-    <color name="colorMenuTopInactive">#D9D9D9</color>
 
-    <color name="colorRipple">#969696</color>
+    <color name="transparent">#00FFFFFF</color>
+
+    <!-- =============================================================== -->
+    <!-- Dark colors -->
+    <!-- =============================================================== -->
+
+    <color name="dark_colorPrimaryLight">#484848</color>
+    <color name="dark_colorPrimary">#212121</color>
+    <color name="dark_colorPrimaryDark">#000000</color>
+    <color name="dark_colorBackground">#000000</color>     <!-- For Background ( ex : of viewPager ) -->
+    <color name="dark_colorSurface">#484848</color>        <!-- For "Surface" ( ex : cells or editText ) -->
+    <color name="dark_colorPrimaryText">#FFFFFF</color>
+    <color name="dark_colorSecondaryText">#C8C8C8</color>
+    <color name="dark_colorAccent">#5898F8</color>
+    <color name="dark_colorRipple">#969696</color>
+
+
+    <!-- =============================================================== -->
+    <!-- Light colors -->
+    <!-- =============================================================== -->
+
+    <color name="light_colorPrimaryDark">#8c8c8c</color>    <!-- For StatusBar -->
+    <color name="light_colorPrimary">#bcbcbc</color>        <!-- For ActionBar and TabMenu -->
+    <color name="light_colorPrimaryLight">#eeeeee</color>   <!-- For Accent -->
+    <color name="light_colorBackground">#FFFFFF</color>     <!-- For Background ( ex : of viewPager ) -->
+    <color name="light_colorSurface">#E6E6E6</color>        <!-- For "Surface" ( ex : cells or editText ) -->
+    <color name="light_colorPrimaryText">#000000</color>
+    <color name="light_colorSecondaryText">#444444</color>
+    <color name="light_colorAccent">#00838f</color>
+    <color name="light_colorRipple">#969696</color>
+
+
 </resources>

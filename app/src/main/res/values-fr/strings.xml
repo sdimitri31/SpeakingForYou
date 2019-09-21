@@ -16,8 +16,15 @@
     <string name="button_Settings_Test">Tester</string>
     <string name="settings">Paramètres</string>
     <string name="textView_Settings_Theme">Thème</string>
-    <string name="settings_TestSentence">Ceci est une phrase de test</string>
+    <string name="settings_TestSentence">Bonjour, comment allez-vous ?</string>
     <string name="alertDialog_DeleteHistoryQuestion">Voulez-vous vraiment supprimer l\'historique ? ( Cette action est irréversible )</string>
     <string name="alertDialog_OK">OK</string>
     <string name="alertDialog_DeleteSavecSentencesQuestion">Voulez-vous vraiment supprimer les favoris ? ( Cette action est irréversible )</string>
+    <string name="button_PopupWindow_AddSaved">Ajouter aux favoris</string>
+    <string name="button_PopupWindow_Delete">Supprimer la phrase</string>
+    <string name="toast_addedToSavedSentences">Ajouté aux favoris</string>
+    <string-array name="theme_array">
+        <item>Clair</item>
+        <item>Sombre</item>
+    </string-array>
 </resources>

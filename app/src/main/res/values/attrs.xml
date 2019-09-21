@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <attr name="pageBackground" format="reference" />
+    <attr name="viewPagerBackground" format="reference" />
+    <attr name="surfaceBackground" format="reference" />
+    <attr name="backgroundPrimary" format="reference" />
+    <attr name="backgroundPrimaryLight" format="reference" />
+    <attr name="layoutPopupMore" format="reference" />
+    <attr name="layoutEditText" format="reference" />
+    <attr name="editText" format="reference" />
+    <attr name="editTextImageButton" format="reference" />
+    <attr name="layoutCell" format="reference" />
+    <attr name="button" format="reference" />
+    <attr name="layoutCellRipple" format="reference" />
+    <attr name="textNormal" format="reference" />
+    <attr name="textSettingTitle" format="reference" />
+    <attr name="textSettingSub" format="reference" />
+    <attr name="actionBarStyle" format="reference" />
+    <attr name="colorPrimaryLight" format="reference" />
+    <attr name="colorRipple" format="reference" />
+    <attr name="colorBackgroundSurface" format="reference" />
+
+</resources>

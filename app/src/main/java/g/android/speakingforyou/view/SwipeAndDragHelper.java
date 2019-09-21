@@ -1,9 +1,8 @@
-package g.android.speakingforyou.View;
+package g.android.speakingforyou.view;
 
 import android.graphics.Canvas;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 
 /**
  * Created by Srijith on 22-10-2017.
@@ -23,10 +22,15 @@ public class SwipeAndDragHelper extends ItemTouchHelper.Callback {
         int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
         int swipeFlags = ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
 
-        //Prevent the move of history element, but allow to delete
+        //Prevent the move and delete of history element
         if(viewHolder instanceof HistoryViewHolder) {
-            return makeMovementFlags(0, swipeFlags);
+            return makeMovementFlags(0, 0);
         }
+        //Allow the move of Saved element, but prevent to swipe to delete
+        if(viewHolder instanceof SavedSentencesViewHolder) {
+            return makeMovementFlags(dragFlags, 0);
+        }
+
         return makeMovementFlags(dragFlags, swipeFlags);
     }
 

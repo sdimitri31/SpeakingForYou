@@ -1,4 +1,4 @@
-package g.android.speakingforyou.Controller;
+package g.android.speakingforyou.controller;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -10,25 +10,29 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
-import g.android.speakingforyou.Model.HistoryDAO;
+import g.android.speakingforyou.model.History;
+import g.android.speakingforyou.model.HistoryDAO;
 import g.android.speakingforyou.R;
-import g.android.speakingforyou.View.ClickListener;
-import g.android.speakingforyou.View.HistoryViewHolder;
-import g.android.speakingforyou.View.SwipeAndDragHelper;
+import g.android.speakingforyou.view.ClickListener;
+import g.android.speakingforyou.view.HistoryViewHolder;
+import g.android.speakingforyou.view.SwipeAndDragHelper;
 
 
 public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements
         SwipeAndDragHelper.ActionCompletionContract {
+
     private ItemTouchHelper touchHelper;
-    private List<String> mHistoryList;
+    private List<History> mHistoryList;
 
     private ClickListener listener;
     private Context appContext;
 
+    private boolean isVisible;
 
     public HistoryAdapter(Context context, ClickListener listener){
         this.listener = listener;
         this.appContext = context;
+        this.isVisible = false;
     }
 
 
@@ -45,7 +49,16 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @SuppressLint("ClickableViewAccessibility")
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
 
-        ((HistoryViewHolder) holder).setTextSentence(mHistoryList.get(position));
+        ((HistoryViewHolder) holder).setTextSentence(mHistoryList.get(position).getSentence());
+        if (isVisible){
+            ((HistoryViewHolder) holder).setVisibility(View.VISIBLE);
+        }else{
+            ((HistoryViewHolder) holder).setVisibility(View.INVISIBLE);
+        }
+    }
+
+    public void updateVisibility(boolean newValue){
+        isVisible= newValue;
     }
 
     @Override
@@ -53,14 +66,14 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return mHistoryList == null ? 0 : mHistoryList.size();
     }
 
-    public void setHistoryList(List<String> historyList) {
+    public void setHistoryList(List<History> historyList) {
         this.mHistoryList = historyList;
         notifyDataSetChanged();
     }
 
     @Override
     public void onViewMoved(int oldPosition, int newPosition) {
-        String targetUser = mHistoryList.get(oldPosition);
+        History targetUser = mHistoryList.get(oldPosition);
         mHistoryList.remove(oldPosition);
         mHistoryList.add(newPosition, targetUser);
         notifyItemMoved(oldPosition, newPosition);

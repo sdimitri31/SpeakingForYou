@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.Custom_Light" parent="Theme.AppCompat">
+        <item name="pageBackground">@style/page_background_wh</item>
+        <item name="viewPagerBackground">@style/viewpager_background_wh</item>
+        <item name="surfaceBackground">@style/surface_background_wh</item>
+        <item name="backgroundPrimary">@style/background_primary_wh</item>
+        <item name="backgroundPrimaryLight">@style/background_primary_light_wh</item>
+        <item name="layoutPopupMore">@style/layout_popup_more_wh</item>
+        <item name="layoutEditText">@style/layout_edit_text_wh</item>
+        <item name="editText">@style/edit_text_wh</item>
+        <item name="editTextImageButton">@style/image_button_edit_text_wh</item>
+        <item name="button">@style/button_wh</item>
+        <item name="layoutCell">@style/layout_cell_wh</item>
+        <item name="layoutCellRipple">@style/layout_cell_ripple_wh</item>
+        <item name="textNormal">@style/text_normal_wh</item>
+        <item name="textSettingTitle">@style/text_setting_title_wh</item>
+        <item name="textSettingSub">@style/text_setting_sub_wh</item>
+        <item name="actionBarStyle">@style/action_bar_wh</item>
+        <item name="colorAccent">@color/light_colorAccent</item>
+        <item name="colorPrimaryLight">@color/light_colorPrimaryLight</item>
+        <item name="colorPrimaryDark">@color/light_colorPrimaryDark</item>
+        <item name="colorRipple">@color/light_colorRipple</item>
+        <item name="colorBackgroundSurface">@color/light_colorSurface</item>
+    </style>
+
+    <style name="Theme.Custom_Dark" parent="Theme.AppCompat">
+        <item name="pageBackground">@style/page_background_dark</item>
+        <item name="viewPagerBackground">@style/viewpager_background_dark</item>
+        <item name="surfaceBackground">@style/surface_background_dark</item>
+        <item name="backgroundPrimary">@style/background_primary_dark</item>
+        <item name="backgroundPrimaryLight">@style/background_primary_light_dark</item>
+        <item name="layoutPopupMore">@style/layout_popup_more_dark</item>
+        <item name="layoutEditText">@style/layout_edit_text_dark</item>
+        <item name="editText">@style/edit_text_dark</item>
+        <item name="editTextImageButton">@style/image_button_edit_text_dark</item>
+        <item name="button">@style/button_dark</item>
+        <item name="layoutCell">@style/layout_cell_dark</item>
+        <item name="layoutCellRipple">@style/layout_cell_ripple_dark</item>
+        <item name="textNormal">@style/text_normal_dark</item>
+        <item name="textSettingTitle">@style/text_setting_title_dark</item>
+        <item name="textSettingSub">@style/text_setting_sub_dark</item>
+        <item name="actionBarStyle">@style/action_bar_dark</item>
+        <item name="colorAccent">@color/dark_colorAccent</item>
+        <item name="colorPrimaryLight">@color/dark_colorPrimaryLight</item>
+        <item name="colorRipple">@color/dark_colorRipple</item>
+        <item name="colorBackgroundSurface">@color/dark_colorSurface</item>
+    </style>
+
+</resources>

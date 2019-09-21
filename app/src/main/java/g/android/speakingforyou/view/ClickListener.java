@@ -1,4 +1,4 @@
-package g.android.speakingforyou.View;
+package g.android.speakingforyou.view;
 
 import android.view.View;
 

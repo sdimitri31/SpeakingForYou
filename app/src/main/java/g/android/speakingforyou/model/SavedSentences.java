@@ -1,4 +1,4 @@
-package g.android.speakingforyou.Model;
+package g.android.speakingforyou.model;
 
 public class SavedSentences {
 

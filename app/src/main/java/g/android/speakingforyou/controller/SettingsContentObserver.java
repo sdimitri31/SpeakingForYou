@@ -1,4 +1,4 @@
-package g.android.speakingforyou.Controller;
+package g.android.speakingforyou.controller;
 
 import android.content.Context;
 import android.database.ContentObserver;
@@ -10,9 +10,11 @@ import android.widget.SeekBar;
 
 public class SettingsContentObserver extends ContentObserver {
 
-    int previousVolume;
-    Context context;
-    SeekBar volume;
+    public static final String  LOG_TAG = "SFY : SettingsContent";
+
+    private int previousVolume;
+    private Context context;
+    private SeekBar volume;
 
     public SettingsContentObserver(Context c, Handler handler, SeekBar volume) {
         super(handler);
@@ -39,13 +41,13 @@ public class SettingsContentObserver extends ContentObserver {
 
         if(delta>0)
         {
-            Log.d("TTS", "Volume Decreased from : " + previousVolume + " to : " + currentVolume);
+            Log.d(LOG_TAG, "Volume Decreased from : " + previousVolume + " to : " + currentVolume);
             previousVolume=currentVolume;
             volume.setProgress(currentVolume);
         }
         else if(delta<0)
         {
-            Log.d("TTS", "Volume Increased from : " + previousVolume + " to : " + currentVolume);
+            Log.d(LOG_TAG, "Volume Increased from : " + previousVolume + " to : " + currentVolume);
             previousVolume=currentVolume;
             volume.setProgress(currentVolume);
         }
