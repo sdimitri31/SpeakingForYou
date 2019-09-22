@@ -2,5 +2,13 @@
 <resources>
 
     <dimen name="layout_elevation">2dp</dimen>
+    <dimen name="layout_cell_padding_left_right">15dp</dimen>
+    <dimen name="layout_cell_padding_top_bottom">12dp</dimen>
+    <dimen name="layout_cell_margin_left_right">10dp</dimen>
+    <dimen name="layout_cell_margin_top_bottom">5dp</dimen>
+
+
+    <dimen name="layout_button_padding_top_bottom">10dp</dimen>
+    <dimen name="layout_button_padding_left_right">10dp</dimen>
 
 </resources>

@@ -5,6 +5,59 @@
     </style>
 
     <!-- =============================================================== -->
+    <!-- Basic layout properties -->
+    <!-- =============================================================== -->
+
+    <style name="button">
+        <item name="android:background">@drawable/ripple_effect</item>
+        <item name="android:layout_marginTop">@dimen/layout_cell_margin_top_bottom</item>
+        <item name="android:layout_marginStart">@dimen/layout_cell_margin_left_right</item>
+        <item name="android:layout_marginEnd">@dimen/layout_cell_margin_left_right</item>
+        <item name="android:layout_marginBottom">@dimen/layout_cell_margin_top_bottom</item>
+        <item name="android:paddingTop">@dimen/layout_button_padding_top_bottom</item>
+        <item name="android:paddingBottom">@dimen/layout_button_padding_top_bottom</item>
+        <item name="android:elevation">10dp</item>
+    </style>
+
+    <style name="image_button">
+        <item name="android:background">@drawable/ripple_effect</item>
+    </style>
+
+    <style name="layout_cell_base">
+        <item name="android:elevation">@dimen/layout_elevation</item>
+        <item name="android:translationZ">@dimen/layout_elevation</item>
+        <item name="android:translationX">@dimen/layout_elevation</item>
+        <item name="android:layout_marginTop">@dimen/layout_cell_margin_top_bottom</item>
+        <item name="android:layout_marginStart">@dimen/layout_cell_margin_left_right</item>
+        <item name="android:layout_marginEnd">@dimen/layout_cell_margin_left_right</item>
+        <item name="android:layout_marginBottom">@dimen/layout_cell_margin_top_bottom</item>
+        <item name="android:paddingStart">@dimen/layout_cell_padding_left_right</item>
+        <item name="android:paddingEnd">@dimen/layout_cell_padding_left_right</item>
+        <item name="android:paddingTop">@dimen/layout_cell_padding_top_bottom</item>
+        <item name="android:paddingBottom">@dimen/layout_cell_padding_top_bottom</item>
+    </style>
+
+    <style name="layout_cell" parent="layout_cell_base">
+        <item name="android:background">@drawable/border</item>
+    </style>
+
+    <style name="layout_cell_ripple" parent="layout_cell_base">
+        <item name="android:background">@drawable/ripple_effect</item>
+    </style>
+
+    <style name="layout_popup_more">
+        <item name="android:background">@drawable/border_radius_accent</item>
+    </style>
+
+    <style name="layout_edit_text">
+        <item name="android:background">@drawable/border</item>
+    </style>
+
+    <style name="image_button_edit_text">
+        <item name="android:background">@color/transparent</item>
+    </style>
+
+    <!-- =============================================================== -->
     <!-- Light style -->
     <!-- =============================================================== -->
 
@@ -28,79 +81,52 @@
         <item name="android:background">@color/light_colorPrimaryLight</item>
     </style>
 
-    <style name="layout_popup_more_wh">
-        <item name="android:background">@drawable/border_radius_accent</item>
-    </style>
-
-    <style name="layout_edit_text_wh">
-        <item name="android:background">@drawable/border</item>
-    </style>
-
     <style name="edit_text_wh">
         <item name="android:background">@color/transparent</item>
         <item name="android:textColor">@color/light_colorPrimaryText</item>
         <item name="android:textColorHint">@color/light_colorSecondaryText</item>
     </style>
 
-    <style name="image_button_edit_text_wh">
-        <item name="android:background">@color/transparent</item>
-    </style>
-
-    <style name="button_wh">
-        <item name="android:background">@drawable/ripple_effect</item>
+    <style name="button_wh" parent="button">
         <item name="android:textColor">@color/light_colorPrimaryText</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
     </style>
 
-    <style name="layout_cell_wh">
-        <item name="android:background">@drawable/border</item>
-        <item name="android:elevation">@dimen/layout_elevation</item>
-        <item name="android:translationZ">@dimen/layout_elevation</item>
-        <item name="android:translationX">@dimen/layout_elevation</item>
-    </style>
+   <style name="text_normal_wh">
+       <item name="android:textColor">@color/light_colorPrimaryText</item>
+       <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+   </style>
 
-    <style name="layout_cell_ripple_wh">
-        <item name="android:background">@drawable/ripple_effect</item>
-        <item name="android:elevation">@dimen/layout_elevation</item>
-        <item name="android:translationZ">@dimen/layout_elevation</item>
-        <item name="android:translationX">@dimen/layout_elevation</item>
-    </style>
+   <style name="text_setting_title_wh">
+       <item name="android:textColor">@color/light_colorPrimaryText</item>
+       <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+   </style>
 
-    <style name="text_normal_wh">
-        <item name="android:textColor">@color/light_colorPrimaryText</item>
-        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
-    </style>
+   <style name="text_setting_sub_wh">
+       <item name="android:textColor">@color/light_colorSecondaryText</item>
+   </style>
 
-    <style name="text_setting_title_wh">
-        <item name="android:textColor">@color/light_colorPrimaryText</item>
-        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
-    </style>
+   <style name="alert_dialog_wh">
+       <item name="android:background">@drawable/border</item>
+       <item name="android:textColorPrimary">@color/light_colorPrimaryText</item>
+       <item name="textColorAlertDialogListItem">@color/light_colorPrimaryText</item>
+       <item name="android:colorAccent">@color/light_colorAccent</item>
+   </style>
 
-    <style name="text_setting_sub_wh">
-        <item name="android:textColor">@color/light_colorSecondaryText</item>
-    </style>
+   <style name="action_bar_title_wh">
+       <item name="android:textColor">@color/light_colorPrimaryText</item>
+       <item name="android:textSize">20sp</item>
+       <item name="android:textStyle">bold</item>
+   </style>
 
-    <style name="alert_dialog_wh">
-        <item name="android:background">@drawable/border</item>
-        <item name="android:textColorPrimary">@color/light_colorPrimaryText</item>
-        <item name="textColorAlertDialogListItem">@color/light_colorPrimaryText</item>
-        <item name="android:colorAccent">@color/light_colorAccent</item>
-    </style>
+   <style name="action_bar_wh" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+       <item name="android:background">@color/light_colorPrimary</item>
+       <item name="background">@color/light_colorPrimary</item>
+       <item name="android:titleTextStyle">@style/action_bar_title_wh</item>
+       <item name="titleTextStyle">@style/action_bar_title_wh</item>
+   </style>
 
-    <style name="action_bar_title_wh">
-        <item name="android:textColor">@color/light_colorPrimaryText</item>
-        <item name="android:textSize">20sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="action_bar_wh" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
-        <item name="android:background">@color/light_colorPrimary</item>
-        <item name="background">@color/light_colorPrimary</item>
-        <item name="android:titleTextStyle">@style/action_bar_title_wh</item>
-        <item name="titleTextStyle">@style/action_bar_title_wh</item>
-    </style>
-
-    <!-- =============================================================== -->
+       <!-- =============================================================== -->
     <!-- Dark style -->
     <!-- =============================================================== -->
 
@@ -124,42 +150,15 @@
         <item name="android:background">@color/dark_colorPrimaryLight</item>
     </style>
 
-    <style name="layout_popup_more_dark">
-        <item name="android:background">@drawable/border_radius_accent</item>
-     </style>
-
-     <style name="layout_edit_text_dark">
-         <item name="android:background">@drawable/border</item>
-     </style>
-
      <style name="edit_text_dark">
          <item name="android:background">@color/transparent</item>
          <item name="android:textColor">@color/dark_colorPrimaryText</item>
          <item name="android:textColorHint">@color/dark_colorSecondaryText</item>
      </style>
 
-     <style name="image_button_edit_text_dark">
-         <item name="android:background">@color/transparent</item>
-     </style>
-
-     <style name="button_dark">
-         <item name="android:background">@drawable/ripple_effect</item>
+     <style name="button_dark" parent="button">
          <item name="android:textColor">@color/dark_colorPrimaryText</item>
          <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
-     </style>
-
-     <style name="layout_cell_dark">
-         <item name="android:background">@drawable/border</item>
-         <item name="android:elevation">@dimen/layout_elevation</item>
-         <item name="android:translationZ">@dimen/layout_elevation</item>
-         <item name="android:translationX">@dimen/layout_elevation</item>
-     </style>
-
-     <style name="layout_cell_ripple_dark">
-         <item name="android:background">@drawable/ripple_effect</item>
-         <item name="android:elevation">@dimen/layout_elevation</item>
-         <item name="android:translationZ">@dimen/layout_elevation</item>
-         <item name="android:translationX">@dimen/layout_elevation</item>
      </style>
 
      <style name="text_normal_dark">

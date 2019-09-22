@@ -12,6 +12,7 @@
     <attr name="editTextImageButton" format="reference" />
     <attr name="layoutCell" format="reference" />
     <attr name="button" format="reference" />
+    <attr name="imageButton" format="reference" />
     <attr name="layoutCellRipple" format="reference" />
     <attr name="textNormal" format="reference" />
     <attr name="textSettingTitle" format="reference" />
