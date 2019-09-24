@@ -15,6 +15,7 @@
     <color name="dark_colorPrimaryText">#FFFFFF</color>
     <color name="dark_colorSecondaryText">#C8C8C8</color>
     <color name="dark_colorAccent">#5898F8</color>
+    <color name="dark_colorTabIcon">#D3D3D3</color>
     <color name="dark_colorRipple">#969696</color>
 
 
@@ -30,6 +31,7 @@
     <color name="light_colorPrimaryText">#000000</color>
     <color name="light_colorSecondaryText">#444444</color>
     <color name="light_colorAccent">#00838f</color>
+    <color name="light_colorTabIcon">#6F6E6E</color>
     <color name="light_colorRipple">#969696</color>
 
 

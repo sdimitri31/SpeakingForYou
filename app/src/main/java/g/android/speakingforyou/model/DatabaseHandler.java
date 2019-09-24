@@ -12,6 +12,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY = "id";
     public static final String SENTENCE = "sentence";
     public static final String POSITION = "position";
+    public static final String DATEFORMAT = "dateFormat";
+    public static final String USAGE = "usage";
 
     public static final String TABLE_CREATE_SAVEDSENTENCES = "CREATE TABLE " + TABLE_NAME_SAVEDSENTENCES + " (" +
             KEY + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -20,7 +22,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public static final String TABLE_CREATE_HISTORY = "CREATE TABLE " + TABLE_NAME_HISTORY + " (" +
             KEY + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            SENTENCE + " TEXT)";
+            SENTENCE + " TEXT, " +
+            DATEFORMAT + " TEXT, " +
+            USAGE + " INTEGER)";
 
     public DatabaseHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);

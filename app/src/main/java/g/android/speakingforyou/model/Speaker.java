@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.Voice;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -18,12 +19,16 @@ public class Speaker {
     private TextToSpeech    textToSpeech;
     private VoiceSettings   mVoiceSettings;
 
+    private List<Voice>     listVoices;
+    private List<String>    listVoicesName;
     private List<String>    listLanguageName;   //Store the displayName to show to the user
     private List<String>    listLanguageTag;    //Store the LocaleTag to set up the TTS module
 
     public Speaker(final Context context, VoiceSettings voiceSettings)
     {
         mVoiceSettings = voiceSettings;
+        listVoices = new ArrayList<>();
+        listVoicesName = new ArrayList<>();
         listLanguageName = new ArrayList<>();
         listLanguageTag = new ArrayList<>();
 
@@ -34,13 +39,17 @@ public class Speaker {
                     //Default TTS Initialization
 
                     //Language
-                    int ttsLang = textToSpeech.setLanguage(Locale.forLanguageTag(mVoiceSettings.getLanguage()));
+                    Locale lastLocale = Locale.forLanguageTag(mVoiceSettings.getLanguage());
+                    int ttsLang = textToSpeech.setLanguage(lastLocale);
                     if (ttsLang == TextToSpeech.LANG_MISSING_DATA
                             || ttsLang == TextToSpeech.LANG_NOT_SUPPORTED) {
                         Log.e(LOG_TAG, "The Language is not supported!");
                     } else {
                         Log.i(LOG_TAG, "Language Supported.");
                     }
+
+                    setListVoices(lastLocale);
+                    setVoice(mVoiceSettings.getLastVoiceUsed());
 
                     //SpeechRate
                     setSpeechRate(mVoiceSettings.getSpeechRate());
@@ -71,10 +80,47 @@ public class Speaker {
 
     }
 
+    public void setVoice(int voiceID){
+        if((listVoices.size() > 0) && (listVoices.size() > voiceID )) {
+            textToSpeech.setVoice(listVoices.get(voiceID));
+            mVoiceSettings.setLastVoiceUsed(voiceID);
+            mVoiceSettings.setLastVoiceNameUsed(listVoicesName.get(voiceID));
+        }
+        else{
+            mVoiceSettings.setLastVoiceUsed(-1);
+        }
+    }
+
+    public List<Voice> getListVoices(){
+        return listVoices;
+    }
+
+    public List<String> getListVoicesNames(){
+        return listVoicesName;
+    }
+
+    private void setListVoices(Locale locale){
+        listVoices.clear();
+        listVoicesName.clear();
+        Log.i(LOG_TAG, "localeToLookFor :" + locale);
+
+        for (Voice voice : textToSpeech.getVoices() ) {
+            if(voice.getLocale().getDisplayName().equals(locale.getDisplayName())){
+                listVoices.add(voice);
+                listVoicesName.add(voice.getName());
+                //Log.i(LOG_TAG, "      MATCH     :");
+            }
+        }
+        Log.i(LOG_TAG, "listVoices.size() :" + listVoices.size());
+        mVoiceSettings.setVoicesFound(listVoices.size());
+    }
+
     public TextToSpeech getTextToSpeech(){ return textToSpeech; }
 
     public void setLanguage(String language){
         textToSpeech.setLanguage(Locale.forLanguageTag(language));
+        setListVoices(Locale.forLanguageTag(language));
+        //textToSpeech.setVoice(textToSpeech.getDefaultVoice());
     }
 
     public void setPitch(int pitchValue){

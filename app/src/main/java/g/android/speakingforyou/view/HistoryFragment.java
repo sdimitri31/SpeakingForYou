@@ -1,6 +1,8 @@
 package g.android.speakingforyou.view;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,8 +13,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStructure;
+import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import g.android.speakingforyou.controller.HistoryAdapter;
@@ -21,6 +29,10 @@ import g.android.speakingforyou.model.HistoryDAO;
 import g.android.speakingforyou.R;
 import g.android.speakingforyou.model.SavedSentences;
 import g.android.speakingforyou.model.SavedSentencesDAO;
+import g.android.speakingforyou.model.VoiceSettings;
+
+import static android.content.Context.MODE_PRIVATE;
+import static g.android.speakingforyou.controller.MainActivity.PREF_NAME;
 
 public class HistoryFragment extends Fragment implements View.OnClickListener {
 
@@ -29,6 +41,8 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
     private HistoryDAO mHistoryDAO;
     private List<History> mListHistory;
     private HistoryAdapter mHistoryAdapter;
+    private VoiceSettings mVoiceSettings;
+
     RecyclerView historyRecyclerView;
 
     //2 - Declare callback
@@ -53,11 +67,14 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
         //Inflate the layout of MainFragment
         View rootView = inflater.inflate(R.layout.fragment_history, container, false);
 
-        //Setup the recycler for the saved sentences
+        mVoiceSettings  = new VoiceSettings(getActivity().getSharedPreferences(PREF_NAME, MODE_PRIVATE));
+
+        //Setup the recycler for the history
         historyRecyclerView = rootView.findViewById(R.id.recyclerView_History);
 
         mHistoryDAO = new HistoryDAO(getActivity());
         mListHistory = mHistoryDAO.getAll();
+        sortHistoryList(mVoiceSettings.getHistorySort(),mVoiceSettings.getHistoryOrder());
 
         ClickListener listener = new ClickListener() {
             @Override
@@ -101,21 +118,81 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
             }
         };
 
-
-        //RecyclerView.ItemDecoration divider = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
-
         historyRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mHistoryAdapter = new HistoryAdapter(getActivity(), listener);
         SwipeAndDragHelper swipeAndDragHelper = new SwipeAndDragHelper(mHistoryAdapter);
         ItemTouchHelper touchHelper = new ItemTouchHelper(swipeAndDragHelper);
         mHistoryAdapter.setTouchHelper(touchHelper);
-        //historyRecyclerView.addItemDecoration(divider);
-        //historyRecyclerView.setBackground(getResources().getDrawable(R.drawable.border_radius_accent));
         historyRecyclerView.setAdapter(mHistoryAdapter);
         touchHelper.attachToRecyclerView(historyRecyclerView);
         mHistoryAdapter.setHistoryList(mListHistory);
 
         return rootView;
+    }
+
+    public void sortHistoryList(int sort, int order){
+        if (mListHistory.size() > 0) {
+            switch (order) {
+
+                case VoiceSettings.ORDERBY_DESC:
+                    switch (sort) {
+                        case VoiceSettings.SORTBY_CHRONO:
+                            Collections.sort(mListHistory, new Comparator<History>() {
+                                @Override
+                                public int compare(final History object1, final History object2) {
+                                    return object2.getDate().compareTo(object1.getDate());
+                                }
+                            });
+                            break;
+                        case VoiceSettings.SORTBY_USAGE:
+                            Collections.sort(mListHistory, new Comparator<History>() {
+                                @Override
+                                public int compare(final History object1, final History object2) {
+                                    return (object2.getUsage()) - (object1.getUsage());
+                                }
+                            });
+                            break;
+                        case VoiceSettings.SORTBY_ALPHA:
+                            Collections.sort(mListHistory, new Comparator<History>() {
+                                @Override
+                                public int compare(final History object1, final History object2) {
+                                    return object2.getSentence().compareToIgnoreCase(object1.getSentence());
+                                }
+                            });
+                            break;
+                    }
+                    break;
+
+                case VoiceSettings.ORDERBY_ASC:
+                    switch (sort) {
+                        case VoiceSettings.SORTBY_CHRONO:
+                            Collections.sort(mListHistory, new Comparator<History>() {
+                                @Override
+                                public int compare(final History object1, final History object2) {
+                                    return object1.getDate().compareTo(object2.getDate());
+                                }
+                            });
+                            break;
+                        case VoiceSettings.SORTBY_USAGE:
+                            Collections.sort(mListHistory, new Comparator<History>() {
+                                @Override
+                                public int compare(final History object1, final History object2) {
+                                    return (object1.getUsage()) - (object2.getUsage());
+                                }
+                            });
+                            break;
+                        case VoiceSettings.SORTBY_ALPHA:
+                            Collections.sort(mListHistory, new Comparator<History>() {
+                                @Override
+                                public int compare(final History object1, final History object2) {
+                                    return object1.getSentence().compareToIgnoreCase(object2.getSentence());
+                                }
+                            });
+                            break;
+                    }
+                    break;
+            }
+        }
     }
 
     public void notifyDataSetChangedExceptPosition(int position){
@@ -178,6 +255,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
         super.onResume();
         Log.i(LOG_TAG,"onResume");
         mListHistory = mHistoryDAO.getAll();
+        sortHistoryList(mVoiceSettings.getHistorySort(),mVoiceSettings.getHistoryOrder());
         mHistoryAdapter.setHistoryList(mListHistory);
     }
 

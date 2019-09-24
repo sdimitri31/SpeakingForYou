@@ -27,4 +27,13 @@
         <item>Clair</item>
         <item>Sombre</item>
     </string-array>
+    <string name="alphabetical">Alphabétique</string>
+    <string name="ascendant">Croissant</string>
+    <string name="chronological">Chronologique</string>
+    <string name="descendant">Décroissant</string>
+    <string name="orderBy">Ordre :</string>
+    <string name="sortBy">Tri :</string>
+    <string name="usage">Utilisations</string>
+    <string name="textView_QuickSettings_Voice">Voix</string>
+    <string name="menu_item_sort">Tri</string>
 </resources>

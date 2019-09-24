@@ -17,10 +17,19 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder {
     public void setTextSentence(String sentence) {
         this.sentence.setText(sentence);
     }
+    public void setTextDateFormat(String dateFormat) {
+        this.dateFormat.setText(dateFormat);
+    }
+    public void setTextUsage(int usage) {
+        String usageTxt = "(" + usage + ")";
+        this.usage.setText(usageTxt);
+    }
 
     private static final String LOG_TAG = "SFY : HistoryViewHolder";
     private ConstraintLayout mConstraintLayout;
     TextView sentence;
+    TextView dateFormat;
+    TextView usage;
     private ImageButton mImageButton_more;
     private ImageButton mImageButton_Delete;
     private ImageButton mImageButton_AddToSaved;
@@ -36,6 +45,8 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder {
 
         mConstraintLayout =         itemView.findViewById(R.id.constraintLayout_HistoryCell);
         sentence =                  itemView.findViewById(R.id.textView_HistoryCell_Sentence);
+        dateFormat =                  itemView.findViewById(R.id.textView_HistoryCell_DateFormat);
+        usage =                  itemView.findViewById(R.id.textView_HistoryCell_Usage);
         mImageButton_more =         itemView.findViewById(R.id.imageButton_HistoryCell_More);
         mImageButton_Delete =       itemView.findViewById(R.id.imageButton_HistoryCell_Delete);
         mImageButton_AddToSaved =   itemView.findViewById(R.id.imageButton_HistoryCell_AddToSaved);

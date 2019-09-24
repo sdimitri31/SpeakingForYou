@@ -27,4 +27,13 @@
         <item>Light</item>
         <item>Dark</item>
     </string-array>
+    <string name="sortBy">Sort By : </string>
+    <string name="chronological">Chronological</string>
+    <string name="usage">Usage</string>
+    <string name="alphabetical">Alphabetical</string>
+    <string name="orderBy">Order by :</string>
+    <string name="ascendant">Ascendant</string>
+    <string name="descendant">Descendant</string>
+    <string name="menu_item_sort">Sort</string>
+    <string name="textView_QuickSettings_Voice">Voice</string>
 </resources>

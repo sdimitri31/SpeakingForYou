@@ -43,6 +43,7 @@
         <item name="actionBarStyle">@style/action_bar_dark</item>
         <item name="colorAccent">@color/dark_colorAccent</item>
         <item name="colorPrimaryLight">@color/dark_colorPrimaryLight</item>
+        <item name="colorPrimaryDark">@color/dark_colorPrimaryDark</item>
         <item name="colorRipple">@color/dark_colorRipple</item>
         <item name="colorBackgroundSurface">@color/dark_colorSurface</item>
     </style>

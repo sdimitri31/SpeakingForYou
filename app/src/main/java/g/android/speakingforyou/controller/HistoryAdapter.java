@@ -50,6 +50,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
 
         ((HistoryViewHolder) holder).setTextSentence(mHistoryList.get(position).getSentence());
+        ((HistoryViewHolder) holder).setTextDateFormat(mHistoryList.get(position).getStringDate());
+        ((HistoryViewHolder) holder).setTextUsage(mHistoryList.get(position).getUsage());
         if (isVisible){
             ((HistoryViewHolder) holder).setVisibility(View.VISIBLE);
         }else{

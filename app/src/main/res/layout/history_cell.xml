@@ -69,8 +69,31 @@
         android:layout_weight="2"
         android:padding="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/imageButton_HistoryCell_More"
+        app:layout_constraintEnd_toStartOf="@id/textView_HistoryCell_Usage"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Sentence" />
+
+    <TextView
+        android:id="@+id/textView_HistoryCell_DateFormat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/chronological"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/textView_HistoryCell_Usage"
+        app:layout_constraintStart_toStartOf="@+id/textView_HistoryCell_Sentence"
+        app:layout_constraintTop_toBottomOf="@+id/textView_HistoryCell_Sentence" />
+
+    <TextView
+        android:id="@+id/textView_HistoryCell_Usage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="@string/usage"
+        android:textAppearance="?textSettingSub"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView_HistoryCell_Sentence"
+        app:layout_constraintEnd_toStartOf="@+id/imageButton_HistoryCell_More"
+        app:layout_constraintStart_toEndOf="@id/textView_HistoryCell_Sentence"
+        app:layout_constraintTop_toTopOf="@+id/textView_HistoryCell_Sentence" />
 </android.support.constraint.ConstraintLayout>

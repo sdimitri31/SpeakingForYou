@@ -3,6 +3,7 @@ package g.android.speakingforyou.controller;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.graphics.PorterDuff;
 import android.media.AudioManager;
 import android.speech.tts.UtteranceProgressListener;
 import android.support.design.widget.TabLayout;
@@ -16,6 +17,10 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
@@ -24,9 +29,15 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.Date;
+import java.util.List;
 
 import g.android.speakingforyou.model.History;
 import g.android.speakingforyou.model.HistoryDAO;
@@ -63,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
     //-----------------------------------------------------------------------------------
     //                          Class Variables
     //-----------------------------------------------------------------------------------
+    boolean mIsMenuSortVisible = false;
 
     //Core functionality
     private VoiceSettings       mVoiceSettings;
@@ -90,6 +102,27 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
 
     //-----------------------------------------------------------------------------------
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_sort, menu);
+
+        menu.findItem(R.id.menu_item_sort).setVisible(mIsMenuSortVisible);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case R.id.menu_item_sort:
+                sortHistoryPopup();
+                return true;
+        }
+
+
+        return super.onOptionsItemSelected(item);
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -132,7 +165,6 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
         mIsSpeaking     = false;
         mAudioManager   = (AudioManager) getSystemService(MainActivity.AUDIO_SERVICE);
 
-        //mSavedSentencesDAO = new SavedSentencesDAO(this);
 
         mButton_DeleteText.setVisibility(View.INVISIBLE);
         mButton_SaveSentence.setVisibility(View.INVISIBLE);
@@ -156,6 +188,7 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
                 if(v == 0.0){
                     Log.v(LOG_TAG,"onPageScrolled i : " + i + " v : " + v + " i1 : " + i1);
                     mActiveFragment = i;
+                    setTabIcon();
                     updateFragment(i);
                 }
             }
@@ -170,6 +203,16 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
                     if(!mEditTextWasVisible)
                         setTextFieldVisible(true);
                 }
+
+                if(i == MENUTOP_HISTORY){
+                    mIsMenuSortVisible = true;
+                    invalidateOptionsMenu();
+                }
+                else {
+                    mIsMenuSortVisible = false;
+                    invalidateOptionsMenu();
+                }
+
             }
 
             @Override
@@ -234,6 +277,7 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
                 );
                 mSavedSentencesDAO.add(sentenceToSave);
 
+                Toast.makeText(getBaseContext(), getResources().getString(R.string.toast_addedToSavedSentences), Toast.LENGTH_SHORT).show();
                 updateFragment(MENUTOP_SAVEDSENTENCES);
             }
         });
@@ -296,16 +340,29 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
 
     private void speak(String sentence, boolean addToHistory){
         if (sentence.trim().length() > 0) {
+            //Delete spaces after the last word
+            sentence = sentence.replaceAll("\\s+$", "");
+
             mSpeaker.ttsSpeak(sentence);
             setIsSpeaking(true);
 
             if (addToHistory) {
-                //If the last sentence in the history is the same as the current sentence don't add
-                if (!mHistoryDAO.getLastHistory().equals(sentence)) {
-                    mHistoryDAO.add(new History(sentence));
-                    if (mActiveFragment == MENUTOP_HISTORY)
-                        updateFragment(MENUTOP_HISTORY);
+                History dbHistory = findUsingEnhancedForLoop(sentence, mHistoryDAO.getAll());
+
+                //If the sentence is already in the database
+                if (dbHistory != null) {
+                    Log.v(LOG_TAG,"dbHistory != null");
+                    dbHistory.setDate(new Date());
+                    dbHistory.setUsage(dbHistory.getUsage() + 1);
+                    mHistoryDAO.update(dbHistory);
                 }
+                else{
+                    Log.v(LOG_TAG,"dbHistory == null");
+                    mHistoryDAO.add(new History(sentence, new Date(), 1));
+                }
+
+                if (mActiveFragment == MENUTOP_HISTORY)
+                    updateFragment(MENUTOP_HISTORY);
             }
         }
         else {
@@ -339,6 +396,11 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
     private void setLanguage(String languageTag){
         mSpeaker.setLanguage(languageTag);
         mVoiceSettings.setLanguage(languageTag);
+        mSpeaker.setVoice(0);
+    }
+
+    private void setVoice(int voiceID){
+        mSpeaker.setVoice(voiceID);
     }
 
     private void themeSelector(){
@@ -386,6 +448,38 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
 
             @Override public void onClick(DialogInterface dialog, int item) {
                 setLanguage(mSpeaker.getListLanguageTag().get(item));
+                updateFragment(MENUTOP_SETTINGS);
+            }
+        });
+
+        //Creating CANCEL button in alert dialog, to dismiss the dialog box when nothing is selected
+        builder .setCancelable(false)
+                .setNegativeButton(getResources().getString(R.string.alertDialog_Cancel),new DialogInterface.OnClickListener() {
+
+                    @Override  public void onClick(DialogInterface dialog, int id) {
+                        //When clicked on CANCEL button the dalog will be dismissed
+                        dialog.dismiss();
+                    }
+                });
+
+        //Creating alert dialog
+        AlertDialog alert = builder.create();
+
+        //Showing alert dialog
+        alert.show();
+    }
+
+    private void voiceSelector(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, getAlertDialogStyle()));
+
+        //set the title for alert dialog
+        builder.setTitle(getResources().getString(R.string.textView_QuickSettings_Language));
+
+        //set items to alert dialog. i.e. our array , which will be shown as list view in alert dialog
+        builder.setItems(mSpeaker.getListVoicesNames().toArray(new String[mSpeaker.getListVoicesNames().size()]), new DialogInterface.OnClickListener() {
+
+            @Override public void onClick(DialogInterface dialog, int item) {
+                setVoice(item);
                 updateFragment(MENUTOP_SETTINGS);
             }
         });
@@ -457,7 +551,99 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
                 .setNegativeButton(getResources().getString(R.string.alertDialog_Cancel), dialogClickListener).show();
     }
 
+    public void sortHistoryPopup(){
+        LayoutInflater inflater = getLayoutInflater();
+        View alertLayout = inflater.inflate(R.layout.history_sorting_popup, null);
 
+        final RadioGroup  radioGroupSort = alertLayout.findViewById(R.id.radioGroup_History_SortBy);
+        RadioButton radioButtonSortChrono = alertLayout.findViewById(R.id.radioButton_History_SortBy_Chronological);
+        RadioButton radioButtonSortUsage = alertLayout.findViewById(R.id.radioButton_History_SortBy_Usage);
+        RadioButton radioButtonSortAlpha = alertLayout.findViewById(R.id.radioButton_History_SortBy_Alphabetical);
+
+        final RadioGroup  radioGroupOrder = alertLayout.findViewById(R.id.radioGroup_History_OrderBy);
+        RadioButton radioButtonOrderDesc = alertLayout.findViewById(R.id.radioButton_History_OrderBy_Desc);
+        RadioButton radioButtonOrderAsc = alertLayout.findViewById(R.id.radioButton_History_OrderBy_Asc);
+
+        switch (mVoiceSettings.getHistorySort()){
+            case VoiceSettings.SORTBY_CHRONO:
+                radioButtonSortChrono.setChecked(true);
+                break;
+            case VoiceSettings.SORTBY_USAGE:
+                radioButtonSortUsage.setChecked(true);
+                break;
+            case VoiceSettings.SORTBY_ALPHA:
+                radioButtonSortAlpha.setChecked(true);
+                break;
+        }
+
+        switch (mVoiceSettings.getHistoryOrder()){
+            case VoiceSettings.ORDERBY_DESC:
+                radioButtonOrderDesc.setChecked(true);
+                break;
+            case VoiceSettings.ORDERBY_ASC:
+                radioButtonOrderAsc.setChecked(true);
+                break;
+        }
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this, getAlertDialogStyle()));
+        // this set the view from XML inside AlertDialog
+        alert.setView(alertLayout);
+        alert.setNegativeButton(getResources().getString(R.string.alertDialog_Cancel), new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+
+        alert.setPositiveButton(getResources().getString(R.string.alertDialog_OK), new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                int sorting = 0;
+                int ordering = 0;
+
+                switch (radioGroupSort.getCheckedRadioButtonId()){
+                    case R.id.radioButton_History_SortBy_Chronological:
+                        sorting = VoiceSettings.SORTBY_CHRONO;
+                        break;
+                    case R.id.radioButton_History_SortBy_Usage:
+                        sorting = VoiceSettings.SORTBY_USAGE;
+                        break;
+                    case R.id.radioButton_History_SortBy_Alphabetical:
+                        sorting = VoiceSettings.SORTBY_ALPHA;
+                        break;
+                }
+
+                switch (radioGroupOrder.getCheckedRadioButtonId()){
+                    case R.id.radioButton_History_OrderBy_Desc:
+                        ordering = VoiceSettings.ORDERBY_DESC;
+                        break;
+                    case R.id.radioButton_History_OrderBy_Asc:
+                        ordering = VoiceSettings.ORDERBY_ASC;
+                        break;
+                }
+
+                mVoiceSettings.setHistorySort(sorting);
+                mVoiceSettings.setHistoryOrder(ordering);
+                updateFragment(MENUTOP_HISTORY);
+            }
+        });
+        AlertDialog dialog = alert.create();
+        dialog.show();
+    }
+
+    public History findUsingEnhancedForLoop(
+            String sentence, List<History> historyList) {
+
+        for (History history : historyList) {
+            Log.v(LOG_TAG,"findUsingEnhancedForLoop : " + history.getSentence() +" ? " + sentence);
+            if (history.getSentence().toLowerCase().equals(sentence.toLowerCase())) {
+                Log.v(LOG_TAG,"      Match  : " + history.getSentence() +" = " + sentence);
+                return history;
+            }
+        }
+        return null;
+    }
     //-----------------------------------------------------------------------------------
     //                          FRAGMENTS METHODS
     //-----------------------------------------------------------------------------------
@@ -472,8 +658,11 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
 
     private void setTabIcon(){
         mTabLayout.getTabAt(MENUTOP_SAVEDSENTENCES).setIcon(android.R.drawable.btn_star);
+        mTabLayout.getTabAt(MENUTOP_SAVEDSENTENCES).getIcon().setColorFilter(getTabIconColor(MENUTOP_SAVEDSENTENCES), PorterDuff.Mode.MULTIPLY);
         mTabLayout.getTabAt(MENUTOP_HISTORY).setIcon(android.R.drawable.ic_menu_recent_history);
+        mTabLayout.getTabAt(MENUTOP_HISTORY).getIcon().setColorFilter(getTabIconColor(MENUTOP_HISTORY), PorterDuff.Mode.MULTIPLY);
         mTabLayout.getTabAt(MENUTOP_SETTINGS).setIcon(android.R.drawable.ic_menu_manage);
+        mTabLayout.getTabAt(MENUTOP_SETTINGS).getIcon().setColorFilter(getTabIconColor(MENUTOP_SETTINGS), PorterDuff.Mode.MULTIPLY);
     }
 
     // slide the view from below itself to the current position
@@ -589,6 +778,10 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
                 languageSelector();
                 break;
 
+            case R.id.layout_Settings_Voice:
+                voiceSelector();
+                break;
+
             case R.id.button_Settings_Test:
                 String testSentence = getResources().getString(R.string.settings_TestSentence);
                 mSpeaker.ttsSpeak(testSentence);
@@ -640,6 +833,25 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
     //-----------------------------------------------------------------------------------
     //                          OTHER
     //-----------------------------------------------------------------------------------
+
+
+    private int getTabIconColor(int tab){
+        if(mCurrentTheme == THEME_LIGHT){
+            if(mActiveFragment == tab)
+                return getResources().getColor(R.color.light_colorAccent);
+
+            return getResources().getColor(R.color.light_colorTabIcon);
+        }
+        else if(mCurrentTheme == THEME_DARK){
+            if(mActiveFragment == tab)
+                return getResources().getColor(R.color.dark_colorAccent);
+
+            return getResources().getColor(R.color.dark_colorTabIcon);
+        }
+        else{
+            return getResources().getColor(R.color.dark_colorTabIcon);
+        }
+    }
 
     private int getAlertDialogStyle(){
         if(mCurrentTheme == THEME_LIGHT){

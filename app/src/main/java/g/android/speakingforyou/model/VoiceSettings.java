@@ -8,12 +8,26 @@ import java.util.Locale;
 public class VoiceSettings {
 
     private static final String LOG_TAG = "SFY : VoiceSettings";
+
+    public static final int SORTBY_CHRONO = 0;
+    public static final int SORTBY_USAGE = 1;
+    public static final int SORTBY_ALPHA = 2;
+    public static final int ORDERBY_DESC = 0;
+    public static final int ORDERBY_ASC = 1;
+
     private String mLastLanguageUsed;
     private int mLastPitchUsed;
     private int mLastSpeechRateUsed;
+    private int mLastVoiceUsed;
+    private String mLastVoiceNameUsed;
+    private int mVoicesFound;
+
+
     private boolean mTalkMode;
     private SharedPreferences mSharedPreferences;
-    public int mThemeIndex;
+    private int mThemeIndex;
+    private int mHistorySort;
+    private int mHistoryOrder;
 
     public VoiceSettings(SharedPreferences sharedPreferences)
     {
@@ -32,16 +46,79 @@ public class VoiceSettings {
         //getTalkMode();
     }
 
+    public void setVoicesFound(int nbVoicesFound){
+        mVoicesFound = nbVoicesFound;
+        //Save the voice for next boot
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putInt("nbVoicesFound", mVoicesFound);
+        editor.apply();
+    }
+
+    public int getVoicesFound(){
+        //Initialize the last used voice
+        int nbVoicesFound = mSharedPreferences.getInt("nbVoicesFound", -1);
+        if (nbVoicesFound != -1) {
+            mVoicesFound = nbVoicesFound;
+            Log.i(LOG_TAG, "nbVoicesFound : " + nbVoicesFound);
+        }
+        else {
+            setVoicesFound(0);
+        }
+        return mVoicesFound;
+    }
+
+    public void setLastVoiceUsed(int voiceIndex){
+        mLastVoiceUsed = voiceIndex;
+        //Save the voice for next boot
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putInt("voice", mLastVoiceUsed);
+        editor.apply();
+    }
+
+    public int getLastVoiceUsed(){
+        //Initialize the last used voice
+        int voice = mSharedPreferences.getInt("voice", -1);
+        if (voice != -1) {
+            mLastVoiceUsed = voice;
+            Log.i(LOG_TAG, "voice : " + voice);
+        }
+        else {
+            setLastVoiceUsed(0);
+        }
+        return mLastVoiceUsed;
+    }
+
+    public void setLastVoiceNameUsed(String voiceName){
+        mLastVoiceNameUsed = voiceName;
+        //Save the voice for next boot
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putString("voiceName", mLastVoiceNameUsed);
+        editor.apply();
+    }
+
+    public String getLastVoiceNameUsed(){
+        //Initialize the last used voice
+        String voiceName = mSharedPreferences.getString("voiceName", null);
+        if (voiceName != null) {
+            mLastVoiceNameUsed = voiceName;
+            Log.i(LOG_TAG, "voiceName : " + voiceName);
+        }
+        else {
+            setLastVoiceNameUsed(null);
+        }
+        return mLastVoiceNameUsed;
+    }
+
     public void setTheme(int themeIndex){
         mThemeIndex = themeIndex;
-        //Save the Pitch for next boot
+        //Save the Theme for next boot
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.putInt("theme", mThemeIndex);
         editor.apply();
     }
 
     public int getTheme(){
-        //Initialize the last used pitch
+        //Initialize the last used theme
         int theme = mSharedPreferences.getInt("theme", -1);
         if (theme != -1) {
             mThemeIndex = theme;
@@ -51,6 +128,48 @@ public class VoiceSettings {
             setTheme(0);
         }
         return mThemeIndex;
+    }
+
+    public void setHistorySort(int sorting){
+        mHistorySort = sorting;
+        //Save the Sorting for next boot
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putInt("historySort", mHistorySort);
+        editor.apply();
+    }
+
+    public int getHistorySort(){
+        //Initialize the last used historySort
+        int historySort = mSharedPreferences.getInt("historySort", -1);
+        if (historySort != -1) {
+            mHistorySort = historySort;
+            Log.i(LOG_TAG, "historySort : " + historySort);
+        }
+        else {
+            setHistorySort(0);
+        }
+        return mHistorySort;
+    }
+
+    public void setHistoryOrder(int order){
+        mHistoryOrder = order;
+        //Save the Sorting for next boot
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putInt("historyOrder", mHistoryOrder);
+        editor.apply();
+    }
+
+    public int getHistoryOrder(){
+        //Initialize the last used historyOrder
+        int historyOrder = mSharedPreferences.getInt("historyOrder", -1);
+        if (historyOrder != -1) {
+            mHistoryOrder = historyOrder;
+            Log.i(LOG_TAG, "historyOrder : " + historyOrder);
+        }
+        else {
+            setHistoryOrder(0);
+        }
+        return mHistoryOrder;
     }
 
     public void setPitch(int pitch){

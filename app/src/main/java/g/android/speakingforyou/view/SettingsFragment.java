@@ -46,7 +46,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
     private SeekBar seekBar_Speed;
     private SeekBar seekBar_Pitch;
     private LinearLayout linearLayout_Language;
+    private LinearLayout linearLayout_Voice;
     private TextView textView_SelectedLanguage;
+    private TextView textView_SelectedVoice;
     private Button button_Test;
     private Button button_Reset;
     private Switch switch_TalkMode;
@@ -97,6 +99,11 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
         textView_SelectedLanguage = rootView.findViewById((R.id.textView_Settings_SelectedLanguage));
         linearLayout_Language.setOnClickListener(this);
 
+        //Voice
+        linearLayout_Voice = rootView.findViewById(R.id.layout_Settings_Voice);
+        textView_SelectedVoice = rootView.findViewById((R.id.textView_Settings_SelectedVoice));
+        linearLayout_Voice.setOnClickListener(this);
+
         //Speed
         seekBar_Speed = rootView.findViewById(R.id.seekBar_Settings_Speed);
         seekBar_Speed.setOnSeekBarChangeListener(this);
@@ -142,12 +149,24 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
     public void updateFields(){
         Log.i(LOG_TAG,"updateFields");
         seekBar_Volume.setProgress(mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+
         String languageDisplayName = (Locale.forLanguageTag(mVoiceSettings.getLanguage())).getDisplayName();
         textView_SelectedLanguage.setText(languageDisplayName);
+
+        if(mVoiceSettings.getVoicesFound() > 0){
+            linearLayout_Voice.setVisibility(View.VISIBLE);
+            textView_SelectedVoice.setText(mVoiceSettings.getLastVoiceNameUsed());
+        }
+        else{
+            linearLayout_Voice.setVisibility(View.GONE);
+        }
+
         seekBar_Speed.setProgress(mVoiceSettings.getSpeechRate());
         seekBar_Pitch.setProgress(mVoiceSettings.getPitch());
+
         String[] selectedTheme = getResources().getStringArray(R.array.theme_array);
         textView_SelectedTheme.setText(selectedTheme[mVoiceSettings.getTheme()]);
+
         switch_TalkMode.setChecked(mVoiceSettings.getTalkMode());
     }
 
