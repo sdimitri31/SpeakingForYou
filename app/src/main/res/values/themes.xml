@@ -27,6 +27,7 @@
         <item name="colorPrimaryDark">@color/light_colorPrimaryDark</item>
         <item name="colorRipple">@color/light_colorRipple</item>
         <item name="colorBackgroundSurface">@color/light_colorSurface</item>
+        <item name="colorTextSettingTitle">@color/light_colorPrimaryText</item>
     </style>
 
     <style name="Theme.Custom_Dark" parent="Theme.Base">
@@ -46,6 +47,7 @@
         <item name="colorPrimaryDark">@color/dark_colorPrimaryDark</item>
         <item name="colorRipple">@color/dark_colorRipple</item>
         <item name="colorBackgroundSurface">@color/dark_colorSurface</item>
+        <item name="colorTextSettingTitle">@color/dark_colorPrimaryText</item>
     </style>
 
 </resources>

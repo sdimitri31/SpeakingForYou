@@ -21,5 +21,6 @@
     <attr name="colorPrimaryLight" format="reference" />
     <attr name="colorRipple" format="reference" />
     <attr name="colorBackgroundSurface" format="reference" />
+    <attr name="colorTextSettingTitle" format="reference" />
 
 </resources>

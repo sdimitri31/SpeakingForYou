@@ -9,7 +9,7 @@
     <string name="textView_QuickSettings_TalkMode">Talk mode</string>
     <string name="textView_QuickSettings_TalkMode_Description">Delete the text when \"Enter\" is pressed</string>
     <string name="textView_QuickSettings__MoreSettings">More settings</string>
-    <string name="alertDialog_Cancel">Cancel</string>
+    <string name="textView_QuickSettings_Voice">Voice</string>
     <string name="textView_Settings_Theme">Theme</string>
     <string name="button_Settings_Test">Test</string>
     <string name="button_Settings_Reset">Reset</string>
@@ -19,7 +19,8 @@
     <string name="settings_TestSentence">Hello, how are you ?</string>
     <string name="alertDialog_DeleteHistoryQuestion">Do you really want to clear the history ? ( This action can\'t be undone )</string>
     <string name="alertDialog_OK">OK</string>
-    <string name="alertDialog_DeleteSavecSentencesQuestion">Do you really want to clear the saved sentences ? ( This action can\'t be undone )</string>
+    <string name="alertDialog_Cancel">Cancel</string>
+    <string name="alertDialog_DeleteSavedSentencesQuestion">Do you really want to clear the saved sentences ? ( This action can\'t be undone )</string>
     <string name="button_PopupWindow_Delete">Delete the sentence</string>
     <string name="button_PopupWindow_AddSaved">Add to saved sentences</string>
     <string name="toast_addedToSavedSentences">Added to saved sentences</string>
@@ -27,6 +28,7 @@
         <item>Light</item>
         <item>Dark</item>
     </string-array>
+    <string name="menu_item_sort">Sort</string>
     <string name="sortBy">Sort By : </string>
     <string name="chronological">Chronological</string>
     <string name="usage">Usage</string>
@@ -34,6 +36,11 @@
     <string name="orderBy">Order by :</string>
     <string name="ascendant">Ascendant</string>
     <string name="descendant">Descendant</string>
-    <string name="menu_item_sort">Sort</string>
-    <string name="textView_QuickSettings_Voice">Voice</string>
+    <string name="textView_about_title">About</string>
+    <string name="textView_about_devTitle">Developper : </string>
+    <string name="textView_about_dev_members">Dimitri Suso</string>
+    <string name="textView_about_contactTitle">Contact : </string>
+    <string name="textView_about_contactEmail">suso.dimitri@orange.fr</string>
+    <string name="textView_about_versionTitle">Version : </string>
+    <string name="textView_about_version"><u>v0.5</u></string>
 </resources>

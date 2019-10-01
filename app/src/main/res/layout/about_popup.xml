@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/linearLayout_about_Popup"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/layout_cell_padding_left_right"
+        android:paddingTop="@dimen/layout_cell_padding_top_bottom"
+        android:paddingEnd="@dimen/layout_cell_padding_left_right"
+        android:paddingBottom="@dimen/layout_cell_padding_top_bottom">
+
+    <TextView
+        android:id="@+id/textView_about_title"
+        style="?textSettingTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/layout_cell_padding_top_bottom"
+        android:paddingBottom="@dimen/layout_cell_padding_top_bottom"
+        android:text="@string/textView_about_title"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView_about_dev_title"
+        style="?textSettingTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/layout_cell_margin_top_bottom"
+        android:paddingBottom="@dimen/layout_cell_margin_top_bottom"
+        android:text="@string/textView_about_devTitle" />
+
+    <TextView
+        android:id="@+id/textView_about_dev_members"
+        style="?textSettingSub"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/layout_button_padding_left_right"
+        android:paddingEnd="@dimen/layout_button_padding_left_right"
+        android:text="@string/textView_about_dev_members" />
+
+    <TextView
+        android:id="@+id/textView_about_contactTitle"
+        style="?textSettingTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/layout_cell_margin_top_bottom"
+        android:paddingBottom="@dimen/layout_cell_margin_top_bottom"
+        android:text="@string/textView_about_contactTitle" />
+
+    <TextView
+        android:id="@+id/textView_about_contactEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autoLink="email"
+        android:paddingStart="@dimen/layout_button_padding_left_right"
+        android:paddingEnd="@dimen/layout_button_padding_left_right"
+        android:text="@string/textView_about_contactEmail" />
+
+    <TextView
+        android:id="@+id/textView_about_versionTitle"
+        style="?textSettingTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/layout_cell_margin_top_bottom"
+        android:paddingBottom="@dimen/layout_cell_margin_top_bottom"
+        android:text="@string/textView_about_versionTitle" />
+
+    <TextView
+        android:id="@+id/textView_about_version"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/layout_button_padding_left_right"
+        android:paddingEnd="@dimen/layout_button_padding_left_right"
+        android:text="@string/textView_about_version"
+        android:textAllCaps="false"
+        android:textColor="?colorAccent" />
+</LinearLayout>

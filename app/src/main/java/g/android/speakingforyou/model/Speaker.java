@@ -9,6 +9,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -19,16 +21,16 @@ public class Speaker {
     private TextToSpeech    textToSpeech;
     private VoiceSettings   mVoiceSettings;
 
-    private List<Voice>     listVoices;
-    private List<String>    listVoicesName;
+    private List<Voice>     mListVoices;
+    private List<Locale>    mListLocales;
     private List<String>    listLanguageName;   //Store the displayName to show to the user
     private List<String>    listLanguageTag;    //Store the LocaleTag to set up the TTS module
 
     public Speaker(final Context context, VoiceSettings voiceSettings)
     {
         mVoiceSettings = voiceSettings;
-        listVoices = new ArrayList<>();
-        listVoicesName = new ArrayList<>();
+        mListVoices = new ArrayList<>();
+        mListLocales = new ArrayList<>();
         listLanguageName = new ArrayList<>();
         listLanguageTag = new ArrayList<>();
 
@@ -63,11 +65,19 @@ public class Speaker {
                     for (Locale locale : locales) {
                         int res = textToSpeech.isLanguageAvailable(locale);
                         if (res == TextToSpeech.LANG_COUNTRY_AVAILABLE) {
+                            mListLocales.add(locale);
                             listLanguageTag.add(locale.toLanguageTag());
                             listLanguageName.add(locale.getDisplayName());
                             Log.i(LOG_TAG, "Language Tag : " + locale.toLanguageTag() + " DisplayName : " + locale.getDisplayName());
                         }
                     }
+
+                    Collections.sort(mListLocales, new Comparator<Locale>() {
+                        @Override
+                        public int compare(final Locale object1, final Locale object2) {
+                            return object1.getDisplayName().compareToIgnoreCase(object2.getDisplayName());
+                        }
+                    });
 
                     Log.i(LOG_TAG, "Initialization success.");
 
@@ -81,10 +91,10 @@ public class Speaker {
     }
 
     public void setVoice(int voiceID){
-        if((listVoices.size() > 0) && (listVoices.size() > voiceID )) {
-            textToSpeech.setVoice(listVoices.get(voiceID));
+        if((mListVoices.size() > 0) && (mListVoices.size() > voiceID )) {
+            textToSpeech.setVoice(mListVoices.get(voiceID));
             mVoiceSettings.setLastVoiceUsed(voiceID);
-            mVoiceSettings.setLastVoiceNameUsed(listVoicesName.get(voiceID));
+            mVoiceSettings.setLastVoiceNameUsed(mListVoices.get(voiceID).getName());
         }
         else{
             mVoiceSettings.setLastVoiceUsed(-1);
@@ -92,30 +102,36 @@ public class Speaker {
     }
 
     public List<Voice> getListVoices(){
-        return listVoices;
+        return mListVoices;
     }
 
-    public List<String> getListVoicesNames(){
-        return listVoicesName;
-    }
 
     private void setListVoices(Locale locale){
-        listVoices.clear();
-        listVoicesName.clear();
+        mListVoices.clear();
         Log.i(LOG_TAG, "localeToLookFor :" + locale);
 
         for (Voice voice : textToSpeech.getVoices() ) {
             if(voice.getLocale().getDisplayName().equals(locale.getDisplayName())){
-                listVoices.add(voice);
-                listVoicesName.add(voice.getName());
+                mListVoices.add(voice);
                 //Log.i(LOG_TAG, "      MATCH     :");
             }
         }
-        Log.i(LOG_TAG, "listVoices.size() :" + listVoices.size());
-        mVoiceSettings.setVoicesFound(listVoices.size());
+        Collections.sort(mListVoices, new Comparator<Voice>() {
+            @Override
+            public int compare(final Voice object1, final Voice object2) {
+                return object1.getName().compareToIgnoreCase(object2.getName());
+            }
+        });
+        Log.i(LOG_TAG, "mListVoices.size() :" + mListVoices.size());
+        mVoiceSettings.setVoicesFound(mListVoices.size());
     }
 
     public TextToSpeech getTextToSpeech(){ return textToSpeech; }
+
+
+    public List<Locale> getListLocales(){
+        return mListLocales;
+    }
 
     public void setLanguage(String language){
         textToSpeech.setLanguage(Locale.forLanguageTag(language));

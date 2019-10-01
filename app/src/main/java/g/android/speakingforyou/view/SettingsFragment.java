@@ -56,6 +56,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
     TextView textView_SelectedTheme;
     private Button button_ClearHistory;
     private Button button_ClearSavedSentences;
+    private Button button_About;
 
 
     // 1 - Declare our interface that will be implemented by any container activity
@@ -136,6 +137,10 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
         //Clear Saved Sentences
         button_ClearSavedSentences = rootView.findViewById(R.id.button_Settings_ClearSavedSentences);
         button_ClearSavedSentences.setOnClickListener(this);
+
+        //About
+        button_About = rootView.findViewById(R.id.button_Settings_About);
+        button_About.setOnClickListener(this);
 
         mSettingsContentObserver = new SettingsContentObserver(getActivity().getApplicationContext(), new Handler(), seekBar_Volume );
         getActivity().getApplicationContext().getContentResolver().registerContentObserver(

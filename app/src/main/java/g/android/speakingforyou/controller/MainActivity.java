@@ -3,9 +3,12 @@ package g.android.speakingforyou.controller;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.speech.tts.UtteranceProgressListener;
+import android.speech.tts.Voice;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -38,6 +41,7 @@ import android.widget.Toast;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import g.android.speakingforyou.model.History;
 import g.android.speakingforyou.model.HistoryDAO;
@@ -443,24 +447,30 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
         //set the title for alert dialog
         builder.setTitle(getResources().getString(R.string.textView_QuickSettings_Language));
 
-        //set items to alert dialog. i.e. our array , which will be shown as list view in alert dialog
-        builder.setItems(mSpeaker.getListLanguageName().toArray(new String[mSpeaker.getListLanguageName().size()]), new DialogInterface.OnClickListener() {
+        String[] array = new String[mSpeaker.getListLocales().size()];
+        int index = 0;
+        int selectedLocale = 0;
+        String tagToFind = mVoiceSettings.getLanguage();
+        for (Locale value : mSpeaker.getListLocales()) {
+            array[index] = value.getDisplayName();
+            if(tagToFind.equals(value.toLanguageTag())){
+                selectedLocale = index;
+            }
+            index++;
+        }
 
-            @Override public void onClick(DialogInterface dialog, int item) {
-                setLanguage(mSpeaker.getListLanguageTag().get(item));
+        // add a radio button list
+        builder.setSingleChoiceItems(array, selectedLocale, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                Log.i(LOG_TAG, "setSingleChoiceItems " + item);
+                setLanguage(mSpeaker.getListLocales().get(item).toLanguageTag());
                 updateFragment(MENUTOP_SETTINGS);
+                dialog.dismiss();
             }
         });
 
-        //Creating CANCEL button in alert dialog, to dismiss the dialog box when nothing is selected
-        builder .setCancelable(false)
-                .setNegativeButton(getResources().getString(R.string.alertDialog_Cancel),new DialogInterface.OnClickListener() {
-
-                    @Override  public void onClick(DialogInterface dialog, int id) {
-                        //When clicked on CANCEL button the dalog will be dismissed
-                        dialog.dismiss();
-                    }
-                });
+        builder.setNegativeButton(getResources().getString(R.string.alertDialog_Cancel), null);
 
         //Creating alert dialog
         AlertDialog alert = builder.create();
@@ -473,26 +483,27 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, getAlertDialogStyle()));
 
         //set the title for alert dialog
-        builder.setTitle(getResources().getString(R.string.textView_QuickSettings_Language));
+        builder.setTitle(getResources().getString(R.string.textView_QuickSettings_Voice));
 
-        //set items to alert dialog. i.e. our array , which will be shown as list view in alert dialog
-        builder.setItems(mSpeaker.getListVoicesNames().toArray(new String[mSpeaker.getListVoicesNames().size()]), new DialogInterface.OnClickListener() {
+        String[] array = new String[mSpeaker.getListVoices().size()];
+        int index = 0;
+        for (Voice value : mSpeaker.getListVoices()) {
+            array[index] = value.getName();
+            index++;
+        }
 
-            @Override public void onClick(DialogInterface dialog, int item) {
+        // add a radio button list
+        builder.setSingleChoiceItems(array, mVoiceSettings.getLastVoiceUsed(), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                Log.i(LOG_TAG, "setSingleChoiceItems " + item);
                 setVoice(item);
                 updateFragment(MENUTOP_SETTINGS);
+                dialog.dismiss();
             }
         });
 
-        //Creating CANCEL button in alert dialog, to dismiss the dialog box when nothing is selected
-        builder .setCancelable(false)
-                .setNegativeButton(getResources().getString(R.string.alertDialog_Cancel),new DialogInterface.OnClickListener() {
-
-                    @Override  public void onClick(DialogInterface dialog, int id) {
-                        //When clicked on CANCEL button the dalog will be dismissed
-                        dialog.dismiss();
-                    }
-                });
+        builder.setNegativeButton(getResources().getString(R.string.alertDialog_Cancel), null);
 
         //Creating alert dialog
         AlertDialog alert = builder.create();
@@ -523,7 +534,7 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
         };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, getAlertDialogStyle()));
-        builder.setMessage(getResources().getString(R.string.alertDialog_DeleteSavecSentencesQuestion))
+        builder.setMessage(getResources().getString(R.string.alertDialog_DeleteSavedSentencesQuestion))
                 .setPositiveButton(getResources().getString(R.string.alertDialog_OK), dialogClickListener)
                 .setNegativeButton(getResources().getString(R.string.alertDialog_Cancel), dialogClickListener)
                 .show();
@@ -644,6 +655,42 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
         }
         return null;
     }
+
+
+    public void aboutPopup(){
+        LayoutInflater inflater = getLayoutInflater();
+        View alertLayout = inflater.inflate(R.layout.about_popup, null);
+
+        TextView tv = alertLayout.findViewById(R.id.textView_about_version);
+        tv.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                } catch (Exception e) {
+                    Log.d(LOG_TAG,"Message ="+e);
+
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + appPackageName)));
+                }
+            }
+        });
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this, getAlertDialogStyle()));
+        // this set the view from XML inside AlertDialog
+        alert.setView(alertLayout);
+
+        alert.setPositiveButton(getResources().getString(R.string.alertDialog_OK), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = alert.create();
+        dialog.show();
+    }
+
     //-----------------------------------------------------------------------------------
     //                          FRAGMENTS METHODS
     //-----------------------------------------------------------------------------------
@@ -657,12 +704,17 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
     }
 
     private void setTabIcon(){
-        mTabLayout.getTabAt(MENUTOP_SAVEDSENTENCES).setIcon(android.R.drawable.btn_star);
-        mTabLayout.getTabAt(MENUTOP_SAVEDSENTENCES).getIcon().setColorFilter(getTabIconColor(MENUTOP_SAVEDSENTENCES), PorterDuff.Mode.MULTIPLY);
-        mTabLayout.getTabAt(MENUTOP_HISTORY).setIcon(android.R.drawable.ic_menu_recent_history);
-        mTabLayout.getTabAt(MENUTOP_HISTORY).getIcon().setColorFilter(getTabIconColor(MENUTOP_HISTORY), PorterDuff.Mode.MULTIPLY);
-        mTabLayout.getTabAt(MENUTOP_SETTINGS).setIcon(android.R.drawable.ic_menu_manage);
-        mTabLayout.getTabAt(MENUTOP_SETTINGS).getIcon().setColorFilter(getTabIconColor(MENUTOP_SETTINGS), PorterDuff.Mode.MULTIPLY);
+        try {
+            mTabLayout.getTabAt(MENUTOP_SAVEDSENTENCES).setIcon(android.R.drawable.btn_star);
+            mTabLayout.getTabAt(MENUTOP_SAVEDSENTENCES).getIcon().setColorFilter(getTabIconColor(MENUTOP_SAVEDSENTENCES), PorterDuff.Mode.MULTIPLY);
+            mTabLayout.getTabAt(MENUTOP_HISTORY).setIcon(android.R.drawable.ic_menu_recent_history);
+            mTabLayout.getTabAt(MENUTOP_HISTORY).getIcon().setColorFilter(getTabIconColor(MENUTOP_HISTORY), PorterDuff.Mode.MULTIPLY);
+            mTabLayout.getTabAt(MENUTOP_SETTINGS).setIcon(android.R.drawable.ic_menu_manage);
+            mTabLayout.getTabAt(MENUTOP_SETTINGS).getIcon().setColorFilter(getTabIconColor(MENUTOP_SETTINGS), PorterDuff.Mode.MULTIPLY);
+        }
+        catch (NullPointerException e){
+            Log.e(LOG_TAG,"setTabIcon NullPointerException");
+        }
     }
 
     // slide the view from below itself to the current position
@@ -802,6 +854,10 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
 
             case R.id.layout_Settings_Theme:
                 themeSelector();
+                break;
+
+            case R.id.button_Settings_About:
+                aboutPopup();
                 break;
         }
 

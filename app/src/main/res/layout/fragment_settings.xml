@@ -254,6 +254,17 @@
             android:layout_height="wrap_content"
             android:text="@string/button_Settings_ClearHistory" />
 
+        <Button
+            android:id="@+id/button_Settings_About"
+            style="?layoutCellRipple"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="15dp"
+            android:paddingEnd="10dp"
+            android:text="@string/textView_about_title"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="?colorTextSettingTitle" />
 
     </LinearLayout>
 </ScrollView>
