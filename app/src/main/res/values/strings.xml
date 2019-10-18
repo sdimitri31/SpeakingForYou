@@ -42,5 +42,5 @@
     <string name="textView_about_contactTitle">Contact : </string>
     <string name="textView_about_contactEmail">suso.dimitri@orange.fr</string>
     <string name="textView_about_versionTitle">Version : </string>
-    <string name="textView_about_version"><u>v0.5</u></string>
+    <string name="textView_about_version" translatable="false"><u>v0.65</u></string>
 </resources>

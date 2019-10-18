@@ -110,19 +110,33 @@ public class Speaker {
         mListVoices.clear();
         Log.i(LOG_TAG, "localeToLookFor :" + locale);
 
-        for (Voice voice : textToSpeech.getVoices() ) {
-            if(voice.getLocale().getDisplayName().equals(locale.getDisplayName())){
-                mListVoices.add(voice);
-                //Log.i(LOG_TAG, "      MATCH     :");
+        try {
+            //Fetching all voice for the selected locale
+            for (Voice voice : textToSpeech.getVoices() ) {
+                if(voice.getLocale().getDisplayName().equals(locale.getDisplayName())){
+                    mListVoices.add(voice);
+                    Log.i(LOG_TAG, "      MATCH     :" + voice.getLocale().getDisplayName());
+                }
+            }
+
+            //If some voices are found => Sorting by Name
+            Log.i(LOG_TAG, "mListVoices.size() :" + mListVoices.size());
+            if(mListVoices.size() > 0) {
+                Collections.sort(mListVoices, new Comparator<Voice>() {
+                    @Override
+                    public int compare(final Voice object1, final Voice object2) {
+                        return object1.getName().compareToIgnoreCase(object2.getName());
+                    }
+                });
             }
         }
-        Collections.sort(mListVoices, new Comparator<Voice>() {
-            @Override
-            public int compare(final Voice object1, final Voice object2) {
-                return object1.getName().compareToIgnoreCase(object2.getName());
-            }
-        });
-        Log.i(LOG_TAG, "mListVoices.size() :" + mListVoices.size());
+        catch (Exception e){
+
+            Log.i(LOG_TAG, "Exception :" + e.getLocalizedMessage());
+        }
+
+
+        //Setup the setting to know if different voices are available
         mVoiceSettings.setVoicesFound(mListVoices.size());
     }
 

@@ -40,7 +40,6 @@
     <string name="textView_about_contactTitle">"Contact : "</string>
     <string name="textView_about_dev_members">Dimitri Suso</string>
     <string name="textView_about_title">A propos</string>
-    <string name="textView_about_version"><u>v0.5</u></string>
     <string name="textView_about_versionTitle">"Version : "</string>
     <string name="textView_about_devTitle">Développeur :</string>
 </resources>
