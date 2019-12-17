@@ -63,12 +63,17 @@ public class Speaker {
                     Locale[] locales = Locale.getAvailableLocales();
 
                     for (Locale locale : locales) {
-                        int res = textToSpeech.isLanguageAvailable(locale);
-                        if (res == TextToSpeech.LANG_COUNTRY_AVAILABLE) {
-                            mListLocales.add(locale);
-                            listLanguageTag.add(locale.toLanguageTag());
-                            listLanguageName.add(locale.getDisplayName());
-                            Log.i(LOG_TAG, "Language Tag : " + locale.toLanguageTag() + " DisplayName : " + locale.getDisplayName());
+                        try{//Used to prevent crashes with some locales
+                            int res = textToSpeech.isLanguageAvailable(locale);
+                            if (res == TextToSpeech.LANG_COUNTRY_AVAILABLE) {
+                                mListLocales.add(locale);
+                                listLanguageTag.add(locale.toLanguageTag());
+                                listLanguageName.add(locale.getDisplayName());
+                                Log.i(LOG_TAG, "Language Tag : " + locale.toLanguageTag() + " DisplayName : " + locale.getDisplayName());
+                            }
+                        }
+                        catch (Exception e){
+                            Log.e(LOG_TAG, e.getMessage());
                         }
                     }
 

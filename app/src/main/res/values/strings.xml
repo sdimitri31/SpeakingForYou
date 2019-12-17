@@ -38,9 +38,9 @@
     <string name="descendant">Descendant</string>
     <string name="textView_about_title">About</string>
     <string name="textView_about_devTitle">Developper : </string>
-    <string name="textView_about_dev_members">Dimitri Suso</string>
+    <string name="textView_about_dev_members" translatable="false">Dimitri Suso</string>
     <string name="textView_about_contactTitle">Contact : </string>
-    <string name="textView_about_contactEmail">suso.dimitri@orange.fr</string>
+    <string name="textView_about_contactEmail" translatable="false">suso.dimitri@orange.fr</string>
     <string name="textView_about_versionTitle">Version : </string>
     <string name="textView_about_version" translatable="false"><u>v0.65</u></string>
 </resources>
