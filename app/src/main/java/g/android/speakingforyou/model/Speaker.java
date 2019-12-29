@@ -207,4 +207,11 @@ public class Speaker {
         textToSpeech.stop();
         textToSpeech.shutdown();
     }
+
+    public void setALL(){
+        setLanguage(mVoiceSettings.getLanguage());
+        setVoice(mVoiceSettings.getLastVoiceUsed());
+        setSpeechRate(mVoiceSettings.getSpeechRate());
+        setPitch(mVoiceSettings.getPitch());
+    }
 }

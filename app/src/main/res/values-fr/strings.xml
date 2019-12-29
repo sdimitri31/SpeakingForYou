@@ -40,4 +40,7 @@
     <string name="textView_about_title">A propos</string>
     <string name="textView_about_versionTitle">"Version : "</string>
     <string name="textView_about_devTitle">Développeur :</string>
+    <string name="tabLayout_SavedSentences">FAVORIS</string>
+    <string name="tabLayout_History">HISTORIQUE</string>
+    <string name="tabLayout_Settings">PARAMETRES</string>
 </resources>

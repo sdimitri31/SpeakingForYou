@@ -9,15 +9,20 @@ import android.view.ViewGroup;
 import java.util.HashMap;
 import java.util.Map;
 
+import g.android.speakingforyou.R;
 import g.android.speakingforyou.view.HistoryFragment;
 import g.android.speakingforyou.view.SavedSentencesFragment;
 import g.android.speakingforyou.view.SettingsFragment;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
-    private static int NUM_ITEMS = 3;
+    private static int NUM_ITEMS = 2;
     private Map<Integer, String> mFragmentTags;
     private FragmentManager mFragmentManager;
 
+    private String[] mTitleList = {
+            "FAVORIS",
+            "HISTORIQUE",
+    };
 
     public ViewPagerAdapter(FragmentManager fm) {
         super(fm);
@@ -52,8 +57,6 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
                 return SavedSentencesFragment.newInstance();
             case 1:
                 return HistoryFragment.newInstance();
-            case 2:
-                return SettingsFragment.newInstance();
             default:
                 return null;
         }
@@ -66,12 +69,19 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-
-        return "";
+        String title = mTitleList[position % mTitleList.length];
+        return title;
     }
 
     @Override
     public int getItemPosition(Object object) {
         return POSITION_NONE;
     }
+
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        int virtualPosition = position % mTitleList.length;
+        super.destroyItem(container, virtualPosition, object);
+    }
+
 }

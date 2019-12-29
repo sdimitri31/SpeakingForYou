@@ -6,7 +6,9 @@ public interface ClickListener {
 
     void onPositionClicked(int position);
 
-    void onLongClicked(int position);
+    void onLongClick(View view, int position, long id);
 
     void onItemClick(View view, int position, long id);
+
+
 }

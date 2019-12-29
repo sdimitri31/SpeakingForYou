@@ -1,16 +1,21 @@
 package g.android.speakingforyou.view;
 
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.lang.ref.WeakReference;
 
 import g.android.speakingforyou.R;
+import g.android.speakingforyou.controller.HistoryAdapter;
+import g.android.speakingforyou.model.History;
 
 public class HistoryViewHolder extends RecyclerView.ViewHolder {
 
@@ -33,33 +38,88 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder {
     private ImageButton mImageButton_more;
     private ImageButton mImageButton_Delete;
     private ImageButton mImageButton_AddToSaved;
+    private ImageView mImageView_Star;
     private WeakReference<ClickListener> listenerRef;
     private LinearLayout mLinearLayout_PopUp;
     boolean show;
+    boolean showSelectedRadioButtonVisible;
+
+    History currentItem;
+    public CheckBox mCheckBox_SelectedCell;
+    View itemView;
+    private HistoryAdapter.OnItemCheckListener onItemClick;
 
 
-    public HistoryViewHolder(View itemView, ClickListener listener) {
+
+    public HistoryViewHolder(View itemView, ClickListener listener, @NonNull HistoryAdapter.OnItemCheckListener onItemCheckListener) {
         super(itemView);
+        this.itemView = itemView;
+        this.onItemClick = onItemCheckListener;
 
         listenerRef = new WeakReference<>(listener);
 
         mConstraintLayout =         itemView.findViewById(R.id.constraintLayout_HistoryCell);
         sentence =                  itemView.findViewById(R.id.textView_HistoryCell_Sentence);
-        dateFormat =                  itemView.findViewById(R.id.textView_HistoryCell_DateFormat);
-        usage =                  itemView.findViewById(R.id.textView_HistoryCell_Usage);
+        dateFormat =                itemView.findViewById(R.id.textView_HistoryCell_DateFormat);
+        usage =                     itemView.findViewById(R.id.textView_HistoryCell_Usage);
         mImageButton_more =         itemView.findViewById(R.id.imageButton_HistoryCell_More);
         mImageButton_Delete =       itemView.findViewById(R.id.imageButton_HistoryCell_Delete);
         mImageButton_AddToSaved =   itemView.findViewById(R.id.imageButton_HistoryCell_AddToSaved);
+        mImageView_Star =           itemView.findViewById(R.id.imageView_HistoryCell_Star);
         mLinearLayout_PopUp =       itemView.findViewById(R.id.linearLayout_HistoryCell_PopUp);
+        mCheckBox_SelectedCell =    itemView.findViewById(R.id.checkBox_HistoryCell_SelectItem);
+        mCheckBox_SelectedCell.setClickable(false);
 
         show = false;
+        setVisibilitySelectRadioButton(View.GONE);
 
         mConstraintLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 Log.i(LOG_TAG,"History ID : " + view.getId());
-                listenerRef.get().onItemClick(view, getAdapterPosition(), view.getId());
+                //If the checkbox are not visible
+                //Return the sentence to speak
+                if(!showSelectedRadioButtonVisible) {
+                    listenerRef.get().onItemClick(view, getAdapterPosition(), view.getId());
+                }
+                //Select the item
+                else{
+                    mCheckBox_SelectedCell.setChecked( !mCheckBox_SelectedCell.isChecked());
+                    if (mCheckBox_SelectedCell.isChecked()) {
+                        onItemClick.onItemCheck(currentItem);
+                    } else {
+                        onItemClick.onItemUncheck(currentItem);
+                    }
+                }
+            }
+        });
+
+        mConstraintLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Log.i(LOG_TAG,"HISTORY LONG CLICK ID : " + view.getId());
+                //If the checkbox are not visible
+                //Send the longClickEvent then check the box
+                if(!showSelectedRadioButtonVisible) {
+                    listenerRef.get().onLongClick(view, getAdapterPosition(), view.getId());
+                    mCheckBox_SelectedCell.setChecked( !mCheckBox_SelectedCell.isChecked());
+                    if (mCheckBox_SelectedCell.isChecked()) {
+                        onItemClick.onItemCheck(currentItem);
+                    } else {
+                        onItemClick.onItemUncheck(currentItem);
+                    }
+                }
+                //Select the item
+                else{
+                    mCheckBox_SelectedCell.setChecked( !mCheckBox_SelectedCell.isChecked());
+                    if (mCheckBox_SelectedCell.isChecked()) {
+                        onItemClick.onItemCheck(currentItem);
+                    } else {
+                        onItemClick.onItemUncheck(currentItem);
+                    }
+                }
+                return true;
             }
         });
 
@@ -87,6 +147,31 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder {
                 listenerRef.get().onItemClick(view, getAdapterPosition(), view.getId());
             }
         });
+    }
+
+    public void showStar(boolean isShown){
+        if(isShown)
+            mImageView_Star.setVisibility(View.VISIBLE);
+        else
+            mImageView_Star.setVisibility(View.INVISIBLE);
+
+    }
+
+    public void setOnClickListener(View.OnClickListener onClickListener) {
+        itemView.setOnClickListener(onClickListener);
+    }
+
+
+    public void setVisibilitySelectRadioButton(int visibility){
+
+        mCheckBox_SelectedCell.setVisibility(visibility);
+
+        showSelectedRadioButtonVisible = visibility != View.GONE;
+    }
+
+
+    public void setCurrentItem(History currentItem){
+        this.currentItem = currentItem;
     }
 
     public void setVisibility(int visibility){

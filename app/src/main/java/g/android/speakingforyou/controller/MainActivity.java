@@ -4,13 +4,16 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.PorterDuff;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.net.Uri;
+import android.os.Build;
 import android.speech.tts.UtteranceProgressListener;
 import android.speech.tts.Voice;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +28,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.view.inputmethod.EditorInfo;
@@ -39,6 +44,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -55,8 +61,9 @@ import g.android.speakingforyou.view.HistoryFragment;
 import g.android.speakingforyou.view.SettingsFragment;
 import g.android.speakingforyou.view.SavedSentencesFragment;
 
-public class MainActivity extends AppCompatActivity implements SavedSentencesFragment.OnButtonClickedListener,
-        HistoryFragment.OnButtonClickedListener, SettingsFragment.OnButtonClickedListener, SettingsFragment.OnSeekBarChangeListener {
+
+public class MainActivity extends AppCompatActivity implements SavedSentencesFragment.OnButtonClickedListener, SavedSentencesFragment.OnLongClickListener ,
+        HistoryFragment.OnButtonClickedListener, HistoryFragment.OnLongClickListener , SettingsFragment.OnButtonClickedListener, SettingsFragment.OnSeekBarChangeListener {
 
 
     //-----------------------------------------------------------------------------------
@@ -78,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
     //-----------------------------------------------------------------------------------
     //                          Class Variables
     //-----------------------------------------------------------------------------------
-    boolean mIsMenuSortVisible = false;
+    boolean mIsMenuSortVisible          = false;
 
     //Core functionality
     private VoiceSettings       mVoiceSettings;
@@ -89,6 +96,20 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
     //Databases
     final private SavedSentencesDAO     mSavedSentencesDAO = new SavedSentencesDAO(this);
     final private HistoryDAO            mHistoryDAO = new HistoryDAO(this);
+
+    //Header
+    private ImageButton         mButton_Settings;
+    private ImageButton         mButton_ThemeMode;
+    private ImageButton         mButton_Sort;
+
+    //CheckBox Menu
+    private ConstraintLayout    mConstraintLayout_ActionRadioButton;
+    private ImageButton         mSelection_Clear;
+    private ImageButton         mSelection_All;
+    private ImageButton         mSelection_Delete;
+    private ImageButton         mSelection_Add;
+    private ImageButton         mSelection_Remove;
+    private boolean mIsActionRadioButtonVisible = false;
 
     //Fragments
     private ViewPager           mViewPager;
@@ -130,8 +151,16 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Avoid white status bar with white text on SDK lower than 23
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(Color.BLACK);
+        }
+
         //Setting up Voice and Audio
         mVoiceSettings  = new VoiceSettings(getSharedPreferences(PREF_NAME, MODE_PRIVATE));
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -147,6 +176,19 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
         //-----------------------------------------------------------------------------------
         //                          Initializing UI ID's
         //-----------------------------------------------------------------------------------
+
+        //HEADER
+        mButton_Settings            =   findViewById(R.id.imageButton_Settings);
+        mButton_ThemeMode           =   findViewById(R.id.imageButton_ThemeMode);
+        mButton_Sort                =   findViewById(R.id.imageButton_Sort);
+
+        //CHECKBOX MENU
+        mConstraintLayout_ActionRadioButton = findViewById(R.id.constrainLayout_ActionRadioButton);
+        mSelection_Clear                    = findViewById(R.id.imageButton_CancelSelectRadioButton);
+        mSelection_All                      = findViewById(R.id.imageButton_SelectAllRadioButton);
+        mSelection_Delete                   = findViewById(R.id.imageButton_DeleteAllSelectedRadioButton);
+        mSelection_Add                      = findViewById(R.id.imageButton_AddAllRadioButton);
+        mSelection_Remove                   = findViewById(R.id.imageButton_DeleteFromSavedRadioButton);
 
         //VIEWPAGER ELEMENTS
         mViewPager                  =   findViewById(R.id.viewPager_Fragments);
@@ -181,26 +223,66 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
         mTabLayout.setupWithViewPager(mViewPager);
         setTabIcon();
 
+
         //-----------------------------------------------------------------------------------
         //                          Initializing Listeners
         //-----------------------------------------------------------------------------------
 
+        //--------------------
+        //HEADER Listeners
+        mButton_Settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivityForResult(intent, 1);
+            }
+        });
+
+        mButton_ThemeMode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggleThemeMode();
+            }
+        });
+
+        mButton_Sort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mActiveFragment == MENUTOP_HISTORY){
+                    sortHistoryPopup();
+                }
+                else if(mActiveFragment == MENUTOP_SAVEDSENTENCES){
+                    sortSavedSentencesPopup();
+                }
+            }
+        });
+
+        //--------------------
+        //VIEWPAGER Listeners
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i1) {
                 //Refresh the fragment
                 if(v == 0.0){
                     Log.v(LOG_TAG,"onPageScrolled i : " + i + " v : " + v + " i1 : " + i1);
-                    mActiveFragment = i;
-                    setTabIcon();
-                    updateFragment(i);
+                    //Update the fragment only if the fragment has changed
+                    if(mActiveFragment != i){
+                        mActiveFragment = i;
+                        setTabIcon();
+                        updateFragment(i);
+                    }
                 }
             }
 
             @Override
             public void onPageSelected(int i) {
-                //Show/Hide Keyboard depending on the fragment we are
                 Log.v(LOG_TAG,"onPageSelected : " + i);
+                /*
+                DEPRECATED
+                USED BEFORE THE NEW DESIGN
+
+
+                //Show/Hide Keyboard depending on the fragment we are
                 if(i == MENUTOP_SETTINGS)
                     setTextFieldVisible(false);
                 else {
@@ -217,10 +299,109 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
                     invalidateOptionsMenu();
                 }
 
+                mActiveFragment = i;
+                setTabIcon();
+                updateFragment(i);
+                */
+
             }
 
             @Override
             public void onPageScrollStateChanged(int i) {}
+        });
+
+        //--------------------
+        // CHECKBOX MENU Listeners
+        mSelection_Clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (mActiveFragment){
+                    case MENUTOP_SAVEDSENTENCES:
+                        SavedSentencesFragment savedSentencesFragment =  (SavedSentencesFragment)mPagerAdapter.getFragment(MENUTOP_SAVEDSENTENCES);
+                        savedSentencesFragment.unSelectAll();
+                        break;
+                    case MENUTOP_HISTORY:
+                        HistoryFragment historyFragment =  (HistoryFragment)mPagerAdapter.getFragment(MENUTOP_HISTORY);
+                        historyFragment.unSelectAll();
+                        break;
+                }
+                exitSelectMenu();
+            }
+        });
+
+        mSelection_All.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (mActiveFragment){
+                    case MENUTOP_SAVEDSENTENCES:
+                        SavedSentencesFragment savedSentencesFragment =  (SavedSentencesFragment)mPagerAdapter.getFragment(MENUTOP_SAVEDSENTENCES);
+                        savedSentencesFragment.selectALL();
+                        break;
+                    case MENUTOP_HISTORY:
+                        HistoryFragment historyFragment =  (HistoryFragment)mPagerAdapter.getFragment(MENUTOP_HISTORY);
+                        historyFragment.selectALL();
+                        break;
+                }
+            }
+        });
+
+        mSelection_Delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (mActiveFragment){
+                    case MENUTOP_SAVEDSENTENCES:
+                        SavedSentencesFragment savedSentencesFragment =  (SavedSentencesFragment)mPagerAdapter.getFragment(MENUTOP_SAVEDSENTENCES);
+                        for (SavedSentences savedSentence: savedSentencesFragment.getCurrentSelectedItems()) {
+                            mSavedSentencesDAO.delete(savedSentence.getId());
+                        }
+                        savedSentencesFragment.unSelectAll();
+                        break;
+                    case MENUTOP_HISTORY:
+                        HistoryFragment historyFragment =  (HistoryFragment)mPagerAdapter.getFragment(MENUTOP_HISTORY);
+                        for (History history: historyFragment.getCurrentSelectedItems()) {
+                            mHistoryDAO.delete(history.getId());
+                        }
+                        historyFragment.unSelectAll();
+                        break;
+                }
+                exitSelectMenu();
+            }
+        });
+
+        mSelection_Add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mActiveFragment == MENUTOP_HISTORY) {
+                        HistoryFragment historyFragment =  (HistoryFragment)mPagerAdapter.getFragment(MENUTOP_HISTORY);
+                        //Loop for every selected items
+                        for (History history : historyFragment.getCurrentSelectedItems()) {
+                            //If the sentence is not already saved, we add it to savedSentences
+                            if(findSavedSentenceUsingEnhancedForLoop(history.getSentence(), mSavedSentencesDAO.getAll()) == null)
+                                mSavedSentencesDAO.add(new SavedSentences(history.getSentence(), mSavedSentencesDAO.getNextPosition(), new Date(), 0));
+                        }
+                        historyFragment.unSelectAll();
+                    Toast.makeText(getBaseContext(), getResources().getString(R.string.toast_addedToSavedSentences), Toast.LENGTH_SHORT).show();
+                }
+                exitSelectMenu();
+            }
+        });
+
+        mSelection_Remove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mActiveFragment == MENUTOP_HISTORY) {
+                    HistoryFragment historyFragment =  (HistoryFragment)mPagerAdapter.getFragment(MENUTOP_HISTORY);
+                    //Loop for every selected items
+                    for (History history : historyFragment.getCurrentSelectedItems()) {
+                        //If the sentence is already saved, we remove it to savedSentences
+                        SavedSentences foundSaved = findSavedSentenceUsingEnhancedForLoop(history.getSentence(), mSavedSentencesDAO.getAll());
+                        if(foundSaved != null)
+                            mSavedSentencesDAO.delete(foundSaved.getId());
+                    }
+                    historyFragment.unSelectAll();
+                }
+                exitSelectMenu();
+            }
         });
 
         //--------------------
@@ -277,7 +458,7 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
                 String sentence = mEditText_Sentence.getText().toString();
 
                 SavedSentences sentenceToSave = new SavedSentences(sentence,
-                        mSavedSentencesDAO.getNextPosition()
+                        mSavedSentencesDAO.getNextPosition(), new Date(), 1
                 );
                 mSavedSentencesDAO.add(sentenceToSave);
 
@@ -321,6 +502,7 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
         });
     }
 
+
     //-----------------------------------------------------------------------------------
     //                          SPEAKING METHODS
     //-----------------------------------------------------------------------------------
@@ -331,10 +513,10 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
             public void run() {
 
                 if (isSpeaking) {
-                    mButton_ToggleSpeaking.setImageResource(R.drawable.stop);
+                    mButton_ToggleSpeaking.setImageResource(R.drawable.ic_stop);
                 }
                 else {
-                    mButton_ToggleSpeaking.setImageResource(R.drawable.play);
+                    mButton_ToggleSpeaking.setImageResource(R.drawable.ic_play);
                 }
 
                 mIsSpeaking = isSpeaking;
@@ -368,6 +550,14 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
                 if (mActiveFragment == MENUTOP_HISTORY)
                     updateFragment(MENUTOP_HISTORY);
             }
+
+            SavedSentences savedSentences = findSavedSentenceUsingEnhancedForLoop(sentence, mSavedSentencesDAO.getAll());
+            if(savedSentences != null){
+                savedSentences.setDate(new Date());
+                savedSentences.setUsage(savedSentences.getUsage() + 1);
+                mSavedSentencesDAO.update(savedSentences);
+            }
+
         }
         else {
             Log.v(LOG_TAG,"Empty sentence");
@@ -562,6 +752,41 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
                 .setNegativeButton(getResources().getString(R.string.alertDialog_Cancel), dialogClickListener).show();
     }
 
+    public void aboutPopup(){
+        LayoutInflater inflater = getLayoutInflater();
+        View alertLayout = inflater.inflate(R.layout.about_popup, null);
+
+        TextView tv = alertLayout.findViewById(R.id.textView_about_version);
+        tv.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                } catch (Exception e) {
+                    Log.d(LOG_TAG,"Message ="+e);
+
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + appPackageName)));
+                }
+            }
+        });
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this, getAlertDialogStyle()));
+        // this set the view from XML inside AlertDialog
+        alert.setView(alertLayout);
+
+        alert.setPositiveButton(getResources().getString(R.string.alertDialog_OK), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = alert.create();
+        dialog.show();
+    }
+
+
     public void sortHistoryPopup(){
         LayoutInflater inflater = getLayoutInflater();
         View alertLayout = inflater.inflate(R.layout.history_sorting_popup, null);
@@ -643,7 +868,89 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
         dialog.show();
     }
 
-    public History findUsingEnhancedForLoop(
+    public void sortSavedSentencesPopup(){
+        LayoutInflater inflater = getLayoutInflater();
+        View alertLayout = inflater.inflate(R.layout.saved_sentence_sorting_popup, null);
+
+        final RadioGroup  radioGroupSort = alertLayout.findViewById(R.id.radioGroup_SavedSentence_SortBy);
+        RadioButton radioButtonSortChrono = alertLayout.findViewById(R.id.radioButton_SavedSentence_SortBy_Chronological);
+        RadioButton radioButtonSortUsage = alertLayout.findViewById(R.id.radioButton_SavedSentence_SortBy_Usage);
+        RadioButton radioButtonSortAlpha = alertLayout.findViewById(R.id.radioButton_SavedSentence_SortBy_Alphabetical);
+
+        final RadioGroup  radioGroupOrder = alertLayout.findViewById(R.id.radioGroup_SavedSentence_OrderBy);
+        RadioButton radioButtonOrderDesc = alertLayout.findViewById(R.id.radioButton_SavedSentence_OrderBy_Desc);
+        RadioButton radioButtonOrderAsc = alertLayout.findViewById(R.id.radioButton_SavedSentence_OrderBy_Asc);
+
+        switch (mVoiceSettings.getSavedSentencesSort()){
+            case VoiceSettings.SORTBY_CHRONO:
+                radioButtonSortChrono.setChecked(true);
+                break;
+            case VoiceSettings.SORTBY_USAGE:
+                radioButtonSortUsage.setChecked(true);
+                break;
+            case VoiceSettings.SORTBY_ALPHA:
+                radioButtonSortAlpha.setChecked(true);
+                break;
+        }
+
+        switch (mVoiceSettings.getSavedSentencesOrder()){
+            case VoiceSettings.ORDERBY_DESC:
+                radioButtonOrderDesc.setChecked(true);
+                break;
+            case VoiceSettings.ORDERBY_ASC:
+                radioButtonOrderAsc.setChecked(true);
+                break;
+        }
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this, getAlertDialogStyle()));
+        // this set the view from XML inside AlertDialog
+        alert.setView(alertLayout);
+        alert.setNegativeButton(getResources().getString(R.string.alertDialog_Cancel), new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+
+        alert.setPositiveButton(getResources().getString(R.string.alertDialog_OK), new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                int sorting = 0;
+                int ordering = 0;
+
+                switch (radioGroupSort.getCheckedRadioButtonId()){
+                    case R.id.radioButton_SavedSentence_SortBy_Chronological:
+                        sorting = VoiceSettings.SORTBY_CHRONO;
+                        break;
+                    case R.id.radioButton_SavedSentence_SortBy_Usage:
+                        sorting = VoiceSettings.SORTBY_USAGE;
+                        break;
+                    case R.id.radioButton_SavedSentence_SortBy_Alphabetical:
+                        sorting = VoiceSettings.SORTBY_ALPHA;
+                        break;
+                }
+
+                switch (radioGroupOrder.getCheckedRadioButtonId()){
+                    case R.id.radioButton_SavedSentence_OrderBy_Desc:
+                        ordering = VoiceSettings.ORDERBY_DESC;
+                        break;
+                    case R.id.radioButton_SavedSentence_OrderBy_Asc:
+                        ordering = VoiceSettings.ORDERBY_ASC;
+                        break;
+                }
+
+                mVoiceSettings.setSavedSentencesSort(sorting);
+                mVoiceSettings.setSavedSentencesOrder(ordering);
+                updateFragment(MENUTOP_SAVEDSENTENCES);
+            }
+        });
+        AlertDialog dialog = alert.create();
+        dialog.show();
+    }
+
+
+    public static History findUsingEnhancedForLoop(
             String sentence, List<History> historyList) {
 
         for (History history : historyList) {
@@ -656,39 +963,17 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
         return null;
     }
 
+    public static SavedSentences findSavedSentenceUsingEnhancedForLoop(
+            String sentence, List<SavedSentences> savedSentencesList) {
 
-    public void aboutPopup(){
-        LayoutInflater inflater = getLayoutInflater();
-        View alertLayout = inflater.inflate(R.layout.about_popup, null);
-
-        TextView tv = alertLayout.findViewById(R.id.textView_about_version);
-        tv.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
-                try {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-                } catch (Exception e) {
-                    Log.d(LOG_TAG,"Message ="+e);
-
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + appPackageName)));
-                }
+        for (SavedSentences savedSentences : savedSentencesList) {
+            Log.v(LOG_TAG,"findUsingEnhancedForLoop : " + savedSentences.getSentence() +" ? " + sentence);
+            if (savedSentences.getSentence().toLowerCase().equals(sentence.toLowerCase())) {
+                Log.v(LOG_TAG,"      Match  : " + savedSentences.getSentence() +" = " + sentence);
+                return savedSentences;
             }
-        });
-
-        AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this, getAlertDialogStyle()));
-        // this set the view from XML inside AlertDialog
-        alert.setView(alertLayout);
-
-        alert.setPositiveButton(getResources().getString(R.string.alertDialog_OK), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        AlertDialog dialog = alert.create();
-        dialog.show();
+        }
+        return null;
     }
 
     //-----------------------------------------------------------------------------------
@@ -699,18 +984,36 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
         Log.v(LOG_TAG,"updateFragment : " + fragmentIndex);
         Fragment fragment = mPagerAdapter.getFragment(fragmentIndex);
         if (fragment != null) {
+            if(fragmentIndex == MENUTOP_SAVEDSENTENCES){
+                SavedSentencesFragment fragmentSaved =  (SavedSentencesFragment)mPagerAdapter.getFragment(MENUTOP_SAVEDSENTENCES);
+                fragmentSaved.unSelectAll();
+            }
+            else if(fragmentIndex == MENUTOP_HISTORY){
+                HistoryFragment fragmentHistory =  (HistoryFragment)mPagerAdapter.getFragment(MENUTOP_HISTORY);
+                fragmentHistory.unSelectAll();
+            }
             fragment.onResume();
+            setActionRadioButtonVisible(false);
         }
     }
 
     private void setTabIcon(){
         try {
-            mTabLayout.getTabAt(MENUTOP_SAVEDSENTENCES).setIcon(android.R.drawable.btn_star);
-            mTabLayout.getTabAt(MENUTOP_SAVEDSENTENCES).getIcon().setColorFilter(getTabIconColor(MENUTOP_SAVEDSENTENCES), PorterDuff.Mode.MULTIPLY);
-            mTabLayout.getTabAt(MENUTOP_HISTORY).setIcon(android.R.drawable.ic_menu_recent_history);
-            mTabLayout.getTabAt(MENUTOP_HISTORY).getIcon().setColorFilter(getTabIconColor(MENUTOP_HISTORY), PorterDuff.Mode.MULTIPLY);
-            mTabLayout.getTabAt(MENUTOP_SETTINGS).setIcon(android.R.drawable.ic_menu_manage);
-            mTabLayout.getTabAt(MENUTOP_SETTINGS).getIcon().setColorFilter(getTabIconColor(MENUTOP_SETTINGS), PorterDuff.Mode.MULTIPLY);
+            mTabLayout.getTabAt(MENUTOP_SAVEDSENTENCES).setText(getResources().getString(R.string.tabLayout_SavedSentences));
+            mTabLayout.getTabAt(MENUTOP_HISTORY).setText(getResources().getString(R.string.tabLayout_History));
+            if(mActiveFragment == MENUTOP_HISTORY){
+                mButton_Sort.setImageDrawable(getDrawable(R.drawable.ic_sort_hist));
+            }
+            else if(mActiveFragment == MENUTOP_SAVEDSENTENCES){
+                mButton_Sort.setImageDrawable(getDrawable(R.drawable.ic_sort_fav));
+            }
+           // mTabLayout.getTabAt(MENUTOP_SETTINGS).setText(getResources().getString(R.string.tabLayout_Settings));
+           // mTabLayout.getTabAt(MENUTOP_SAVEDSENTENCES).setIcon(android.R.drawable.btn_star);
+           // mTabLayout.getTabAt(MENUTOP_SAVEDSENTENCES).getIcon().setColorFilter(getTabIconColor(MENUTOP_SAVEDSENTENCES), PorterDuff.Mode.MULTIPLY);
+           // mTabLayout.getTabAt(MENUTOP_HISTORY).setIcon(android.R.drawable.ic_menu_recent_history);
+           // mTabLayout.getTabAt(MENUTOP_HISTORY).getIcon().setColorFilter(getTabIconColor(MENUTOP_HISTORY), PorterDuff.Mode.MULTIPLY);
+           // mTabLayout.getTabAt(MENUTOP_SETTINGS).setIcon(android.R.drawable.ic_menu_manage);
+           // mTabLayout.getTabAt(MENUTOP_SETTINGS).getIcon().setColorFilter(getTabIconColor(MENUTOP_SETTINGS), PorterDuff.Mode.MULTIPLY);
         }
         catch (NullPointerException e){
             Log.e(LOG_TAG,"setTabIcon NullPointerException");
@@ -776,7 +1079,7 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
     }
 
     private void setTextFieldVisible(boolean isVisible){
-        final LinearLayout linearLayout = findViewById(R.id.linearLayout_EditText_Play);
+        final LinearLayout linearLayout = findViewById(R.id.constraintLayout_EditText_Play);
 
         if(isVisible) {
             expand(linearLayout);
@@ -819,7 +1122,7 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
                 History history = (History) view.getTag();
 
                 Log.i(LOG_TAG,"     From History : " + history);
-                speak(history.getSentence(), false);
+                speak(history.getSentence(), true);
                 break;
 
             case R.id.switch_Settings_TalkMode:
@@ -864,6 +1167,35 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
     }
 
     @Override
+    public void onLongClick(View view) {
+        Log.i(LOG_TAG,"CallBack received  : onLongClick " + getResources().getResourceEntryName(view.getId()));
+        setActionRadioButtonVisible(true);
+    }
+
+    public void setActionRadioButtonVisible(boolean isVisible){
+        mIsActionRadioButtonVisible = isVisible;
+        if(isVisible) {
+            mConstraintLayout_ActionRadioButton.setVisibility(View.VISIBLE);
+            mTabLayout.setVisibility(View.INVISIBLE);
+            switch (mActiveFragment){
+                case MENUTOP_SAVEDSENTENCES:
+                    mSelection_Add.setVisibility(View.INVISIBLE);
+                    mSelection_Remove.setVisibility(View.INVISIBLE);
+                    break;
+
+                case MENUTOP_HISTORY:
+                    mSelection_Add.setVisibility(View.VISIBLE);
+                    mSelection_Remove.setVisibility(View.VISIBLE);
+                    break;
+            }
+        }
+        else {
+            mConstraintLayout_ActionRadioButton.setVisibility(View.INVISIBLE);
+            mTabLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
     public void onProgressChanged(SeekBar seekBar, int i, boolean b){}
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -890,7 +1222,7 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
     //                          OTHER
     //-----------------------------------------------------------------------------------
 
-
+/*
     private int getTabIconColor(int tab){
         if(mCurrentTheme == THEME_LIGHT){
             if(mActiveFragment == tab)
@@ -908,6 +1240,23 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
             return getResources().getColor(R.color.dark_colorTabIcon);
         }
     }
+*/
+
+    private void exitSelectMenu(){
+        setActionRadioButtonVisible(false);
+        updateFragment(mActiveFragment);
+    }
+
+    private void toggleThemeMode() {
+        if(mCurrentTheme == THEME_LIGHT){
+            Utils.changeToTheme(MainActivity.this, THEME_DARK);
+            mVoiceSettings.setTheme(THEME_DARK);
+        }
+        else if(mCurrentTheme == THEME_DARK){
+            Utils.changeToTheme(MainActivity.this, THEME_LIGHT);
+            mVoiceSettings.setTheme(THEME_LIGHT);
+        }
+    }
 
     private int getAlertDialogStyle(){
         if(mCurrentTheme == THEME_LIGHT){
@@ -919,6 +1268,40 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
         else{
             return R.style.alert_dialog_dark;
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        checkSettings();
+    }
+
+    private void checkSettings() {
+        Log.v(LOG_TAG,"checkSettings" );
+        mSpeaker.setALL();
+
+        if (mVoiceSettings.getTheme() != mCurrentTheme) {
+            Utils.changeToTheme(MainActivity.this, mVoiceSettings.getTheme());
+        }
+
+        updateFragment(mActiveFragment);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(mIsActionRadioButtonVisible){
+            exitSelectMenu();
+            Log.v(LOG_TAG,"onBackPressed mIsActionRadioButtonVisible" );
+        }
+        else{
+            MainActivity.super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        setActionRadioButtonVisible(false);
     }
 
     @Override

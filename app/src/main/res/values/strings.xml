@@ -42,5 +42,8 @@
     <string name="textView_about_contactTitle">Contact : </string>
     <string name="textView_about_contactEmail" translatable="false">suso.dimitri@orange.fr</string>
     <string name="textView_about_versionTitle">Version : </string>
-    <string name="textView_about_version" translatable="false"><u>v0.65</u></string>
+    <string name="textView_about_version" translatable="false"><u>v0.70-beta</u></string>
+    <string name="tabLayout_SavedSentences">FAVORITES</string>
+    <string name="tabLayout_History">HISTORY</string>
+    <string name="tabLayout_Settings">SETTINGS</string>
 </resources>

@@ -18,7 +18,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String TABLE_CREATE_SAVEDSENTENCES = "CREATE TABLE " + TABLE_NAME_SAVEDSENTENCES + " (" +
             KEY + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             SENTENCE + " TEXT, " +
-            POSITION + " INTERGER)";
+            POSITION + " INTERGER," +
+            DATEFORMAT + " TEXT, " +
+            USAGE + " INTEGER)";;
 
     public static final String TABLE_CREATE_HISTORY = "CREATE TABLE " + TABLE_NAME_HISTORY + " (" +
             KEY + " INTEGER PRIMARY KEY AUTOINCREMENT, " +

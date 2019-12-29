@@ -28,6 +28,8 @@ public class VoiceSettings {
     private int mThemeIndex;
     private int mHistorySort;
     private int mHistoryOrder;
+    private int mSavedSentencesSort;
+    private int mSavedSentencesOrder;
 
     public VoiceSettings(SharedPreferences sharedPreferences)
     {
@@ -170,6 +172,48 @@ public class VoiceSettings {
             setHistoryOrder(0);
         }
         return mHistoryOrder;
+    }
+
+    public void setSavedSentencesSort(int sorting){
+        mSavedSentencesSort = sorting;
+        //Save the Sorting for next boot
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putInt("savedSentencesSort", mSavedSentencesSort);
+        editor.apply();
+    }
+
+    public int getSavedSentencesSort(){
+        //Initialize the last used mSavedSentencesSort
+        int savedSentencesSort = mSharedPreferences.getInt("savedSentencesSort", -1);
+        if (savedSentencesSort != -1) {
+            mSavedSentencesSort = savedSentencesSort;
+            Log.i(LOG_TAG, "savedSentencesOrder : " + savedSentencesSort);
+        }
+        else {
+            setSavedSentencesSort(0);
+        }
+        return mSavedSentencesSort;
+    }
+
+    public void setSavedSentencesOrder(int order){
+        mSavedSentencesOrder = order;
+        //Save the Sorting for next boot
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putInt("savedSentencesOrder", mSavedSentencesOrder);
+        editor.apply();
+    }
+
+    public int getSavedSentencesOrder(){
+        //Initialize the last used savedSentencesOrder
+        int savedSentencesOrder = mSharedPreferences.getInt("savedSentencesOrder", -1);
+        if (savedSentencesOrder != -1) {
+            mSavedSentencesOrder = savedSentencesOrder;
+            Log.i(LOG_TAG, "savedSentencesOrder : " + savedSentencesOrder);
+        }
+        else {
+            setSavedSentencesOrder(0);
+        }
+        return mSavedSentencesOrder;
     }
 
     public void setPitch(int pitch){

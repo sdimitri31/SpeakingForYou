@@ -15,12 +15,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStructure;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import g.android.speakingforyou.controller.HistoryAdapter;
@@ -34,7 +37,7 @@ import g.android.speakingforyou.model.VoiceSettings;
 import static android.content.Context.MODE_PRIVATE;
 import static g.android.speakingforyou.controller.MainActivity.PREF_NAME;
 
-public class HistoryFragment extends Fragment implements View.OnClickListener {
+public class HistoryFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener {
 
 
     private static final String LOG_TAG = "SFY : HistoryFragment";
@@ -42,17 +45,22 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
     private List<History> mListHistory;
     private HistoryAdapter mHistoryAdapter;
     private VoiceSettings mVoiceSettings;
+    private List<History> currentSelectedItems = new ArrayList<>();
 
     RecyclerView historyRecyclerView;
 
     //2 - Declare callback
     private HistoryFragment.OnButtonClickedListener mCallback;
+    private OnLongClickListener     mCallbackLongClick;
 
     // 1 - Declare our interface that will be implemented by any container activity
     public interface OnButtonClickedListener {
         void onButtonClicked(View view);
     }
 
+    public interface OnLongClickListener {
+        void onLongClick(View view);
+    }
 
     // newInstance constructor for creating fragment with arguments
     public static HistoryFragment newInstance() {
@@ -83,8 +91,16 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
             }
 
             @Override
-            public void onLongClicked(int position) {
+            public void onLongClick(View view, int position, long id) {
+                Log.i(LOG_TAG, "onLongClick Callback "  + position + " id " + id + " view " + view.getId());
 
+                if(view.getId() == R.id.constraintLayout_HistoryCell) {
+
+                    view.setTag(position);
+                    mHistoryAdapter.setVisibilitySelectRadioButton(true);
+                    mHistoryAdapter.notifyDataSetChanged();
+                    mCallbackLongClick.onLongClick(view);
+                }
             }
 
             @Override
@@ -115,11 +131,33 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
                     mHistoryAdapter.updateVisibility(false);
                     notifyDataSetChangedExceptPosition(position);
                 }
+
+                if(view.getId() == R.id.checkBox_HistoryCell_SelectItem){
+                    //RadioButton
+                    Log.i(LOG_TAG,"onItemClick checkBox_SavedSentenceCell_SelectItem ");
+                    view.setTag(mListHistory.get(position));
+                    mCallback.onButtonClicked(view);
+                }
+            }
+        };
+
+
+        HistoryAdapter.OnItemCheckListener checkListener = new HistoryAdapter.OnItemCheckListener() {
+            @Override
+            public void onItemCheck(History item) {
+                Log.i(LOG_TAG,"onItemCheck " + item.getSentence());
+                currentSelectedItems.add(item);
+            }
+
+            @Override
+            public void onItemUncheck(History item) {
+                Log.i(LOG_TAG,"onItemUncheck " + item.getSentence());
+                currentSelectedItems.remove(item);
             }
         };
 
         historyRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mHistoryAdapter = new HistoryAdapter(getActivity(), listener);
+        mHistoryAdapter = new HistoryAdapter(getActivity(), listener, currentSelectedItems, checkListener);
         SwipeAndDragHelper swipeAndDragHelper = new SwipeAndDragHelper(mHistoryAdapter);
         ItemTouchHelper touchHelper = new ItemTouchHelper(swipeAndDragHelper);
         mHistoryAdapter.setTouchHelper(touchHelper);
@@ -207,13 +245,63 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
     public void addSavedSentence(String stringToAdd){
         final SavedSentencesDAO savedSentencesDAO = new SavedSentencesDAO(getContext());
         SavedSentences sentenceToSave = new SavedSentences(stringToAdd,
-                savedSentencesDAO.getNextPosition()
+                savedSentencesDAO.getNextPosition(), new Date(), 1
         );
         savedSentencesDAO.add(sentenceToSave);
     }
     public void deleteHistory(History history){
         mHistoryDAO.delete(history.getId());
     }
+
+
+    public List<History> getCurrentSelectedItems(){
+        return currentSelectedItems;
+    }
+
+    public void selectPosition(int position){
+        try{
+            if(!((HistoryViewHolder) historyRecyclerView.findViewHolderForAdapterPosition(position)).mCheckBox_SelectedCell.isChecked())
+                historyRecyclerView.findViewHolderForAdapterPosition(position).itemView.performClick();
+        }
+        catch (Exception e){
+            Log.e(LOG_TAG,"Exception : " + e.getMessage());
+        }
+    }
+
+    public void selectALL(){
+        for (int i = 0; i < mHistoryAdapter.getItemCount(); i++) {
+            try{
+                if(!((HistoryViewHolder) historyRecyclerView.findViewHolderForAdapterPosition(i)).mCheckBox_SelectedCell.isChecked())
+                    historyRecyclerView.findViewHolderForAdapterPosition(i).itemView.performClick();
+            }
+            catch (Exception e){
+                Log.e(LOG_TAG,"Exception : " + e.getMessage());
+            }
+        }
+    }
+
+    public void unSelectPosition(int position){
+        try{
+            if(((HistoryViewHolder) historyRecyclerView.findViewHolderForAdapterPosition(position)).mCheckBox_SelectedCell.isChecked())
+                historyRecyclerView.findViewHolderForAdapterPosition(position).itemView.performClick();
+        }
+        catch (Exception e){
+            Log.e(LOG_TAG,"Exception : " + e.getMessage());
+        }
+    }
+
+    public void unSelectAll(){
+        for (int i = 0; i < mHistoryAdapter.getItemCount(); i++) {
+            try{
+                if(((HistoryViewHolder) historyRecyclerView.findViewHolderForAdapterPosition(i)).mCheckBox_SelectedCell.isChecked())
+                    historyRecyclerView.findViewHolderForAdapterPosition(i).itemView.performClick();
+            }
+            catch (Exception e){
+                Log.e(LOG_TAG,"Exception : " + e.getMessage());
+            }
+        }
+    }
+
 
     @Override
     public void onAttach(Context context) {
@@ -235,6 +323,12 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
         mCallback.onButtonClicked(v);
     }
 
+    @Override
+    public boolean onLongClick(View v){
+        mCallbackLongClick.onLongClick(v);
+        Log.i(LOG_TAG,"Fragment Long Click ID : " + v.getId());
+        return true;
+    }
     // --------------
     // FRAGMENT SUPPORT
     // --------------
@@ -244,6 +338,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
         try {
             //Parent activity will automatically subscribe to callback
             mCallback = (HistoryFragment.OnButtonClickedListener) getActivity();
+            mCallbackLongClick = (OnLongClickListener) getActivity();
         } catch (ClassCastException e) {
             throw new ClassCastException(e.toString()+ " must implement OnButtonClickedListener");
         }

@@ -3,38 +3,215 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/constrainLayout_Main"
-    style="?pageBackground"
+    style="?backgroundPrimary"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout_Header"
+        style="?backgroundPrimary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/divider_Top"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView_logoTop"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:tint="?colorPrimaryText"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/logo_top" />
+
+        <ImageButton
+            android:id="@+id/imageButton_ThemeMode"
+            style="?imageButtonOverBackground"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:scaleType="fitCenter"
+            android:tint="?colorPrimaryText"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="?attr/themeModeIcon" />
+
+        <ImageButton
+            android:id="@+id/imageButton_Sort"
+            style="?imageButtonOverBackground"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="16dp"
+            android:scaleType="fitCenter"
+            android:tint="?colorPrimaryText"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/imageButton_ThemeMode"
+            app:srcCompat="@drawable/ic_sort_fav" />
+
+        <ImageButton
+            android:id="@+id/imageButton_Settings"
+            style="?imageButtonOverBackground"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:scaleType="fitXY"
+            android:tint="?colorPrimaryText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_settings" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constrainLayout_ActionRadioButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="?colorAccent"
+        android:elevation="2dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@id/tab_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tab_layout">
+
+        <ImageButton
+            android:id="@+id/imageButton_CancelSelectRadioButton"
+            style="?imageButtonOverBackground"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/ripple_effect_accent_color"
+            android:padding="2dp"
+            android:scaleType="fitCenter"
+            android:tint="?colorPrimaryText"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_cross_2" />
+
+        <ImageButton
+            android:id="@+id/imageButton_SelectAllRadioButton"
+            style="?imageButtonOverBackground"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/ripple_effect_accent_color"
+            android:scaleType="fitCenter"
+            android:tint="?colorPrimaryText"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageButton_CancelSelectRadioButton"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_select_all" />
+
+        <ImageButton
+            android:id="@+id/imageButton_DeleteAllSelectedRadioButton"
+            style="?imageButtonOverBackground"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/ripple_effect_accent_color"
+            android:scaleType="fitCenter"
+            android:tint="?colorPrimaryText"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageButton_SelectAllRadioButton"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@android:drawable/ic_menu_delete" />
+
+        <ImageButton
+            android:id="@+id/imageButton_AddAllRadioButton"
+            style="?imageButtonOverBackground"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/ripple_effect_accent_color"
+            android:scaleType="fitCenter"
+            android:tint="@color/star_enabled"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageButton_DeleteAllSelectedRadioButton"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_star" />
+
+        <ImageButton
+            android:id="@+id/imageButton_DeleteFromSavedRadioButton"
+            style="?imageButtonOverBackground"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/ripple_effect_accent_color"
+            android:scaleType="fitCenter"
+            android:tint="?colorPrimaryText"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageButton_AddAllRadioButton"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_star_off" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <View
+        android:id="@+id/divider_Top"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="?colorAccent"
+        app:layout_constraintBottom_toTopOf="@id/tab_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/constraintLayout_Header" />
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tab_layout"
         style="?backgroundPrimary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:background="#00000000"
+        android:translationZ="2dp"
+        app:layout_constraintBottom_toTopOf="@id/viewPager_Fragments"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@id/divider_Top"
+        app:layout_constraintVertical_bias="0.0"
+        app:tabIndicatorHeight="3dp"
+        app:tabTextColor="?colorPrimaryText" />
+
+    <View
+        android:id="@+id/divider_TabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="1dp"
+        android:background="#1B1B1B"
+        app:layout_constraintBottom_toBottomOf="@+id/tab_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager_Fragments"
-        style="?viewPagerBackground"
+        style="?backgroundPrimary"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/linearLayout_EditText_Play"
+        app:layout_constraintBottom_toTopOf="@id/constraintLayout_EditText_Play"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tab_layout" />
+        app:layout_constraintTop_toBottomOf="@id/tab_layout">
 
-    <LinearLayout
-        android:id="@+id/linearLayout_EditText_Play"
-        style="?viewPagerBackground"
-        android:layout_width="match_parent"
+    </android.support.v4.view.ViewPager>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout_EditText_Play"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="8dp"
+        android:background="?colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -42,13 +219,20 @@
 
         <LinearLayout
             android:id="@+id/linearLayout_Text"
-            style="?surfaceBackground"
-            android:layout_width="match_parent"
+            style="?layoutEditText"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:orientation="horizontal"
             android:paddingStart="15dp"
-            android:paddingEnd="10dp">
+            android:paddingEnd="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/imageButton_PlayStopToggle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <EditText
                 android:id="@+id/editText_Sentence"
@@ -74,7 +258,10 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="2dp"
                 android:layout_marginEnd="2dp"
-                app:srcCompat="@android:drawable/ic_delete" />
+                android:padding="7dp"
+                android:scaleType="fitCenter"
+                android:tint="#F80303"
+                app:srcCompat="@drawable/ic_cross" />
 
             <ImageButton
                 android:id="@+id/imageButton_AddSentence"
@@ -82,23 +269,33 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center_vertical"
-                app:srcCompat="@android:drawable/btn_star_big_on" />
+                android:paddingTop="5dp"
+                android:paddingBottom="6dp"
+                android:scaleType="fitCenter"
+                android:tint="?colorStarEnabled"
+                app:srcCompat="@drawable/ic_star" />
         </LinearLayout>
 
         <ImageButton
             android:id="@+id/imageButton_PlayStopToggle"
-            style="?imageButton"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            style="?layoutEditText"
+            android:layout_width="48dp"
+            android:layout_height="0dp"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="8dp"
-            android:layout_weight="5"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
             android:adjustViewBounds="false"
             android:cropToPadding="false"
             android:padding="8dp"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/play" />
+            android:tint="?colorAccent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/linearLayout_Text"
+            app:layout_constraintTop_toTopOf="@+id/linearLayout_Text"
+            app:srcCompat="@drawable/ic_play" />
+    </android.support.constraint.ConstraintLayout>
 
-    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

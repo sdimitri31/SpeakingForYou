@@ -28,7 +28,8 @@ public class SwipeAndDragHelper extends ItemTouchHelper.Callback {
         }
         //Allow the move of Saved element, but prevent to swipe to delete
         if(viewHolder instanceof SavedSentencesViewHolder) {
-            return makeMovementFlags(dragFlags, 0);
+           // return makeMovementFlags(dragFlags, 0);
+            return makeMovementFlags(0, 0);
         }
 
         return makeMovementFlags(dragFlags, swipeFlags);

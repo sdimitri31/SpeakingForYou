@@ -1,26 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <attr name="pageBackground" format="reference" />
-    <attr name="viewPagerBackground" format="reference" />
-    <attr name="surfaceBackground" format="reference" />
     <attr name="backgroundPrimary" format="reference" />
-    <attr name="backgroundPrimaryLight" format="reference" />
+    <attr name="backgroundPrimaryDark" format="reference" />
+    <attr name="backgroundAccent" format="reference" />
+
     <attr name="layoutPopupMore" format="reference" />
     <attr name="layoutEditText" format="reference" />
+    <attr name="layoutCell" format="reference" />
+    <attr name="layoutCellRipple" format="reference" />
+
     <attr name="editText" format="reference" />
     <attr name="editTextImageButton" format="reference" />
-    <attr name="layoutCell" format="reference" />
+
     <attr name="button" format="reference" />
     <attr name="imageButton" format="reference" />
-    <attr name="layoutCellRipple" format="reference" />
+    <attr name="imageButtonOverBackground" format="reference" />
+
     <attr name="textNormal" format="reference" />
     <attr name="textSettingTitle" format="reference" />
     <attr name="textSettingSub" format="reference" />
-    <attr name="actionBarStyle" format="reference" />
-    <attr name="colorPrimaryLight" format="reference" />
+
+    <!-- <attr name="colorAccent" format="reference" /> -->
+    <!-- <attr name="colorPrimary" format="reference" />-->
+    <!-- <attr name="colorPrimaryDark" format="reference" />-->
+    <attr name="colorPrimaryText" format="reference" />
+    <attr name="colorSecondaryText" format="reference" />
     <attr name="colorRipple" format="reference" />
-    <attr name="colorBackgroundSurface" format="reference" />
-    <attr name="colorTextSettingTitle" format="reference" />
+
+    <attr name="colorTransparent" format="reference" />
+
+    <attr name="colorStarDisabled" format="reference" />
+    <attr name="colorStarEnabled" format="reference" />
+
+    <declare-styleable name="customAttrs">
+        <attr name="themeModeIcon" format="reference" />
+    </declare-styleable>
 
 </resources>
