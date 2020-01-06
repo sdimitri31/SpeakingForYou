@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import g.android.speakingforyou.view.SwipeAndDragHelper;
 public class SavedSentencesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements
         SwipeAndDragHelper.ActionCompletionContract {
 
+    private static final String LOG_TAG = "SFY : SavedSAdapter";
     /*
     *
     * Checkbox listener
@@ -40,22 +42,17 @@ public class SavedSentencesAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private ItemTouchHelper touchHelper;
     private List<SavedSentences> mSavedSentencesList;
+    private List<SavedSentences> mSelectedSavedSentencesList;
 
     private ClickListener listener;
     private Context appContext;
 
-    private boolean isVisible;
     private boolean isSelectedRadioButtonVisible;
 
-    public SavedSentencesAdapter (List<SavedSentences> items, @NonNull OnItemCheckListener onItemCheckListener) {
-        this.items = items;
-        this.onItemClick = onItemCheckListener;
-    }
 
     public SavedSentencesAdapter(Context context, ClickListener listener, List<SavedSentences> items, @NonNull OnItemCheckListener onItemCheckListener){
         this.listener = listener;
         this.appContext = context;
-        this.isVisible = false;
         this.isSelectedRadioButtonVisible = false;
         this.items = items;
         this.onItemClick = onItemCheckListener;
@@ -78,12 +75,6 @@ public class SavedSentencesAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         ((SavedSentencesViewHolder) holder).setTextSentence(mSavedSentencesList.get(position).getSentence());
         ((SavedSentencesViewHolder) holder).setCurrentItem(mSavedSentencesList.get(position));
 
-        if (isVisible){
-            ((SavedSentencesViewHolder) holder).setVisibility(View.VISIBLE);
-        }else{
-            ((SavedSentencesViewHolder) holder).setVisibility(View.INVISIBLE);
-        }
-
         if (isSelectedRadioButtonVisible){
             ((SavedSentencesViewHolder) holder).setVisibilitySelectRadioButton(View.VISIBLE);
         }
@@ -91,7 +82,14 @@ public class SavedSentencesAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             ((SavedSentencesViewHolder) holder).setVisibilitySelectRadioButton(View.GONE);
         }
 
-
+        //Look if the SavedSentences is selected and check it if necessary
+        Log.i(LOG_TAG,"     Look if the SavedSentences is selected");
+        if( mSelectedSavedSentencesList.contains(mSavedSentencesList.get(position))){
+            ((SavedSentencesViewHolder) holder).mCheckBox_SelectedCell.setChecked(true);
+        }
+        else {
+            ((SavedSentencesViewHolder) holder).mCheckBox_SelectedCell.setChecked(false);
+        }
         if (holder instanceof SavedSentencesViewHolder) {
             final SavedSentences currentItem = mSavedSentencesList.get(position);
 
@@ -115,10 +113,9 @@ public class SavedSentencesAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         isSelectedRadioButtonVisible = isVisible;
     }
 
-    public boolean getVisibilityCheckBox(){ return isSelectedRadioButtonVisible;}
+    public void setSelectedSavedSentencesList(List<SavedSentences> selectedSavedSentencesList){
+        this.mSelectedSavedSentencesList = selectedSavedSentencesList;
 
-    public void updateVisibility(boolean newValue){
-        isVisible= newValue;
     }
 
     @Override

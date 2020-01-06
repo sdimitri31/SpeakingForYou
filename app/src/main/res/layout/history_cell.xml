@@ -32,57 +32,6 @@
         app:layout_constraintStart_toEndOf="@+id/checkBox_HistoryCell_SelectItem"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageButton
-            android:id="@+id/imageButton_HistoryCell_More"
-            style="?imageButton"
-            android:layout_width="32dp"
-            android:layout_height="0dp"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="0"
-            android:scaleType="centerInside"
-            android:tint="?colorAccent"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_more" />
-
-        <LinearLayout
-            android:id="@+id/linearLayout_HistoryCell_PopUp"
-            style="?layoutPopupMore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="2dp"
-            android:elevation="5dp"
-            android:orientation="horizontal"
-            android:padding="4dp"
-            android:translationZ="5dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/imageButton_HistoryCell_More"
-            app:layout_constraintEnd_toStartOf="@id/imageButton_HistoryCell_More"
-            app:layout_constraintTop_toTopOf="@id/imageButton_HistoryCell_More">
-
-            <ImageButton
-                android:id="@+id/imageButton_HistoryCell_AddToSaved"
-                style="?imageButton"
-                android:layout_width="0dp"
-                android:layout_height="32dp"
-                android:layout_weight="1"
-                android:scaleType="fitXY"
-                app:srcCompat="@android:drawable/btn_star" />
-
-            <ImageButton
-                android:id="@+id/imageButton_HistoryCell_Delete"
-                style="?imageButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingStart="4dp"
-                android:paddingEnd="4dp"
-                android:stateListAnimator="@null"
-                app:srcCompat="@android:drawable/ic_menu_delete" />
-
-        </LinearLayout>
-
         <TextView
             android:id="@+id/textView_HistoryCell_Sentence"
             style="?textNormal"
@@ -98,27 +47,15 @@
             tools:text="Sentence" />
 
         <TextView
-            android:id="@+id/textView_HistoryCell_DateFormat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/chronological"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/textView_HistoryCell_Usage"
-            app:layout_constraintStart_toStartOf="@+id/textView_HistoryCell_Sentence"
-            app:layout_constraintTop_toBottomOf="@+id/textView_HistoryCell_Sentence" />
-
-        <TextView
             android:id="@+id/textView_HistoryCell_Usage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
             android:elevation="1dp"
             android:text="@string/usage"
             android:textAppearance="?textSettingSub"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@+id/textView_HistoryCell_Sentence"
-            app:layout_constraintEnd_toStartOf="@+id/imageButton_HistoryCell_More"
-            app:layout_constraintStart_toEndOf="@id/textView_HistoryCell_Sentence"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textView_HistoryCell_Sentence" />
 
     </android.support.constraint.ConstraintLayout>

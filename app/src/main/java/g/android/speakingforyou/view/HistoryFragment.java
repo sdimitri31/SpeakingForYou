@@ -49,6 +49,8 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
 
     RecyclerView historyRecyclerView;
 
+    HistoryAdapter.OnItemCheckListener checkListener;
+
     //2 - Declare callback
     private HistoryFragment.OnButtonClickedListener mCallback;
     private OnLongClickListener     mCallbackLongClick;
@@ -98,8 +100,9 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
 
                     view.setTag(position);
                     mHistoryAdapter.setVisibilitySelectRadioButton(true);
-                    mHistoryAdapter.notifyDataSetChanged();
-                    mCallbackLongClick.onLongClick(view);
+                    selectPosition(position);
+                    Log.i(LOG_TAG, "currentSelectedItems "  + currentSelectedItems.size());
+                    mCallbackLongClick.onLongClick(view); //Set the Checkbox Action Buttons visible
                 }
             }
 
@@ -112,25 +115,6 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                     view.setTag(mListHistory.get(position));
                     mCallback.onButtonClicked(view);
                 }
-                if(view.getId() == R.id.imageButton_HistoryCell_Delete) {
-                    //Delete History
-                    Log.i(LOG_TAG, "onItemClick Delete");
-
-                    deleteHistory(mListHistory.get(position));  //Delete in database
-                    mListHistory.remove(position);              //Delete in list
-                    mHistoryAdapter.notifyItemRemoved(position);//Delete in recycler
-                }
-                if(view.getId() == R.id.imageButton_HistoryCell_AddToSaved){
-                    addSavedSentence(mListHistory.get(position).getSentence());
-                    Toast.makeText(getContext(), getResources().getString(R.string.toast_addedToSavedSentences), Toast.LENGTH_LONG).show();
-                }
-                if(view.getId() == R.id.imageButton_HistoryCell_More){
-                    //Close other popup
-                    Log.i(LOG_TAG,"onItemClick More ");
-
-                    mHistoryAdapter.updateVisibility(false);
-                    notifyDataSetChangedExceptPosition(position);
-                }
 
                 if(view.getId() == R.id.checkBox_HistoryCell_SelectItem){
                     //RadioButton
@@ -142,17 +126,21 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
         };
 
 
-        HistoryAdapter.OnItemCheckListener checkListener = new HistoryAdapter.OnItemCheckListener() {
+        checkListener = new HistoryAdapter.OnItemCheckListener() {
             @Override
             public void onItemCheck(History item) {
                 Log.i(LOG_TAG,"onItemCheck " + item.getSentence());
-                currentSelectedItems.add(item);
+                if(!currentSelectedItems.contains(item)){
+                    currentSelectedItems.add(item);
+                    mHistoryAdapter.setSelectedHistoryList(currentSelectedItems);
+                }
             }
 
             @Override
             public void onItemUncheck(History item) {
                 Log.i(LOG_TAG,"onItemUncheck " + item.getSentence());
                 currentSelectedItems.remove(item);
+                mHistoryAdapter.setSelectedHistoryList(currentSelectedItems);
             }
         };
 
@@ -164,6 +152,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
         historyRecyclerView.setAdapter(mHistoryAdapter);
         touchHelper.attachToRecyclerView(historyRecyclerView);
         mHistoryAdapter.setHistoryList(mListHistory);
+        mHistoryAdapter.setSelectedHistoryList(currentSelectedItems);
 
         return rootView;
     }
@@ -233,73 +222,36 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
         }
     }
 
-    public void notifyDataSetChangedExceptPosition(int position){
-        ((SimpleItemAnimator) historyRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
-        for(int i = 0; i< mHistoryAdapter.getItemCount(); i++){
-            if(i != position){
-                mHistoryAdapter.notifyItemChanged(i);
-            }
-        }
-    }
-
-    public void addSavedSentence(String stringToAdd){
-        final SavedSentencesDAO savedSentencesDAO = new SavedSentencesDAO(getContext());
-        SavedSentences sentenceToSave = new SavedSentences(stringToAdd,
-                savedSentencesDAO.getNextPosition(), new Date(), 1
-        );
-        savedSentencesDAO.add(sentenceToSave);
-    }
-    public void deleteHistory(History history){
-        mHistoryDAO.delete(history.getId());
-    }
-
-
     public List<History> getCurrentSelectedItems(){
+        Log.i(LOG_TAG,"getCurrentSelectedItems Item selected : " + currentSelectedItems.size());
+
         return currentSelectedItems;
     }
 
     public void selectPosition(int position){
-        try{
-            if(!((HistoryViewHolder) historyRecyclerView.findViewHolderForAdapterPosition(position)).mCheckBox_SelectedCell.isChecked())
-                historyRecyclerView.findViewHolderForAdapterPosition(position).itemView.performClick();
-        }
-        catch (Exception e){
-            Log.e(LOG_TAG,"Exception : " + e.getMessage());
-        }
+        Log.i(LOG_TAG,"selectPosition : " + position);
+        checkListener.onItemCheck(mListHistory.get(position));
+        mHistoryAdapter.notifyDataSetChanged();
     }
 
     public void selectALL(){
-        for (int i = 0; i < mHistoryAdapter.getItemCount(); i++) {
-            try{
-                if(!((HistoryViewHolder) historyRecyclerView.findViewHolderForAdapterPosition(i)).mCheckBox_SelectedCell.isChecked())
-                    historyRecyclerView.findViewHolderForAdapterPosition(i).itemView.performClick();
-            }
-            catch (Exception e){
-                Log.e(LOG_TAG,"Exception : " + e.getMessage());
-            }
+        Log.i(LOG_TAG,"selectALL : " + mListHistory.size());
+        for (int i = 0; i < mListHistory.size(); i++) {
+            selectPosition(i);
         }
+        Log.i(LOG_TAG,"Item selected : " + currentSelectedItems.size());
     }
 
     public void unSelectPosition(int position){
-        try{
-            if(((HistoryViewHolder) historyRecyclerView.findViewHolderForAdapterPosition(position)).mCheckBox_SelectedCell.isChecked())
-                historyRecyclerView.findViewHolderForAdapterPosition(position).itemView.performClick();
-        }
-        catch (Exception e){
-            Log.e(LOG_TAG,"Exception : " + e.getMessage());
-        }
+        Log.i(LOG_TAG,"unSelectPosition : " + position);
+        checkListener.onItemUncheck(mListHistory.get(position));
+        mHistoryAdapter.notifyDataSetChanged();
     }
 
     public void unSelectAll(){
-        for (int i = 0; i < mHistoryAdapter.getItemCount(); i++) {
-            try{
-                if(((HistoryViewHolder) historyRecyclerView.findViewHolderForAdapterPosition(i)).mCheckBox_SelectedCell.isChecked())
-                    historyRecyclerView.findViewHolderForAdapterPosition(i).itemView.performClick();
-            }
-            catch (Exception e){
-                Log.e(LOG_TAG,"Exception : " + e.getMessage());
-            }
-        }
+        Log.i(LOG_TAG,"unSelectAll : " + mListHistory.size());
+        currentSelectedItems.clear();
+        mHistoryAdapter.setSelectedHistoryList(currentSelectedItems);
     }
 
 

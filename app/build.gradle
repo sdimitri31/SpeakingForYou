@@ -6,8 +6,8 @@ android {
         applicationId "g.android.speakingforyou"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 9
-        versionName "0.70"
+        versionCode 10
+        versionName "0.75-beta"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

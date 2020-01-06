@@ -37,6 +37,8 @@ public class SavedSentencesFragment extends Fragment implements View.OnClickList
     private VoiceSettings mVoiceSettings;
     private List<SavedSentences> currentSelectedItems = new ArrayList<>();
 
+    SavedSentencesAdapter.OnItemCheckListener checkListener;
+
     //2 - Declare callback
     private OnButtonClickedListener mCallback;
     private OnLongClickListener     mCallbackLongClick;
@@ -80,7 +82,7 @@ public class SavedSentencesFragment extends Fragment implements View.OnClickList
                     Log.i(LOG_TAG, "onLongClick Callback "  + position + " id " + id + " view " + getResources().getResourceEntryName(view.getId()));
                     view.setTag(position);
                     mSavedSentencesAdapter.setVisibilitySelectRadioButton(true);
-                    mSavedSentencesAdapter.notifyDataSetChanged();
+                    selectPosition(position);
                     mCallbackLongClick.onLongClick(view);
                 }
             }
@@ -95,21 +97,6 @@ public class SavedSentencesFragment extends Fragment implements View.OnClickList
                     view.setTag(mListSavedSentences.get(position));
                     mCallback.onButtonClicked(view);
                 }
-                if(view.getId() == R.id.imageButton_SavedSentenceCell_Delete) {
-                    //Delete Item
-                    Log.i(LOG_TAG, "onItemClick Delete");
-
-                    deleteSavedSentence(mListSavedSentences.get(position)); //Delete in database
-                    mListSavedSentences.remove(position);                   //Delete in list
-                    mSavedSentencesAdapter.notifyItemRemoved(position);     //Delete in recycler
-                }
-                if(view.getId() == R.id.imageButton_SavedSentenceCell_more){
-                    //Close other popup
-                    Log.i(LOG_TAG,"onItemClick More ");
-
-                    mSavedSentencesAdapter.updateVisibility(false);
-                    notifyDataSetChangedExceptPosition(position);
-                }
 
                 if(view.getId() == R.id.checkBox_SavedSentenceCell_SelectItem){
                     //RadioButton
@@ -120,17 +107,21 @@ public class SavedSentencesFragment extends Fragment implements View.OnClickList
             }
         };
 
-        SavedSentencesAdapter.OnItemCheckListener checkListener = new SavedSentencesAdapter.OnItemCheckListener() {
+        checkListener = new SavedSentencesAdapter.OnItemCheckListener() {
             @Override
             public void onItemCheck(SavedSentences item) {
                 Log.i(LOG_TAG,"onItemCheck " + item.getSentence());
-                currentSelectedItems.add(item);
+                if(!currentSelectedItems.contains(item)){
+                    currentSelectedItems.add(item);
+                    mSavedSentencesAdapter.setSelectedSavedSentencesList(currentSelectedItems);
+                }
             }
 
             @Override
             public void onItemUncheck(SavedSentences item) {
                 Log.i(LOG_TAG,"onItemUncheck " + item.getSentence());
                 currentSelectedItems.remove(item);
+                mSavedSentencesAdapter.setSelectedSavedSentencesList(currentSelectedItems);
             }
         };
 
@@ -142,6 +133,7 @@ public class SavedSentencesFragment extends Fragment implements View.OnClickList
         savedSentencesRecyclerView.setAdapter(mSavedSentencesAdapter);
         touchHelper.attachToRecyclerView(savedSentencesRecyclerView);
         mSavedSentencesAdapter.setSavedSentencesList(mListSavedSentences);
+        mSavedSentencesAdapter.setSelectedSavedSentencesList(currentSelectedItems);
 
         return rootView;
     }
@@ -229,49 +221,29 @@ public class SavedSentencesFragment extends Fragment implements View.OnClickList
     }
 
     public void selectPosition(int position){
-        try{
-            Log.i(LOG_TAG,"selectPosition " + position);
-            SavedSentencesViewHolder viewHolder = (SavedSentencesViewHolder)savedSentencesRecyclerView.findViewHolderForAdapterPosition(position);
-            if(!viewHolder.mCheckBox_SelectedCell.isChecked())
-                viewHolder.itemView.performClick();
-        }
-        catch (Exception e){
-            Log.e(LOG_TAG,"Exception : " + e.getMessage());
-        }
+        Log.i(LOG_TAG,"selectPosition : " + position);
+        checkListener.onItemCheck(mListSavedSentences.get(position));
+        mSavedSentencesAdapter.notifyDataSetChanged();
     }
 
     public void selectALL(){
-        for (int i = 0; i < mSavedSentencesAdapter.getItemCount(); i++) {
-            try{
-                if(!((SavedSentencesViewHolder) savedSentencesRecyclerView.findViewHolderForAdapterPosition(i)).mCheckBox_SelectedCell.isChecked())
-                savedSentencesRecyclerView.findViewHolderForAdapterPosition(i).itemView.performClick();
-            }
-            catch (Exception e){
-                Log.e(LOG_TAG,"Exception : " + e.getMessage());
-            }
+        Log.i(LOG_TAG,"selectALL : " + mListSavedSentences.size());
+        for (int i = 0; i < mListSavedSentences.size(); i++) {
+            selectPosition(i);
         }
+        Log.i(LOG_TAG,"Item selected : " + currentSelectedItems.size());
     }
 
     public void unSelectPosition(int position){
-        try{
-            if(((SavedSentencesViewHolder) savedSentencesRecyclerView.findViewHolderForAdapterPosition(position)).mCheckBox_SelectedCell.isChecked())
-                savedSentencesRecyclerView.findViewHolderForAdapterPosition(position).itemView.performClick();
-        }
-        catch (Exception e){
-            Log.e(LOG_TAG,"Exception : " + e.getMessage());
-        }
+        Log.i(LOG_TAG,"unSelectPosition : " + position);
+        checkListener.onItemUncheck(mListSavedSentences.get(position));
+        mSavedSentencesAdapter.notifyDataSetChanged();
     }
 
     public void unSelectAll(){
-        for (int i = 0; i < mSavedSentencesAdapter.getItemCount(); i++) {
-            try{
-                if(((SavedSentencesViewHolder) savedSentencesRecyclerView.findViewHolderForAdapterPosition(i)).mCheckBox_SelectedCell.isChecked())
-                    savedSentencesRecyclerView.findViewHolderForAdapterPosition(i).itemView.performClick();
-            }
-            catch (Exception e){
-                Log.e(LOG_TAG,"Exception : " + e.getMessage());
-            }
-        }
+        Log.i(LOG_TAG,"unSelectAll : " + mListSavedSentences.size());
+        currentSelectedItems.clear();
+        mSavedSentencesAdapter.setSelectedSavedSentencesList(currentSelectedItems);
     }
 
     @Override

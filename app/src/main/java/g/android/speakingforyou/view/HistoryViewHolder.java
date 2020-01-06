@@ -6,9 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.lang.ref.WeakReference;
@@ -22,9 +20,7 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder {
     public void setTextSentence(String sentence) {
         this.sentence.setText(sentence);
     }
-    public void setTextDateFormat(String dateFormat) {
-        this.dateFormat.setText(dateFormat);
-    }
+
     public void setTextUsage(int usage) {
         String usageTxt = "(" + usage + ")";
         this.usage.setText(usageTxt);
@@ -33,14 +29,9 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder {
     private static final String LOG_TAG = "SFY : HistoryViewHolder";
     private ConstraintLayout mConstraintLayout;
     TextView sentence;
-    TextView dateFormat;
     TextView usage;
-    private ImageButton mImageButton_more;
-    private ImageButton mImageButton_Delete;
-    private ImageButton mImageButton_AddToSaved;
     private ImageView mImageView_Star;
     private WeakReference<ClickListener> listenerRef;
-    private LinearLayout mLinearLayout_PopUp;
     boolean show;
     boolean showSelectedRadioButtonVisible;
 
@@ -60,13 +51,8 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder {
 
         mConstraintLayout =         itemView.findViewById(R.id.constraintLayout_HistoryCell);
         sentence =                  itemView.findViewById(R.id.textView_HistoryCell_Sentence);
-        dateFormat =                itemView.findViewById(R.id.textView_HistoryCell_DateFormat);
         usage =                     itemView.findViewById(R.id.textView_HistoryCell_Usage);
-        mImageButton_more =         itemView.findViewById(R.id.imageButton_HistoryCell_More);
-        mImageButton_Delete =       itemView.findViewById(R.id.imageButton_HistoryCell_Delete);
-        mImageButton_AddToSaved =   itemView.findViewById(R.id.imageButton_HistoryCell_AddToSaved);
         mImageView_Star =           itemView.findViewById(R.id.imageView_HistoryCell_Star);
-        mLinearLayout_PopUp =       itemView.findViewById(R.id.linearLayout_HistoryCell_PopUp);
         mCheckBox_SelectedCell =    itemView.findViewById(R.id.checkBox_HistoryCell_SelectItem);
         mCheckBox_SelectedCell.setClickable(false);
 
@@ -100,51 +86,11 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder {
             public boolean onLongClick(View view) {
                 Log.i(LOG_TAG,"HISTORY LONG CLICK ID : " + view.getId());
                 //If the checkbox are not visible
-                //Send the longClickEvent then check the box
+                //Send the longClickEvent to the fragment
                 if(!showSelectedRadioButtonVisible) {
                     listenerRef.get().onLongClick(view, getAdapterPosition(), view.getId());
-                    mCheckBox_SelectedCell.setChecked( !mCheckBox_SelectedCell.isChecked());
-                    if (mCheckBox_SelectedCell.isChecked()) {
-                        onItemClick.onItemCheck(currentItem);
-                    } else {
-                        onItemClick.onItemUncheck(currentItem);
-                    }
-                }
-                //Select the item
-                else{
-                    mCheckBox_SelectedCell.setChecked( !mCheckBox_SelectedCell.isChecked());
-                    if (mCheckBox_SelectedCell.isChecked()) {
-                        onItemClick.onItemCheck(currentItem);
-                    } else {
-                        onItemClick.onItemUncheck(currentItem);
-                    }
                 }
                 return true;
-            }
-        });
-
-        mImageButton_more.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(LOG_TAG,"HISTORY CELL MORE ID : " + view.getId());
-                listenerRef.get().onItemClick(view, getAdapterPosition(), view.getId());
-                toggleVisibility();
-            }
-        });
-
-        mImageButton_Delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(LOG_TAG,"HISTORY CELL DELETE ID : " + view.getId());
-                listenerRef.get().onItemClick(view, getAdapterPosition(), view.getId());
-            }
-        });
-
-        mImageButton_AddToSaved.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(LOG_TAG,"HISTORY CELL AddToSaved ID : " + view.getId());
-                listenerRef.get().onItemClick(view, getAdapterPosition(), view.getId());
             }
         });
     }
@@ -161,7 +107,6 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder {
         itemView.setOnClickListener(onClickListener);
     }
 
-
     public void setVisibilitySelectRadioButton(int visibility){
 
         mCheckBox_SelectedCell.setVisibility(visibility);
@@ -169,26 +114,7 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder {
         showSelectedRadioButtonVisible = visibility != View.GONE;
     }
 
-
     public void setCurrentItem(History currentItem){
         this.currentItem = currentItem;
-    }
-
-    public void setVisibility(int visibility){
-
-        mLinearLayout_PopUp.setVisibility(visibility);
-        if(visibility == View.INVISIBLE)
-            show = false;
-        else
-            show = true;
-    }
-
-    private void toggleVisibility(){
-        show = !show;
-        if(show){
-            mLinearLayout_PopUp.setVisibility(View.VISIBLE);
-        }
-        else
-            mLinearLayout_PopUp.setVisibility(View.INVISIBLE);
     }
 }
