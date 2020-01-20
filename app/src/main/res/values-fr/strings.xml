@@ -9,7 +9,7 @@
     <string name="textView_QuickSettings_TalkMode">Mode Conversation</string>
     <string name="textView_QuickSettings_TalkMode_Description">Efface le texte quand la touche \"Entrée\" est appuyée</string>
     <string name="textView_QuickSettings__MoreSettings">Plus de paramètres</string>
-    <string name="app_name">Parle pour vous</string>
+    <string name="app_name">Parle pour toi</string>
     <string name="button_Settings_ClearHistory">Effacer l\'historique</string>
     <string name="button_Settings_ClearSavecSentences">Effacer les favoris</string>
     <string name="button_Settings_Reset">Réinitialiser</string>
@@ -43,4 +43,5 @@
     <string name="tabLayout_SavedSentences">FAVORIS</string>
     <string name="tabLayout_History">HISTORIQUE</string>
     <string name="tabLayout_Settings">PARAMETRES</string>
+    <string name="textView_Settings_AccentColor">Couleur</string>
 </resources>

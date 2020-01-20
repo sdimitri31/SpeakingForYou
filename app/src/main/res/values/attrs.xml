@@ -14,8 +14,9 @@
     <attr name="editTextImageButton" format="reference" />
 
     <attr name="button" format="reference" />
-    <attr name="imageButton" format="reference" />
-    <attr name="imageButtonOverBackground" format="reference" />
+    <attr name="imageButtonSurface" format="reference" />
+    <attr name="imageButtonBackground" format="reference" />
+    <attr name="imageButtonAccent" format="reference" />
 
     <attr name="textNormal" format="reference" />
     <attr name="textSettingTitle" format="reference" />
@@ -27,6 +28,7 @@
     <attr name="colorPrimaryText" format="reference" />
     <attr name="colorSecondaryText" format="reference" />
     <attr name="colorRipple" format="reference" />
+    <attr name="colorImageButtonAccent" format="reference" />
 
     <attr name="colorTransparent" format="reference" />
 

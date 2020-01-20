@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Speaking For You</string>
+    <string name="app_name">Speak for yourself</string>
 
     <string name="editText_Sentence_Hint">Write the sentence here</string>
     <string name="textView_QuickSettings_Volume">Volume</string>
@@ -42,8 +42,9 @@
     <string name="textView_about_contactTitle">Contact : </string>
     <string name="textView_about_contactEmail" translatable="false">suso.dimitri@orange.fr</string>
     <string name="textView_about_versionTitle">Version : </string>
-    <string name="textView_about_version" translatable="false"><u>v0.75-beta</u></string>
+    <string name="textView_about_version" translatable="false"><u>v0.76-beta</u></string>
     <string name="tabLayout_SavedSentences">FAVORITES</string>
     <string name="tabLayout_History">HISTORY</string>
     <string name="tabLayout_Settings">SETTINGS</string>
+    <string name="textView_Settings_AccentColor">Color</string>
 </resources>

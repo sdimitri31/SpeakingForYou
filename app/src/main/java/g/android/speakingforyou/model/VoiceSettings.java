@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 
 import java.util.Locale;
 
+import g.android.speakingforyou.R;
+
 public class VoiceSettings {
 
     private static final String LOG_TAG = "SFY : VoiceSettings";
@@ -21,6 +23,7 @@ public class VoiceSettings {
     private int mLastVoiceUsed;
     private String mLastVoiceNameUsed;
     private int mVoicesFound;
+    private int mIdAccentStyle;
 
 
     private boolean mTalkMode;
@@ -34,18 +37,6 @@ public class VoiceSettings {
     public VoiceSettings(SharedPreferences sharedPreferences)
     {
         mSharedPreferences = sharedPreferences;
-
-        //Initialize the last used language
-        //getLanguage();
-
-        //Initialize the last used pitch
-        //getPitch();
-
-        //Initialize the last used speech rate
-        //getSpeechRate();
-
-        //Initialize the TalkMode
-        //getTalkMode();
     }
 
     public void setVoicesFound(int nbVoicesFound){
@@ -305,4 +296,26 @@ public class VoiceSettings {
         setTalkMode(mTalkMode);
         return mTalkMode;
     }
+
+    public void setIdAccentStyle(int idAccentStyle){
+        mIdAccentStyle = idAccentStyle;
+        //Save the voice for next boot
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putInt("idAccentStyle", mIdAccentStyle);
+        editor.apply();
+    }
+
+    public int getIdAccentStyle(){
+        //Initialize the last mIdAccentStyle
+        int idAccentStyle = mSharedPreferences.getInt("idAccentStyle", -1);
+        if (idAccentStyle != -1) {
+            mIdAccentStyle = idAccentStyle;
+            Log.i(LOG_TAG, "idAccentStyle : " + idAccentStyle);
+        }
+        else {
+            setIdAccentStyle(R.style.OverlayDefaultColor);
+        }
+        return mIdAccentStyle;
+    }
+
 }

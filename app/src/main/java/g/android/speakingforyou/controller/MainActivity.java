@@ -140,6 +140,9 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
         Utils.onActivityCreateSetTheme(this);
 
         //Starting Activity
+        //getTheme().applyStyle(mVoiceSettings.getIdAccentStyle(), true);
+
+        new ThemeColors(this);
         setContentView(R.layout.activity_main);
 
         //-----------------------------------------------------------------------------------
@@ -906,6 +909,7 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
         }
     }
 
+
     private int getAlertDialogStyle(){
         if(mCurrentTheme == THEME_LIGHT){
             return R.style.alert_dialog_wh;
@@ -921,7 +925,12 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        checkSettings();
+        //checkSettings();
+
+        this.startActivity(new Intent(this, this.getClass()));
+        this.finish();
+        this.overridePendingTransition(android.R.anim.fade_in,
+                android.R.anim.fade_out);
     }
 
     private void checkSettings() {

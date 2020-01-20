@@ -32,7 +32,7 @@
 
         <ImageButton
             android:id="@+id/imageButton_ThemeMode"
-            style="?imageButtonOverBackground"
+            style="?imageButtonBackground"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginEnd="16dp"
@@ -45,7 +45,7 @@
 
         <ImageButton
             android:id="@+id/imageButton_Settings"
-            style="?imageButtonOverBackground"
+            style="?imageButtonBackground"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginTop="16dp"

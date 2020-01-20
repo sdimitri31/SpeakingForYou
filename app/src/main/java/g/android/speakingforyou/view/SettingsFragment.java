@@ -2,15 +2,20 @@ package g.android.speakingforyou.view;
 
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.PorterDuff;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.ImageViewCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Switch;
@@ -21,6 +26,7 @@ import java.util.Locale;
 import g.android.speakingforyou.controller.MainActivity;
 import g.android.speakingforyou.controller.SettingsContentObserver;
 import g.android.speakingforyou.R;
+import g.android.speakingforyou.controller.ThemeColors;
 import g.android.speakingforyou.model.VoiceSettings;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -54,6 +60,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
     private Switch switch_TalkMode;
     LinearLayout linearLayout_Theme;
     TextView textView_SelectedTheme;
+    LinearLayout linearLayout_AccentColor;
+    ImageView imageView_SelectedAccentColor;
     private Button button_ClearHistory;
     private Button button_ClearSavedSentences;
     private Button button_About;
@@ -130,6 +138,11 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
         textView_SelectedTheme = rootView.findViewById((R.id.textView_Settings_SelectedTheme));
         linearLayout_Theme.setOnClickListener(this);
 
+        //Color
+        linearLayout_AccentColor = rootView.findViewById(R.id.layout_Settings_AccentColor);
+        imageView_SelectedAccentColor = rootView.findViewById((R.id.imageView_Settings_SelectedAccentColor));
+        linearLayout_AccentColor.setOnClickListener(this);
+
         //Clear History
         button_ClearHistory = rootView.findViewById(R.id.button_Settings_ClearHistory);
         button_ClearHistory.setOnClickListener(this);
@@ -171,6 +184,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
 
         String[] selectedTheme = getResources().getStringArray(R.array.theme_array);
         textView_SelectedTheme.setText(selectedTheme[mVoiceSettings.getTheme()]);
+
+        imageView_SelectedAccentColor.setColorFilter(new ThemeColors(getContext()).color);
 
         switch_TalkMode.setChecked(mVoiceSettings.getTalkMode());
     }

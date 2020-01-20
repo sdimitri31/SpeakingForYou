@@ -32,7 +32,7 @@
 
         <ImageButton
             android:id="@+id/imageButton_ThemeMode"
-            style="?imageButtonOverBackground"
+            style="?imageButtonBackground"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginEnd="16dp"
@@ -45,7 +45,7 @@
 
         <ImageButton
             android:id="@+id/imageButton_Sort"
-            style="?imageButtonOverBackground"
+            style="?imageButtonBackground"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginEnd="32dp"
@@ -58,7 +58,7 @@
 
         <ImageButton
             android:id="@+id/imageButton_Settings"
-            style="?imageButtonOverBackground"
+            style="?imageButtonBackground"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginTop="16dp"
@@ -85,14 +85,13 @@
 
         <ImageButton
             android:id="@+id/imageButton_CancelSelectRadioButton"
-            style="?imageButtonOverBackground"
+            style="?imageButtonAccent"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginStart="16dp"
-            android:background="@drawable/ripple_effect_accent_color"
             android:padding="2dp"
             android:scaleType="fitCenter"
-            android:tint="?colorPrimaryText"
+            android:tint="?colorImageButtonAccent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -100,13 +99,12 @@
 
         <ImageButton
             android:id="@+id/imageButton_SelectAllRadioButton"
-            style="?imageButtonOverBackground"
+            style="?imageButtonAccent"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginStart="16dp"
-            android:background="@drawable/ripple_effect_accent_color"
             android:scaleType="fitCenter"
-            android:tint="?colorPrimaryText"
+            android:tint="?colorImageButtonAccent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageButton_CancelSelectRadioButton"
             app:layout_constraintTop_toTopOf="parent"
@@ -114,13 +112,12 @@
 
         <ImageButton
             android:id="@+id/imageButton_DeleteAllSelectedRadioButton"
-            style="?imageButtonOverBackground"
+            style="?imageButtonAccent"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginStart="16dp"
-            android:background="@drawable/ripple_effect_accent_color"
             android:scaleType="fitCenter"
-            android:tint="?colorPrimaryText"
+            android:tint="?colorImageButtonAccent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageButton_SelectAllRadioButton"
             app:layout_constraintTop_toTopOf="parent"
@@ -128,11 +125,10 @@
 
         <ImageButton
             android:id="@+id/imageButton_AddAllRadioButton"
-            style="?imageButtonOverBackground"
+            style="?imageButtonAccent"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginStart="16dp"
-            android:background="@drawable/ripple_effect_accent_color"
             android:scaleType="fitCenter"
             android:tint="@color/star_enabled"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -142,13 +138,13 @@
 
         <ImageButton
             android:id="@+id/imageButton_DeleteFromSavedRadioButton"
-            style="?imageButtonOverBackground"
+            style="?imageButtonAccent"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginStart="16dp"
-            android:background="@drawable/ripple_effect_accent_color"
+            android:backgroundTint="?colorAccent"
             android:scaleType="fitCenter"
-            android:tint="?colorPrimaryText"
+            android:tint="?colorImageButtonAccent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageButton_AddAllRadioButton"
             app:layout_constraintTop_toTopOf="parent"

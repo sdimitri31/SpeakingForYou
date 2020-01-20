@@ -7,8 +7,9 @@
         <item name="layoutCell">@style/layout_cell</item>
         <item name="layoutCellRipple">@style/layout_cell_ripple</item>
 
-        <item name="imageButton">@style/image_button</item>
-        <item name="imageButtonOverBackground">@style/image_button_over_background</item>
+        <item name="imageButtonSurface">@style/image_button_surface</item>
+        <item name="imageButtonBackground">@style/image_button_background</item>
+        <item name="imageButtonAccent">@style/image_button_accent</item>
 
         <item name="editTextImageButton">@style/image_button_edit_text</item>
 
@@ -42,6 +43,7 @@
         <item name="colorPrimaryText">@color/light_colorPrimaryText</item>
         <item name="colorSecondaryText">@color/light_colorSecondaryText</item>
         <item name="colorRipple">@color/light_colorRipple</item>
+        <item name="colorImageButtonAccent">@color/light_colorPrimaryText</item>
 
         <item name="themeModeIcon">@drawable/ic_moon</item>
     </style>
@@ -69,6 +71,7 @@
         <item name="colorPrimaryText">@color/dark_colorPrimaryText</item>
         <item name="colorSecondaryText">@color/dark_colorSecondaryText</item>
         <item name="colorRipple">@color/dark_colorRipple</item>
+        <item name="colorImageButtonAccent">@color/dark_colorPrimaryText</item>
 
         <item name="themeModeIcon">@drawable/ic_sun</item>
     </style>

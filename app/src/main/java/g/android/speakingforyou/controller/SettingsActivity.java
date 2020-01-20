@@ -24,9 +24,18 @@ import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.larswerkman.holocolorpicker.ColorPicker;
+import com.larswerkman.holocolorpicker.OpacityBar;
+import com.larswerkman.holocolorpicker.SVBar;
+import com.larswerkman.holocolorpicker.SaturationBar;
+import com.larswerkman.holocolorpicker.ValueBar;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
+import java.util.Set;
 
 import g.android.speakingforyou.R;
 import g.android.speakingforyou.model.History;
@@ -74,6 +83,7 @@ public class SettingsActivity extends AppCompatActivity implements SettingsFragm
         Utils.setTheme(mCurrentTheme);
         Utils.onActivityCreateSetTheme(this);
 
+        new ThemeColors(this);
         setContentView(R.layout.activity_settings);
 
 
@@ -137,6 +147,10 @@ public class SettingsActivity extends AppCompatActivity implements SettingsFragm
 
             case R.id.layout_Settings_Theme:
                 themeSelector();
+                break;
+
+            case R.id.layout_Settings_AccentColor:
+                changeColor();
                 break;
 
             case R.id.button_Settings_About:
@@ -229,6 +243,51 @@ public class SettingsActivity extends AppCompatActivity implements SettingsFragm
 
         //Showing alert dialog
         alert.show();
+    }
+
+    private void changeColor(){
+
+        LayoutInflater inflater = getLayoutInflater();
+        View alertLayout = inflater.inflate(R.layout.colorpicker_popup, null);
+
+        final ColorPicker picker = (ColorPicker) alertLayout.findViewById(R.id.picker);
+        SaturationBar saturationBar = (SaturationBar) alertLayout.findViewById(R.id.saturationbar);
+        ValueBar valueBar = (ValueBar) alertLayout.findViewById(R.id.valuebar);
+
+        picker.addSaturationBar(saturationBar);
+        picker.addValueBar(valueBar);
+        ThemeColors themeColors = new ThemeColors(this);
+        picker.setOldCenterColor(themeColors.color);
+        picker.setColor(themeColors.color);
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(new ContextThemeWrapper(this, getAlertDialogStyle()));
+        // this set the view from XML inside AlertDialog
+        alert.setView(alertLayout);
+
+        alert.setPositiveButton(getResources().getString(R.string.alertDialog_OK), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                int red= Color.red(picker.getColor());
+                int green= Color.green(picker.getColor());
+                int blue= Color.blue(picker.getColor());
+
+                ThemeColors.setNewThemeColor(SettingsActivity.this, red, green, blue);
+                Log.i(LOG_TAG,"picker.getColor " + picker.getColor());
+                dialog.dismiss();
+            }
+        });
+
+        alert.setNegativeButton(getResources().getString(R.string.alertDialog_Cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+
+        AlertDialog dialog = alert.create();
+        dialog.show();
+
     }
 
     private void languageSelector(){
