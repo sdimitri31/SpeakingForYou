@@ -140,7 +140,6 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
         Utils.onActivityCreateSetTheme(this);
 
         //Starting Activity
-        //getTheme().applyStyle(mVoiceSettings.getIdAccentStyle(), true);
 
         new ThemeColors(this);
         setContentView(R.layout.activity_main);
@@ -204,6 +203,7 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivityForResult(intent, 1);
+                overridePendingTransition(R.anim.slide_in_up,android.R.anim.fade_out);
             }
         });
 
@@ -929,8 +929,8 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
 
         this.startActivity(new Intent(this, this.getClass()));
         this.finish();
-        this.overridePendingTransition(android.R.anim.fade_in,
-                android.R.anim.fade_out);
+        //this.overridePendingTransition(android.R.anim.fade_in,
+        //        android.R.anim.fade_out);
     }
 
     private void checkSettings() {

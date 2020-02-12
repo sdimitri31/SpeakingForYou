@@ -5,8 +5,6 @@ import android.content.SharedPreferences;
 
 import java.util.Locale;
 
-import g.android.speakingforyou.R;
-
 public class VoiceSettings {
 
     private static final String LOG_TAG = "SFY : VoiceSettings";
@@ -17,18 +15,20 @@ public class VoiceSettings {
     public static final int ORDERBY_DESC = 0;
     public static final int ORDERBY_ASC = 1;
 
+    private SharedPreferences mSharedPreferences;
+
     private String mLastLanguageUsed;
     private int mLastPitchUsed;
     private int mLastSpeechRateUsed;
     private int mLastVoiceUsed;
     private String mLastVoiceNameUsed;
     private int mVoicesFound;
-    private int mIdAccentStyle;
-
 
     private boolean mTalkMode;
-    private SharedPreferences mSharedPreferences;
+
     private int mThemeIndex;
+    private boolean mIsAccentColorBought;
+
     private int mHistorySort;
     private int mHistoryOrder;
     private int mSavedSentencesSort;
@@ -292,30 +292,28 @@ public class VoiceSettings {
     }
 
     public boolean getTalkMode(){
-        mTalkMode = mSharedPreferences.getBoolean("isTalkMode", false);
+        mTalkMode = mSharedPreferences.getBoolean("isTalkMode", true);
         setTalkMode(mTalkMode);
         return mTalkMode;
     }
 
-    public void setIdAccentStyle(int idAccentStyle){
-        mIdAccentStyle = idAccentStyle;
-        //Save the voice for next boot
+
+    public void setIsAccentColorBought(boolean isAccentColorBought){
+        mIsAccentColorBought = isAccentColorBought;
+
+        //Save the last language for next boot
         SharedPreferences.Editor editor = mSharedPreferences.edit();
-        editor.putInt("idAccentStyle", mIdAccentStyle);
+        editor.putBoolean("isAccentColorBought", mIsAccentColorBought);
         editor.apply();
+
+        Log.i(LOG_TAG, "isAccentColorBought : " + mIsAccentColorBought );
     }
 
-    public int getIdAccentStyle(){
-        //Initialize the last mIdAccentStyle
-        int idAccentStyle = mSharedPreferences.getInt("idAccentStyle", -1);
-        if (idAccentStyle != -1) {
-            mIdAccentStyle = idAccentStyle;
-            Log.i(LOG_TAG, "idAccentStyle : " + idAccentStyle);
-        }
-        else {
-            setIdAccentStyle(R.style.OverlayDefaultColor);
-        }
-        return mIdAccentStyle;
+    public boolean getIsAccentColorBought(){
+        mIsAccentColorBought = mSharedPreferences.getBoolean("isAccentColorBought", false);
+        setIsAccentColorBought(mIsAccentColorBought);
+        return mIsAccentColorBought;
     }
+
 
 }

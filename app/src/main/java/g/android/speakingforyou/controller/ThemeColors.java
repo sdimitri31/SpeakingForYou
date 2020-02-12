@@ -7,11 +7,13 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.ColorInt;
+import android.util.Log;
 
 import g.android.speakingforyou.R;
 
 public class ThemeColors {
 
+    public static final String  LOG_TAG = "SFY : ThemeColors";
     private static final String NAME = "ThemeColors", KEY = "color";
 
     @ColorInt
@@ -19,7 +21,12 @@ public class ThemeColors {
 
     public ThemeColors(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
-        String stringColor = sharedPreferences.getString(KEY, "004bff");
+
+        String defaultColor = String.format("%06X", (0xFFFFFF & context.getResources().getColor(R.color.light_colorAccent)));
+        String stringColor = sharedPreferences.getString(KEY, defaultColor);
+
+        Log.v(LOG_TAG,"defaultColor : " + defaultColor);
+        Log.v(LOG_TAG,"stringColor : " + stringColor);
         color = Color.parseColor("#" + stringColor);
 
         if (isLightActionBar()) context.setTheme(R.style.image_button_accent_over_light_color);

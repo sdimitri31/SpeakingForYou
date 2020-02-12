@@ -9,7 +9,7 @@ public class Utils {
     private static int sTheme;
 
     public final static int THEME_MATERIAL_LIGHT = 0;
-    public final static int THEME_YOUR_CUSTOM_THEME = 1;
+    public final static int THEME_MATERIAL_DARK = 1;
 
     public static void setTheme(int theme){
         sTheme = theme;
@@ -29,7 +29,7 @@ public class Utils {
             case THEME_MATERIAL_LIGHT:
                 activity.setTheme(R.style.Theme_Custom_Light);
                 break;
-            case THEME_YOUR_CUSTOM_THEME:
+            case THEME_MATERIAL_DARK:
                 activity.setTheme(R.style.Theme_Custom_Dark);
                 break;
         }

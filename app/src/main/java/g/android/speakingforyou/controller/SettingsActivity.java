@@ -6,8 +6,9 @@ import android.graphics.Color;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
+import android.os.RemoteException;
 import android.speech.tts.Voice;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -26,16 +27,29 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.billingclient.api.AcknowledgePurchaseParams;
+import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.BillingClientStateListener;
+import com.android.billingclient.api.BillingFlowParams;
+import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchaseHistoryRecord;
+import com.android.billingclient.api.PurchaseHistoryResponseListener;
+import com.android.billingclient.api.PurchasesUpdatedListener;
+import com.android.billingclient.api.SkuDetails;
+import com.android.billingclient.api.SkuDetailsParams;
+import com.android.billingclient.api.SkuDetailsResponseListener;
 import com.larswerkman.holocolorpicker.ColorPicker;
-import com.larswerkman.holocolorpicker.OpacityBar;
-import com.larswerkman.holocolorpicker.SVBar;
 import com.larswerkman.holocolorpicker.SaturationBar;
 import com.larswerkman.holocolorpicker.ValueBar;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
-import java.util.Set;
 
 import g.android.speakingforyou.R;
 import g.android.speakingforyou.model.History;
@@ -49,9 +63,12 @@ import static g.android.speakingforyou.controller.MainActivity.PREF_NAME;
 import static g.android.speakingforyou.controller.MainActivity.THEME_DARK;
 import static g.android.speakingforyou.controller.MainActivity.THEME_LIGHT;
 
-public class SettingsActivity extends AppCompatActivity implements SettingsFragment.OnButtonClickedListener, SettingsFragment.OnSeekBarChangeListener {
+public class SettingsActivity extends AppCompatActivity implements SettingsFragment.OnButtonClickedListener, SettingsFragment.OnSeekBarChangeListener, PurchasesUpdatedListener {
 
     public static final String  LOG_TAG = "SFY : SettingsActivity";
+    private BillingClient billingClient;
+    private AcknowledgePurchaseResponseListener acknowledgePurchaseResponseListener;
+
     private VoiceSettings       mVoiceSettings;
     private Speaker mSpeaker;
     AudioManager                mAudioManager;
@@ -86,6 +103,7 @@ public class SettingsActivity extends AppCompatActivity implements SettingsFragm
         new ThemeColors(this);
         setContentView(R.layout.activity_settings);
 
+        connectToPlayStore();
 
         mSpeaker        = new Speaker(this, mVoiceSettings);
         mAudioManager   = (AudioManager) getSystemService(MainActivity.AUDIO_SERVICE);
@@ -99,7 +117,7 @@ public class SettingsActivity extends AppCompatActivity implements SettingsFragm
         mButton_Settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                onBackPressed();
             }
         });
 
@@ -150,7 +168,13 @@ public class SettingsActivity extends AppCompatActivity implements SettingsFragm
                 break;
 
             case R.id.layout_Settings_AccentColor:
-                changeColor();
+                if(mVoiceSettings.getIsAccentColorBought())
+                    openAccentColorPopup();
+                else buyChangeColor();
+                break;
+
+            case R.id.button_Settings_Unlock_AccentColor:
+                buyChangeColor();
                 break;
 
             case R.id.button_Settings_About:
@@ -245,8 +269,101 @@ public class SettingsActivity extends AppCompatActivity implements SettingsFragm
         alert.show();
     }
 
-    private void changeColor(){
+    private void connectToPlayStore(){
+        //Attempting to connect to play store
+        billingClient = BillingClient.newBuilder(this).enablePendingPurchases().setListener(this).build();
+        billingClient.startConnection(new BillingClientStateListener() {
+            @Override
+            public void onBillingSetupFinished(BillingResult billingResult) {
+                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                    // The BillingClient is ready. You can query purchases here.
+                    Log.i(LOG_TAG,"onBillingSetupFinished OK ");
+                    //Check if the ColorAccent has been purchased and update Prefs
+                    isColorAccentBought();
+                }
+            }
+            @Override
+            public void onBillingServiceDisconnected() {
+                // Try to restart the connection on the next request to
+                // Google Play by calling the startConnection() method.
+                Log.i(LOG_TAG,"onBillingServiceDisconnected ");
+            }
+        });
+    }
 
+    private void buyChangeColor(){
+        //If we are connected to the play store
+        if(billingClient.isReady()){
+
+            //Check if we didn't already bought it, Bought = open accent color popup, Or open buy menu
+            if (mVoiceSettings.getIsAccentColorBought()) {
+                Log.i(LOG_TAG,"accent_color_unlock purchased. Opening Accent popup ");
+                openAccentColorPopup();
+            }
+            else{
+                //Setup the available items to buy
+                List<String> skuList = new ArrayList<> ();
+                skuList.add("accent_color_unlock");
+
+                SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
+                params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP);
+
+                billingClient.querySkuDetailsAsync(params.build(),
+                    new SkuDetailsResponseListener() {
+                        @Override
+                        public void onSkuDetailsResponse(BillingResult billingResult,
+                                                         List<SkuDetails> skuDetailsList) {
+                            // Process the result.
+                            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                                try {
+                                    //Open buy menu for the item accent_color_unlock
+                                    Log.i(LOG_TAG,"accent_color_unlock not purchased. Opening buying popup ");
+                                    BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder().setSkuDetails(skuDetailsList.get(0)).build();
+                                    billingClient.launchBillingFlow(SettingsActivity.this, billingFlowParams);
+                                }
+                                catch (Exception e){
+                                    Log.i(LOG_TAG,"Exception " + e.getLocalizedMessage());
+                                }
+                            }
+                            if(billingResult.getResponseCode() == BillingClient.BillingResponseCode.USER_CANCELED){
+                                updateFragmentSettings();
+                            }
+                        }
+                    });
+            }
+        }
+
+    }
+
+    private boolean isColorAccentBought(){
+        if(billingClient.isReady()) {
+            //Setup the available items to buy
+            List<String> skuList = new ArrayList<>();
+            skuList.add("accent_color_unlock");
+
+            SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
+            params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP);
+
+            //Check if we didn't already bought it, Bought = open accent color popup, Or open buy menu
+            Purchase.PurchasesResult purchasesResult = billingClient.queryPurchases(BillingClient.SkuType.INAPP);
+            if (purchasesResult.getPurchasesList() != null) {
+                for (Purchase purchase : purchasesResult.getPurchasesList()) {
+                    Log.i(LOG_TAG, "getPurchaseState " + purchase.getPurchaseState());
+                    if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
+                        Log.i(LOG_TAG, "getOrderId " + purchase.getOrderId());
+                        Log.i(LOG_TAG, "getSku " + purchase.getSku());
+                        mVoiceSettings.setIsAccentColorBought(true);
+                        updateFragmentSettings();
+                        return true;
+                    }
+                }
+            }
+            mVoiceSettings.setIsAccentColorBought(false);
+        }
+        return false;
+    }
+
+    private void openAccentColorPopup(){
         LayoutInflater inflater = getLayoutInflater();
         View alertLayout = inflater.inflate(R.layout.colorpicker_popup, null);
 
@@ -268,12 +385,12 @@ public class SettingsActivity extends AppCompatActivity implements SettingsFragm
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                int red= Color.red(picker.getColor());
-                int green= Color.green(picker.getColor());
-                int blue= Color.blue(picker.getColor());
+                int red = Color.red(picker.getColor());
+                int green = Color.green(picker.getColor());
+                int blue = Color.blue(picker.getColor());
 
                 ThemeColors.setNewThemeColor(SettingsActivity.this, red, green, blue);
-                Log.i(LOG_TAG,"picker.getColor " + picker.getColor());
+                Log.i(LOG_TAG, "picker.getColor " + picker.getColor());
                 dialog.dismiss();
             }
         });
@@ -287,7 +404,6 @@ public class SettingsActivity extends AppCompatActivity implements SettingsFragm
 
         AlertDialog dialog = alert.create();
         dialog.show();
-
     }
 
     private void languageSelector(){
@@ -569,5 +685,74 @@ public class SettingsActivity extends AppCompatActivity implements SettingsFragm
         else{
             return R.style.alert_dialog_dark;
         }
+    }
+
+    @Override
+    public void onPurchasesUpdated(BillingResult billingResult, List<Purchase> list) {
+        Log.i(LOG_TAG,"onPurchasesUpdated " + billingResult.getResponseCode());
+        if(list == null)
+            return;
+
+        Purchase purchase = list.get(0);
+
+        if(purchase.getPurchaseState() == Purchase.PurchaseState.PENDING){
+            Log.i(LOG_TAG,"     PENDING ");
+            Toast.makeText(SettingsActivity.this,"Purchase pending", Toast.LENGTH_SHORT).show();
+        }
+        else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+            Log.i(LOG_TAG, "     OK " + list.size());
+            if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
+                //Acknowledge purchase
+                if (!purchase.isAcknowledged()) {
+                    AcknowledgePurchaseParams acknowledgePurchaseParams =
+                            AcknowledgePurchaseParams.newBuilder()
+                                    .setPurchaseToken(purchase.getPurchaseToken())
+                                    .build();
+                    billingClient.acknowledgePurchase(acknowledgePurchaseParams, new AcknowledgePurchaseResponseListener() {
+                        @Override
+                        public void onAcknowledgePurchaseResponse(BillingResult billingResult) {
+                            Log.i(LOG_TAG, "     Purchase acknowledged ");
+
+                            mVoiceSettings.setIsAccentColorBought(true);
+                            Intent intent = getIntent();
+                            finish();
+                            startActivity(intent);
+                            overridePendingTransition(android.R.anim.fade_in,
+                                    android.R.anim.fade_out);
+                        }
+                    });
+                }
+            }
+        }
+        else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.USER_CANCELED) {
+            // Handle an error caused by a user cancelling the purchase flow.
+            Log.d(LOG_TAG, "onPurchasesUpdated() response: User cancelled" + billingResult.getResponseCode());
+        } else {
+            // Handle any other error codes.
+            Log.d(LOG_TAG, "onPurchasesUpdated() response: Other" + billingResult.getResponseCode());
+        }
+
+
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        billingClient.endConnection();
+        mSpeaker.destroy();
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        updateFragmentSettings();
+    }
+
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        finishActivity(1);
+        overridePendingTransition(0,R.anim.slide_out_down);
+
     }
 }

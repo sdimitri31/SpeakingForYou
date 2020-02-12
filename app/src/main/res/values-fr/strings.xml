@@ -44,4 +44,5 @@
     <string name="tabLayout_History">HISTORIQUE</string>
     <string name="tabLayout_Settings">PARAMETRES</string>
     <string name="textView_Settings_AccentColor">Couleur</string>
+    <string name="button_Settings_Buy">Acheter</string>
 </resources>

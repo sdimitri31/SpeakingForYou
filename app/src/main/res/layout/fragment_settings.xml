@@ -7,7 +7,8 @@
     android:layout_height="wrap_content"
     tools:context=".view.SettingsFragment">
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constrainLayout_Settings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:isScrollContainer="false"
@@ -19,7 +20,10 @@
             style="?layoutCell"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/textView_Settings_Volume"
@@ -45,9 +49,13 @@
             style="?layoutCellRipple"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:clickable="true"
             android:focusable="true"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layout_Settings_Volume">
 
             <TextView
                 android:id="@+id/textView_Settings_Language"
@@ -72,9 +80,13 @@
             style="?layoutCellRipple"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="8dp"
             android:clickable="true"
             android:focusable="true"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layout_Settings_Language">
 
             <TextView
                 android:id="@+id/textView_Settings_Voice"
@@ -99,7 +111,11 @@
             style="?layoutCell"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layout_Settings_Voice">
 
             <LinearLayout
                 android:id="@+id/layout_Settings_Speed"
@@ -179,7 +195,11 @@
             android:id="@+id/layout_Settings_TalkMode"
             style="?layoutCell"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layout_Settings_Speed_Pitch">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -217,10 +237,14 @@
             style="?layoutCellRipple"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="8dp"
             android:clickable="true"
             android:focusable="true"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layout_Settings_TalkMode">
 
             <TextView
                 android:id="@+id/textView_Settings_Theme"
@@ -242,14 +266,40 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/linearLayout_Settings_Unlock_AccentColor"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="#BA363636"
+            android:gravity="center"
+            android:translationZ="5dp"
+            app:layout_constraintBottom_toBottomOf="@+id/layout_Settings_AccentColor"
+            app:layout_constraintEnd_toEndOf="@+id/layout_Settings_AccentColor"
+            app:layout_constraintStart_toStartOf="@+id/layout_Settings_AccentColor"
+            app:layout_constraintTop_toTopOf="@+id/layout_Settings_AccentColor">
+
+            <Button
+                android:id="@+id/button_Settings_Unlock_AccentColor"
+                style="?button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="@string/button_Settings_Buy" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/layout_Settings_AccentColor"
             style="?layoutCellRipple"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="8dp"
             android:clickable="true"
             android:focusable="true"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layout_Settings_Theme">
 
             <TextView
                 android:id="@+id/textView_Settings_AccentColor"
@@ -276,30 +326,42 @@
             style="?button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:paddingStart="15dp"
             android:paddingEnd="10dp"
             android:text="@string/button_Settings_ClearSavecSentences"
-            android:textAlignment="viewStart" />
+            android:textAlignment="viewStart"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layout_Settings_AccentColor" />
 
         <Button
             android:id="@+id/button_Settings_ClearHistory"
             style="?button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:paddingStart="15dp"
             android:paddingEnd="10dp"
             android:text="@string/button_Settings_ClearHistory"
-            android:textAlignment="viewStart" />
+            android:textAlignment="viewStart"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_Settings_ClearSavedSentences" />
 
         <Button
             android:id="@+id/button_Settings_About"
             style="?button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:paddingStart="15dp"
             android:paddingEnd="10dp"
             android:text="@string/textView_about_title"
-            android:textAlignment="viewStart" />
+            android:textAlignment="viewStart"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_Settings_ClearHistory" />
 
-    </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
 </ScrollView>

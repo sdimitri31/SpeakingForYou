@@ -62,6 +62,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
     TextView textView_SelectedTheme;
     LinearLayout linearLayout_AccentColor;
     ImageView imageView_SelectedAccentColor;
+    LinearLayout linearLayout_AccentColorUnlock;
+    private Button button_BuyAccentColor;
     private Button button_ClearHistory;
     private Button button_ClearSavedSentences;
     private Button button_About;
@@ -143,6 +145,13 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
         imageView_SelectedAccentColor = rootView.findViewById((R.id.imageView_Settings_SelectedAccentColor));
         linearLayout_AccentColor.setOnClickListener(this);
 
+        //AccentColorUnlock
+        linearLayout_AccentColorUnlock = rootView.findViewById(R.id.linearLayout_Settings_Unlock_AccentColor);
+
+        //Buy AccentColor
+        button_BuyAccentColor = rootView.findViewById(R.id.button_Settings_Unlock_AccentColor);
+        button_BuyAccentColor.setOnClickListener(this);
+
         //Clear History
         button_ClearHistory = rootView.findViewById(R.id.button_Settings_ClearHistory);
         button_ClearHistory.setOnClickListener(this);
@@ -184,6 +193,13 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
 
         String[] selectedTheme = getResources().getStringArray(R.array.theme_array);
         textView_SelectedTheme.setText(selectedTheme[mVoiceSettings.getTheme()]);
+
+        if(mVoiceSettings.getIsAccentColorBought()){
+            linearLayout_AccentColorUnlock.setVisibility(View.GONE);
+        }
+        else{
+            linearLayout_AccentColorUnlock.setVisibility(View.VISIBLE);
+        }
 
         imageView_SelectedAccentColor.setColorFilter(new ThemeColors(getContext()).color);
 

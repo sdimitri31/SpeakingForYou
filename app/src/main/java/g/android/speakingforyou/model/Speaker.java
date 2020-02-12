@@ -18,16 +18,15 @@ import java.util.Locale;
 public class Speaker {
     private static final String LOG_TAG = "SFY : Speaker";
 
-    private TextToSpeech    textToSpeech;
-    private VoiceSettings   mVoiceSettings;
+    private TextToSpeech textToSpeech;
+    private VoiceSettings mVoiceSettings;
 
-    private List<Voice>     mListVoices;
-    private List<Locale>    mListLocales;
-    private List<String>    listLanguageName;   //Store the displayName to show to the user
-    private List<String>    listLanguageTag;    //Store the LocaleTag to set up the TTS module
+    private List<Voice> mListVoices;
+    private List<Locale> mListLocales;
+    private List<String> listLanguageName;   //Store the displayName to show to the user
+    private List<String> listLanguageTag;    //Store the LocaleTag to set up the TTS module
 
-    public Speaker(final Context context, VoiceSettings voiceSettings)
-    {
+    public Speaker(final Context context, VoiceSettings voiceSettings) {
         mVoiceSettings = voiceSettings;
         mListVoices = new ArrayList<>();
         mListLocales = new ArrayList<>();
@@ -63,7 +62,7 @@ public class Speaker {
                     Locale[] locales = Locale.getAvailableLocales();
 
                     for (Locale locale : locales) {
-                        try{//Used to prevent crashes with some locales
+                        try {//Used to prevent crashes with some locales
                             int res = textToSpeech.isLanguageAvailable(locale);
                             if (res == TextToSpeech.LANG_COUNTRY_AVAILABLE) {
                                 mListLocales.add(locale);
@@ -71,8 +70,7 @@ public class Speaker {
                                 listLanguageName.add(locale.getDisplayName());
                                 Log.i(LOG_TAG, "Language Tag : " + locale.toLanguageTag() + " DisplayName : " + locale.getDisplayName());
                             }
-                        }
-                        catch (Exception e){
+                        } catch (Exception e) {
                             Log.e(LOG_TAG, e.getMessage());
                         }
                     }
@@ -86,8 +84,7 @@ public class Speaker {
 
                     Log.i(LOG_TAG, "Initialization success.");
 
-                }
-                else {
+                } else {
                     Toast.makeText(context, "TTS Initialization failed!", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -95,30 +92,29 @@ public class Speaker {
 
     }
 
-    public void setVoice(int voiceID){
-        if((mListVoices.size() > 0) && (mListVoices.size() > voiceID )) {
+    public void setVoice(int voiceID) {
+        if ((mListVoices.size() > 0) && (mListVoices.size() > voiceID)) {
             textToSpeech.setVoice(mListVoices.get(voiceID));
             mVoiceSettings.setLastVoiceUsed(voiceID);
             mVoiceSettings.setLastVoiceNameUsed(mListVoices.get(voiceID).getName());
-        }
-        else{
+        } else {
             mVoiceSettings.setLastVoiceUsed(-1);
         }
     }
 
-    public List<Voice> getListVoices(){
+    public List<Voice> getListVoices() {
         return mListVoices;
     }
 
 
-    private void setListVoices(Locale locale){
+    private void setListVoices(Locale locale) {
         mListVoices.clear();
         Log.i(LOG_TAG, "localeToLookFor :" + locale);
 
         try {
             //Fetching all voice for the selected locale
-            for (Voice voice : textToSpeech.getVoices() ) {
-                if(voice.getLocale().getDisplayName().equals(locale.getDisplayName())){
+            for (Voice voice : textToSpeech.getVoices()) {
+                if (voice.getLocale().getDisplayName().equals(locale.getDisplayName())) {
                     mListVoices.add(voice);
                     Log.i(LOG_TAG, "      MATCH     :" + voice.getLocale().getDisplayName());
                 }
@@ -126,7 +122,7 @@ public class Speaker {
 
             //If some voices are found => Sorting by Name
             Log.i(LOG_TAG, "mListVoices.size() :" + mListVoices.size());
-            if(mListVoices.size() > 0) {
+            if (mListVoices.size() > 0) {
                 Collections.sort(mListVoices, new Comparator<Voice>() {
                     @Override
                     public int compare(final Voice object1, final Voice object2) {
@@ -134,8 +130,7 @@ public class Speaker {
                     }
                 });
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
 
             Log.i(LOG_TAG, "Exception :" + e.getLocalizedMessage());
         }
@@ -145,34 +140,40 @@ public class Speaker {
         mVoiceSettings.setVoicesFound(mListVoices.size());
     }
 
-    public TextToSpeech getTextToSpeech(){ return textToSpeech; }
+    public TextToSpeech getTextToSpeech() {
+        return textToSpeech;
+    }
 
 
-    public List<Locale> getListLocales(){
+    public List<Locale> getListLocales() {
         return mListLocales;
     }
 
-    public void setLanguage(String language){
+    public void setLanguage(String language) {
         textToSpeech.setLanguage(Locale.forLanguageTag(language));
         setListVoices(Locale.forLanguageTag(language));
         //textToSpeech.setVoice(textToSpeech.getDefaultVoice());
     }
 
-    public void setPitch(int pitchValue){
+    public void setPitch(int pitchValue) {
         float pitch = (float) pitchValue / 100;
         textToSpeech.setPitch(pitch);
     }
 
-    public void setSpeechRate(int speechRateValue){
+    public void setSpeechRate(int speechRateValue) {
         float speechRate = (float) speechRateValue / 100;
         textToSpeech.setSpeechRate(speechRate);
     }
 
-    public List<String> getListLanguageName(){return listLanguageName;}
+    public List<String> getListLanguageName() {
+        return listLanguageName;
+    }
 
-    public List<String> getListLanguageTag(){return listLanguageTag;}
+    public List<String> getListLanguageTag() {
+        return listLanguageTag;
+    }
 
-    public void ttsSpeak(String sentence){
+    public void ttsSpeak(String sentence) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ttsGreater21(sentence);
         } else {
@@ -192,23 +193,23 @@ public class Speaker {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void ttsGreater21(String text) {
-        String utteranceId=this.hashCode() + "";
+        String utteranceId = this.hashCode() + "";
         int speechStatus2 = textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId);
         if (speechStatus2 == TextToSpeech.ERROR) {
             Log.e(LOG_TAG, "Error in converting Text to Speech!");
         }
     }
 
-    public void ttsStop(){
+    public void ttsStop() {
         textToSpeech.stop();
     }
 
-    public void destroy(){
+    public void destroy() {
         textToSpeech.stop();
         textToSpeech.shutdown();
     }
 
-    public void setALL(){
+    public void setALL() {
         setLanguage(mVoiceSettings.getLanguage());
         setVoice(mVoiceSettings.getLastVoiceUsed());
         setSpeechRate(mVoiceSettings.getSpeechRate());
