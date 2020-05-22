@@ -191,6 +191,7 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
         mTabLayout.setupWithViewPager(mViewPager);
         setTabIcon();
 
+        firstBoot();
 
         //-----------------------------------------------------------------------------------
         //                          Initializing Listeners
@@ -569,7 +570,27 @@ public class MainActivity extends AppCompatActivity implements SavedSentencesFra
     //                          SETTINGS METHODS
     //-----------------------------------------------------------------------------------
 
+    public void firstBoot(){
+        //If it's the first boot
+        if(mVoiceSettings.getIsFirstBoot()) {
+            String savedSentence1 = getResources().getString(R.string.firstBoot_SavedSentence_1);
+            String savedSentence2 = getResources().getString(R.string.firstBoot_SavedSentence_2);
+            String savedSentence3 = getResources().getString(R.string.firstBoot_SavedSentence_3);
+            String historySentence1 = getResources().getString(R.string.firstBoot_History_1);
 
+            //Get a list of the savedSentences
+            List<SavedSentences> savedSentencesList = mSavedSentencesDAO.getAll();
+
+            mSavedSentencesDAO.add(new SavedSentences(savedSentence1, mSavedSentencesDAO.getNextPosition(), new Date(), 0));
+            mSavedSentencesDAO.add(new SavedSentences(savedSentence2, mSavedSentencesDAO.getNextPosition(), new Date(), 0));
+            mSavedSentencesDAO.add(new SavedSentences(savedSentence3, mSavedSentencesDAO.getNextPosition(), new Date(), 0));
+
+            mHistoryDAO.add(new History(historySentence1, new Date(), 1));
+
+            updateFragment(MENUTOP_SAVEDSENTENCES);
+            mVoiceSettings.setIsFirstBoot(false);
+        }
+    }
 
     public void sortHistoryPopup(){
         LayoutInflater inflater = getLayoutInflater();

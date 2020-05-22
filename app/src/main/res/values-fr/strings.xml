@@ -45,4 +45,8 @@
     <string name="tabLayout_Settings">PARAMETRES</string>
     <string name="textView_Settings_AccentColor">Couleur</string>
     <string name="button_Settings_Buy">Acheter</string>
+    <string name="firstBoot_SavedSentence_1">Merci d\'avoir téléchargé mon application</string>
+    <string name="firstBoot_History_1">Ici ce trouve toutes les phrases que vous avez dites, maintenez appuyé sur une phrase pour l\'ajouter aux favoris ou la supprimer</string>
+    <string name="firstBoot_SavedSentence_2">Ici ce trouve vos phrases favorites</string>
+    <string name="firstBoot_SavedSentence_3">Faites glisser de droite à gauche pour voir l\'historique</string>
 </resources>

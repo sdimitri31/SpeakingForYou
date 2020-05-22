@@ -42,10 +42,14 @@
     <string name="textView_about_contactTitle">Contact : </string>
     <string name="textView_about_contactEmail" translatable="false">suso.dimitri@orange.fr</string>
     <string name="textView_about_versionTitle">Version : </string>
-    <string name="textView_about_version" translatable="false"><u>0.85-beta</u></string>
+    <string name="textView_about_version" translatable="false"><u>1.0</u></string>
     <string name="tabLayout_SavedSentences">FAVORITES</string>
     <string name="tabLayout_History">HISTORY</string>
     <string name="tabLayout_Settings">SETTINGS</string>
     <string name="textView_Settings_AccentColor">Color</string>
     <string name="button_Settings_Buy">Buy</string>
+    <string name="firstBoot_SavedSentence_1">Thank you for using my application</string>
+    <string name="firstBoot_SavedSentence_2">Here are all your saved sentences</string>
+    <string name="firstBoot_SavedSentence_3">Swipe from right to left to see your history</string>
+    <string name="firstBoot_History_1">Here are every sentences you said before, do a long press to save or delete a sentence</string>
 </resources>

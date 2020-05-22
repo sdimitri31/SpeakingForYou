@@ -23,6 +23,7 @@ public class VoiceSettings {
     private int mLastVoiceUsed;
     private String mLastVoiceNameUsed;
     private int mVoicesFound;
+    private boolean mIsFirstBoot;
 
     private boolean mTalkMode;
 
@@ -315,5 +316,20 @@ public class VoiceSettings {
         return mIsAccentColorBought;
     }
 
+    public void setIsFirstBoot(boolean isFirstBoot){
+        mIsFirstBoot = isFirstBoot;
 
+        //Save the last language for next boot
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putBoolean("isFirstBoot", mIsFirstBoot);
+        editor.apply();
+
+        Log.i(LOG_TAG, "isFirstBoot : " + mIsFirstBoot );
+    }
+
+    public boolean getIsFirstBoot(){
+        mIsFirstBoot = mSharedPreferences.getBoolean("isFirstBoot", true);
+        setIsFirstBoot(mIsFirstBoot);
+        return mIsFirstBoot;
+    }
 }
